@@ -7,20 +7,19 @@ interface SearchProps {
 }
 
 export class Search extends React.Component<SearchProps> {
-  // we'll implement controlled style input, event though technically `const inputRef = useRef();` would suffice
-
+  // we'll implement controlled style input, event though technically
+  // `const inputRef = useRef();` would suffice
   state = { searchTerm: this.props.searchTerm ? this.props.searchTerm : ""}
 
   onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //`we can implement auto search, with cancelling previous SearhRequest promises in future: ${e.target.value}`
+    //`we can implement auto search, with cancelling previous FetchRequest
+    // Promises in future`
     console.log(`onSearchInputChange ${e.target.value}`)
     this.setState({searchTerm: e.target.value})
   }
 
-
   onSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log(this.props.onSearchButtonClick)
+    //e.preventDefault()
     console.log(this.state.searchTerm)
     this.props.onSearchButtonClick(this.state.searchTerm)
 
