@@ -1,5 +1,6 @@
 import React from 'react'
 import './Search.css'
+import { ErrorButton } from '../ErrorButton/ErrorButton'
 
 interface SearchProps {
   searchTerm?: string,
@@ -19,11 +20,11 @@ export class Search extends React.Component<SearchProps> {
   }
 
   onSubmit = (e: React.FormEvent) => {
-    //e.preventDefault()
+    e.preventDefault()
     console.log(this.state.searchTerm)
     this.props.onSearchButtonClick(this.state.searchTerm)
-
   }
+
   render() {
     console.log('rerender')
     return (
@@ -42,6 +43,9 @@ export class Search extends React.Component<SearchProps> {
           >
             Search
           </button>
+          <ErrorButton>
+            Generate Error
+          </ErrorButton>
         </form>
     )
   }

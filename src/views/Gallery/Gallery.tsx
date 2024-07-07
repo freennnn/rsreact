@@ -4,6 +4,7 @@ import { GalleryItem } from '../../components/GalleryItem/GalleryItem'
 import './Gallery.css'
 import { Search } from '../../components/Search/Search'
 import { Loader } from '../../components/Loader/Loader'
+import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary'
 
 export interface Repository {
   id: number,
@@ -71,26 +72,28 @@ export class Gallery extends React.Component {
       return (<Loader></Loader>)
     } else {
       return (
-        <div className='GalleryView'>
-          <Search
-            searchTerm={this.state.searchTerm ? this.state.searchTerm : undefined}
-            onSearchButtonClick={this.onSearchButtonClick}
-          >
-          </Search>
-          { this.state.results?
-            this.state.results.map(item =>
-              <GalleryItem
-                id = {item.id}
-                name={item.name}
-                description={item.description}
-                language={item.language}
-                key={item.id}>
-             </GalleryItem>
-            )
-            :
-            <p>Gallery have no repositories loaded</p>
-          }
-        </div>  
+        <ErrorBoundary>
+          <div className='GalleryView'>
+            <Search
+              searchTerm={this.state.searchTerm ? this.state.searchTerm : undefined}
+              onSearchButtonClick={this.onSearchButtonClick}
+            >
+            </Search>
+            { this.state.results?
+              this.state.results.map(item =>
+                <GalleryItem
+                  id = {item.id}
+                  name={item.name}
+                  description={item.description}
+                  language={item.language}
+                  key={item.id}>
+              </GalleryItem>
+              )
+              :
+              <p>Gallery have no repositories loaded</p>
+            }
+          </div>  
+        </ErrorBoundary>
       )
     }
 
