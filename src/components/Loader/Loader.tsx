@@ -1,16 +1,11 @@
 import React from 'react'
+
 import './Loader.css'
- 
 
-interface LoaderProps {
-
-}
+interface LoaderProps {}
 
 export class Loader extends React.Component<LoaderProps> {
   render() {
-    return (
-      <div className='loader'>
-      </div>
-    )
+    return <div className='loader'></div>
   }
 }

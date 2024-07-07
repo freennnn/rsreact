@@ -1,11 +1,12 @@
-import React from "react";
+import React from 'react'
+
 import './ErrorButton.css'
 
 export class ErrorButton extends React.Component<{ children: React.ReactNode }> {
-  state = { shouldProduceErrorInRender: false}
+  state = { shouldProduceErrorInRender: false }
 
-  onButtonClick= () => {
-    this.setState ({ shouldProduceErrorInRender: !this.state.shouldProduceErrorInRender})
+  onButtonClick = () => {
+    this.setState({ shouldProduceErrorInRender: !this.state.shouldProduceErrorInRender })
   }
 
   render() {
@@ -18,5 +19,4 @@ export class ErrorButton extends React.Component<{ children: React.ReactNode }> 
       </button>
     )
   }
-
 }

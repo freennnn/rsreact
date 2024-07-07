@@ -1,11 +1,9 @@
 import React from 'react'
+
 import { Repository } from '../../views/Gallery/Gallery'
 import './GalleryItem.css'
- 
 
-interface GalleryItemProps extends Repository {
-}
-
+interface GalleryItemProps extends Repository {}
 
 export class GalleryItem extends React.Component<GalleryItemProps> {
   render() {
