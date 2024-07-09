@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Log } from '../../utils/utils'
 import { ErrorButton } from '../ErrorButton/ErrorButton'
 import './Search.css'
 
@@ -9,25 +10,25 @@ interface SearchProps {
 }
 
 export class Search extends React.Component<SearchProps> {
-  // we'll implement controlled style input, event though technically
-  // `const inputRef = useRef();` would suffice
+  // we'll implement 'controlled style' input, event though technically
+  // `const inputRef = useRef();` would suffice here
   state = { searchTerm: this.props.searchTerm ? this.props.searchTerm : '' }
 
   onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     //`we can implement auto search, with cancelling previous FetchRequest
     // Promises in future`
-    console.log(`onSearchInputChange ${e.target.value}`)
+    //Log(`onSearchInputChange ${e.target.value}`)
     this.setState({ searchTerm: e.target.value })
   }
 
   onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log(this.state.searchTerm)
+    Log(this.state.searchTerm)
     this.props.onSearchButtonClick(this.state.searchTerm)
   }
 
   render() {
-    console.log('rerender')
+    Log('Search re-render')
     return (
       <form onSubmit={this.onSubmit} className='search-form'>
         <input

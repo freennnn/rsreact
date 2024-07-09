@@ -5,6 +5,7 @@ import { GalleryItem } from '../../components/GalleryItem/GalleryItem'
 import { Loader } from '../../components/Loader/Loader'
 import { Search } from '../../components/Search/Search'
 import { getRepositores } from '../../services/api'
+import { Log, LogError } from '../../utils/utils'
 import './Gallery.css'
 
 export interface Repository {
@@ -32,7 +33,7 @@ export class Gallery extends React.Component {
     this.setState({ ...this.state, isLoading: true, searchTerm: searchTerm })
     getRepositores(searchTerm)
       .then((results) => {
-        console.log(results)
+        Log(results)
         this.setState({
           ...this.state,
           results: results.items as Array<Repository>,
@@ -40,7 +41,7 @@ export class Gallery extends React.Component {
         })
       })
       .catch((e) => {
-        console.error(e)
+        LogError(e)
         this.setState({
           ...this.state,
           isLoading: false,
@@ -54,9 +55,7 @@ export class Gallery extends React.Component {
 
   // using arrow syntax here (instead of method shorthand) to avoid explicit binding in the constructor
   onSearchButtonClick = (searchTerm: string) => {
-    console.log(`onSearchButton click in ${this} with new search Term: ${searchTerm}`)
-    //localStorage.setItem('SavedSearchTerm',searchTerm)
-    // this.setState({...this.state, searchTerm: searchTerm})
+    Log(`onSearchButton click in ${this} with new search Term: ${searchTerm}`)
     this.fetchRepositories(searchTerm)
   }
 
@@ -65,8 +64,8 @@ export class Gallery extends React.Component {
   }
 
   render() {
-    console.log(`rendering:`)
-    this.state.results?.forEach((item) => console.log(item.name + item.language))
+    Log(`rendering:`)
+    this.state.results?.forEach((item) => Log(item.name + item.language))
     if (this.state.isLoading) {
       return <Loader></Loader>
     } else {

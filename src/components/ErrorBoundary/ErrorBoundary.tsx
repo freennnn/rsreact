@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { LogError } from '../../utils/utils'
+
 export class ErrorBoundary extends React.Component<{ children: React.ReactNode }> {
   state = { hasError: false }
 
@@ -8,9 +10,11 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    console.error(error.message)
-    console.error(errorInfo.componentStack)
-    this.setState({ hasError: true })
+    // same error as in getDerivedStateFromError, yet method is called at completely
+    // different lifecycle stage
+    LogError(error.message)
+    LogError(errorInfo.componentStack)
+    //this.setState({ hasError: true })
   }
 
   render() {
@@ -26,9 +30,8 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
     return this.props.children
   }
 
-  // static getDerivedStateFromError(error: Error) {
-  //   return (
-  //     <div></div>
-  //   )
-  // }
+  static getDerivedStateFromError(error: Error) {
+    LogError(error.message)
+    return { hasError: true }
+  }
 }
