@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Repository } from '../../views/Gallery/Gallery'
+import { Repository } from '../../views/Gallery/GalleryPage'
 import './GalleryItem.css'
 
 interface GalleryItemProps extends Repository {}

@@ -1,4 +1,8 @@
-.gallery-page {
+.cards__lower-block {
   display: flex;
   flex-direction: row;
+}
+
+.card-gallery {
+  max-width: 400px;
 }

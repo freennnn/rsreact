@@ -10,7 +10,7 @@ function App() {
     <div className='container'>
       <Routes>
         <Route path='/' element={<GalleryPage />}>
-          <Route path='/detail/:id' element={<CardDetails></CardDetails>} />
+          <Route path='/repo-details/:id' element={<CardDetails></CardDetails>} />
         </Route>
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
