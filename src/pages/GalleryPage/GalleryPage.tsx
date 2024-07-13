@@ -1,10 +1,11 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary'
 import { GalleryItem } from '../../components/GalleryItem/GalleryItem'
 import { Loader } from '../../components/Loader/Loader'
 import { Search } from '../../components/Search/Search'
+import { useSyncSearchTermWithLocalStorage } from '../../hooks/useSyncSearchTermWithLocalStorage'
 import { getRepositores } from '../../services/api'
 import { Log, LogError } from '../../utils/utils'
 import './GalleryPage.css'
@@ -16,88 +17,66 @@ export interface Repository {
   language: string
 }
 
-interface GalleryState {
-  results: Array<Repository> | null
-  searchTerm: string | null
-  isLoading: boolean
-}
+export default function GalleryPage() {
+  const [repositories, setRepositories] = useState<Repository[] | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const { searchTerm, setSearchTerm } = useSyncSearchTermWithLocalStorage()
 
-export default class GalleryPage extends React.Component {
-  state: GalleryState = {
-    results: null,
-    searchTerm: localStorage.getItem('SavedSearchTerm'),
-    isLoading: false,
-  }
+  useEffect(() => {
+    const fetchRepositories = async (searchTerm: string) => {
+      setIsLoading(true)
+      //setSearchTerm(searchTerm)
 
-  fetchRepositories = (searchTerm: string) => {
-    localStorage.setItem('SavedSearchTerm', searchTerm)
-    this.setState({ ...this.state, isLoading: true, searchTerm: searchTerm })
-    getRepositores(searchTerm)
-      .then((results) => {
+      try {
+        const results = await getRepositores(searchTerm)
         Log(results)
-        this.setState({
-          ...this.state,
-          results: results.items as Array<Repository>,
-          isLoading: false,
-        })
-      })
-      .catch((e) => {
+        setRepositories(results.items as Array<Repository>)
+      } catch (e) {
         LogError(e)
-        this.setState({
-          ...this.state,
-          isLoading: false,
-        })
-      })
-
-    //finally block won't work here - since state will be updated in async .then() call
-    // and updating it here in finally will use stale/old state and reset our changes
-    //.finally(() => this.setState({...this.state, isLoading:false}))
-  }
-
-  // using arrow syntax here (instead of method shorthand) to avoid explicit binding in the constructor
-  onSearchButtonClick = (searchTerm: string) => {
-    Log(`onSearchButton click in ${this} with new search Term: ${searchTerm}`)
-    this.fetchRepositories(searchTerm)
-  }
-
-  componentDidMount(): void {
-    this.fetchRepositories(this.state.searchTerm ? this.state.searchTerm : '')
-  }
-
-  render() {
-    Log(`rendering:`)
-    this.state.results?.forEach((item) => Log(item.name + item.language))
-    if (this.state.isLoading) {
-      return <Loader></Loader>
-    } else {
-      return (
-        <ErrorBoundary>
-          <div className='GalleryView'>
-            <Search
-              searchTerm={this.state.searchTerm ? this.state.searchTerm : undefined}
-              onSearchButtonClick={this.onSearchButtonClick}
-            ></Search>
-            <div className='cards__lower-block'>
-              <div className='card-gallery'>
-                {this.state.results ? (
-                  this.state.results.map((item) => (
-                    <GalleryItem
-                      id={item.id}
-                      name={item.name}
-                      description={item.description}
-                      language={item.language}
-                      key={item.id}
-                    ></GalleryItem>
-                  ))
-                ) : (
-                  <p>Gallery have no repositories loaded</p>
-                )}
-              </div>
-              <Outlet></Outlet>
-            </div>
-          </div>
-        </ErrorBoundary>
-      )
+      } finally {
+        setIsLoading(false)
+      }
     }
+    fetchRepositories(searchTerm ? searchTerm : '')
+  }, [searchTerm /*, setSearchTerm*/])
+
+  const onSearchButtonClick = (newSearchTerm: string) => {
+    Log(`onSearchButton click in GalleryPage with new search Term: ${newSearchTerm}`)
+    setSearchTerm(newSearchTerm)
+  }
+  Log(`rendering:`)
+  repositories?.forEach((item) => Log(item.name + item.language))
+
+  if (isLoading) {
+    return <Loader></Loader>
+  } else {
+    return (
+      <ErrorBoundary>
+        <div className='GalleryView'>
+          <Search
+            searchTerm={searchTerm ? searchTerm : undefined}
+            onSearchButtonClick={onSearchButtonClick}
+          ></Search>
+          <div className='cards__lower-block'>
+            <div className='card-gallery'>
+              {repositories ? (
+                repositories.map((item) => (
+                  <GalleryItem
+                    id={item.id}
+                    name={item.name}
+                    description={item.description}
+                    language={item.language}
+                    key={item.id}
+                  ></GalleryItem>
+                ))
+              ) : (
+                <p>Gallery have no repositories loaded</p>
+              )}
+            </div>
+            <Outlet></Outlet>
+          </div>
+        </div>
+      </ErrorBoundary>
+    )
   }
 }
