@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 
+import { Card } from '../../components/Card/Card'
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary'
-import { GalleryItem } from '../../components/GalleryItem/GalleryItem'
 import { Loader } from '../../components/Loader/Loader'
 import { Search } from '../../components/Search/Search'
 import { useSyncSearchTermWithLocalStorage } from '../../hooks/useSyncSearchTermWithLocalStorage'
@@ -61,13 +61,13 @@ export default function GalleryPage() {
             <div className='card-gallery'>
               {repositories ? (
                 repositories.map((item) => (
-                  <GalleryItem
+                  <Card
                     id={item.id}
                     name={item.name}
                     description={item.description}
                     language={item.language}
                     key={item.id}
-                  ></GalleryItem>
+                  ></Card>
                 ))
               ) : (
                 <p>Gallery have no repositories loaded</p>

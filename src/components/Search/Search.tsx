@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Log } from '../../utils/utils'
 import { ErrorButton } from '../ErrorButton/ErrorButton'
@@ -9,40 +9,40 @@ interface SearchProps {
   onSearchButtonClick(searchTerm: string): void
 }
 
-export class Search extends React.Component<SearchProps> {
+export function Search(props: SearchProps) {
   // we'll implement 'controlled style' input, event though technically
   // `const inputRef = useRef();` would suffice here
-  state = { searchTerm: this.props.searchTerm ? this.props.searchTerm : '' }
+  const [enteredSearchTerm, setEnteredSearchTerm] = useState(
+    props.searchTerm ? props.searchTerm : '',
+  )
 
-  onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     //`we can implement auto search, with cancelling previous FetchRequest
     // Promises in future`
     //Log(`onSearchInputChange ${e.target.value}`)
-    this.setState({ searchTerm: e.target.value })
+    setEnteredSearchTerm(e.target.value)
   }
 
-  onSubmit = (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    Log(this.state.searchTerm)
-    this.props.onSearchButtonClick(this.state.searchTerm)
+    Log(enteredSearchTerm)
+    props.onSearchButtonClick(enteredSearchTerm)
   }
 
-  render() {
-    Log('Search re-render')
-    return (
-      <form onSubmit={this.onSubmit} className='search-form'>
-        <input
-          type='text'
-          placeholder='Search..'
-          className='searchbar'
-          onChange={this.onSearchInputChange}
-          value={this.state.searchTerm}
-        ></input>
-        <button type='submit' className='search-button'>
-          Search
-        </button>
-        <ErrorButton>Generate Error</ErrorButton>
-      </form>
-    )
-  }
+  Log('Search re-render')
+  return (
+    <form onSubmit={onSubmit} className='search-form'>
+      <input
+        type='text'
+        placeholder='Search..'
+        className='searchbar'
+        onChange={onSearchInputChange}
+        value={enteredSearchTerm}
+      ></input>
+      <button type='submit' className='search-button'>
+        Search
+      </button>
+      <ErrorButton>Generate Error</ErrorButton>
+    </form>
+  )
 }
