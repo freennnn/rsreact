@@ -10,8 +10,8 @@
     "preview": "vite preview",
     "format:fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
     "prepare": "husky",
-    "lint-staged": "lint-staged vitest",
-    "test": "vitest",
+    "precommit": "npx lint-staged && npm run test",
+    "test": "vitest run",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
