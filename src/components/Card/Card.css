@@ -1,0 +1,20 @@
+.card {
+  background-color: bisque;
+  margin: 20px 0px 20px 0px;
+  padding: 20px;
+  border: 1px solid transparent;
+
+}
+
+.card:hover {
+  cursor: pointer;
+  transition: transform 1s;
+  border: 1px solid #333333;
+  border-radius: 5px;
+}
+
+/* div:hover:not(:has(div:hover)) {
+  transition: transform 1s;
+  border: 1px solid #333333;
+  border-radius: 5px;
+} */

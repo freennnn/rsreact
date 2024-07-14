@@ -1,11 +1,20 @@
-import './App.css'
-import { Gallery } from './views/Gallery/Gallery.tsx'
+import { Route, Routes } from 'react-router-dom'
 
-function App() {
+import './App.css'
+import GalleryPage from './pages/GalleryPage/GalleryPage'
+import NotFoundPage from './pages/NotFoundPage/NotFoundPage'
+import CardDetails from './views/CardDetails/CardDetails.tsx'
+
+export function App() {
   return (
-    <>
-      <Gallery></Gallery>
-    </>
+    <div className='container'>
+      <Routes>
+        <Route path='/' element={<GalleryPage />}>
+          <Route path='/repo/:owner/:name' element={<CardDetails></CardDetails>} />
+        </Route>
+        <Route path='*' element={<NotFoundPage />} />
+      </Routes>
+    </div>
   )
 }
 

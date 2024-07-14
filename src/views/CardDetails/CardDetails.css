@@ -1,0 +1,8 @@
+.card-details {
+  min-width: 400px;
+}
+
+.card-details__avatar {
+  width: 100px;
+  height: 100px;
+}
