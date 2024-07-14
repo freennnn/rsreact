@@ -46,8 +46,8 @@ export default function CardDetails() {
     return (
       <div className='card-details'>
         <img className='card-details__avatar' src={repo?.owner?.avatar_url}></img>
-        <h3 className='card-details__name'>{`Name:${name}`}</h3>
-        <h3 className='card-details__name'>{`Owner:${owner}`}</h3>
+        <h3 className='card-details__name'>{`Name:${repo?.name}`}</h3>
+        <h3 className='card-details__name'>{`Owner:${repo?.owner?.login}`}</h3>
         <h3>Stars: {repo?.stargazers_count}</h3>
         <h3>Forks: {repo?.forks_count}</h3>
         <button onClick={onCloseButtonClick}>Close details</button>

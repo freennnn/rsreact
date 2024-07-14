@@ -5,7 +5,7 @@ import GalleryPage from './pages/GalleryPage/GalleryPage'
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage'
 import CardDetails from './views/CardDetails/CardDetails.tsx'
 
-function App() {
+export function App() {
   return (
     <div className='container'>
       <Routes>
