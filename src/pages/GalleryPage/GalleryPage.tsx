@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Card } from '../../components/Card/Card'
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary'
@@ -35,11 +35,12 @@ export default function GalleryPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const navigate = useNavigate()
   const location = useLocation()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   useEffect(() => {
     const fetchRepositories = async (searchTerm: string, page: number) => {
       setIsLoading(true)
-
+      setSearchParams(`search=${searchTerm}&page=${page}`)
       try {
         const results = await getRepositores(searchTerm, page)
         Log(results)
@@ -52,7 +53,7 @@ export default function GalleryPage() {
       }
     }
     fetchRepositories(searchTerm ? searchTerm : '', currentPage)
-  }, [searchTerm, currentPage])
+  }, [searchTerm, currentPage, setSearchParams])
 
   const onSearchButtonClick = (newSearchTerm: string) => {
     Log(`onSearchButton click in GalleryPage with new search Term: ${newSearchTerm}`)
@@ -68,7 +69,7 @@ export default function GalleryPage() {
     console.log('-- card gallery block clicked ---')
 
     if (location.pathname.includes('/repo')) {
-      navigate('/')
+      navigate(`/?${searchParams}`)
     }
   }
 
@@ -79,35 +80,33 @@ export default function GalleryPage() {
   Log(`GalleryPage rendering:`)
   repositories?.forEach((item) => Log(item.name + item.language))
 
-  if (isLoading) {
-    return <Loader></Loader>
-  } else {
-    return (
-      <ErrorBoundary>
-        <div className='GalleryView'>
-          <Search
-            searchTerm={searchTerm ? searchTerm : undefined}
-            onSearchButtonClick={onSearchButtonClick}
-          ></Search>
-          <div className='cards__lower-block' onClick={onMainBlockClick}>
-            <div className='card-gallery'>
-              <Pagination
-                currentPage={currentPage}
-                numberOfPages={totalRepoCount / 5}
-                onPageChange={onPageChange}
-              ></Pagination>
-              {repositories ? (
-                repositories.map((item) => (
-                  <Card repository={item} key={item.id} onClick={onCardClick}></Card>
-                ))
-              ) : (
-                <p>Gallery have no repositories loaded</p>
-              )}
-            </div>
-            <Outlet></Outlet>
+  return (
+    <ErrorBoundary>
+      <div className='GalleryView'>
+        <Search
+          searchTerm={searchTerm ? searchTerm : undefined}
+          onSearchButtonClick={onSearchButtonClick}
+        ></Search>
+        <div className='cards__lower-block' onClick={onMainBlockClick}>
+          <div className='card-gallery'>
+            <Pagination
+              currentPage={currentPage}
+              numberOfPages={totalRepoCount / 5}
+              onPageChange={onPageChange}
+            ></Pagination>
+            {isLoading ? (
+              <Loader></Loader>
+            ) : repositories ? (
+              repositories.map((item) => (
+                <Card repository={item} key={item.id} onClick={onCardClick}></Card>
+              ))
+            ) : (
+              <p>Gallery have no repositories loaded</p>
+            )}
           </div>
+          <Outlet></Outlet>
         </div>
-      </ErrorBoundary>
-    )
-  }
+      </div>
+    </ErrorBoundary>
+  )
 }
