@@ -4,6 +4,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Card } from '../../components/Card/Card'
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary'
 import { Loader } from '../../components/Loader/Loader'
+import { Pagination } from '../../components/Pagination/Pagination'
 import { Search } from '../../components/Search/Search'
 import { useSyncSearchTermWithLocalStorage } from '../../hooks/useSyncSearchTermWithLocalStorage'
 import { getRepositores } from '../../services/api'
@@ -28,28 +29,30 @@ export interface Repository {
 
 export default function GalleryPage() {
   const [repositories, setRepositories] = useState<Repository[] | null>(null)
+  const [totalRepoCount, setTotalRepoCount] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const { searchTerm, setSearchTerm } = useSyncSearchTermWithLocalStorage()
-
+  const [currentPage, setCurrentPage] = useState(1)
   const navigate = useNavigate()
   const location = useLocation()
 
   useEffect(() => {
-    const fetchRepositories = async (searchTerm: string) => {
+    const fetchRepositories = async (searchTerm: string, page: number) => {
       setIsLoading(true)
 
       try {
-        const results = await getRepositores(searchTerm)
+        const results = await getRepositores(searchTerm, page)
         Log(results)
         setRepositories(results.items as Array<Repository>)
+        setTotalRepoCount(results.total_count as number)
       } catch (e) {
         LogError(e)
       } finally {
         setIsLoading(false)
       }
     }
-    fetchRepositories(searchTerm ? searchTerm : '')
-  }, [searchTerm])
+    fetchRepositories(searchTerm ? searchTerm : '', currentPage)
+  }, [searchTerm, currentPage])
 
   const onSearchButtonClick = (newSearchTerm: string) => {
     Log(`onSearchButton click in GalleryPage with new search Term: ${newSearchTerm}`)
@@ -69,6 +72,10 @@ export default function GalleryPage() {
     }
   }
 
+  const onPageChange = (newPage: number) => {
+    setCurrentPage(newPage)
+  }
+
   Log(`GalleryPage rendering:`)
   repositories?.forEach((item) => Log(item.name + item.language))
 
@@ -84,6 +91,11 @@ export default function GalleryPage() {
           ></Search>
           <div className='cards__lower-block' onClick={onMainBlockClick}>
             <div className='card-gallery'>
+              <Pagination
+                currentPage={currentPage}
+                numberOfPages={totalRepoCount / 5}
+                onPageChange={onPageChange}
+              ></Pagination>
               {repositories ? (
                 repositories.map((item) => (
                   <Card repository={item} key={item.id} onClick={onCardClick}></Card>
