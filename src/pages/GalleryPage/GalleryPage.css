@@ -5,4 +5,16 @@
 
 .card-gallery {
   max-width: 400px;
+
+}
+
+.cards__lower-block {
+  border: 2px solid transparent;
+}
+
+.cards__lower-block:hover {
+  cursor: pointer;
+  transition: all 1s;
+  border: 2px solid blue;
+  border-radius: 5px;
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 import { Card } from '../../components/Card/Card'
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary'
@@ -15,6 +15,15 @@ export interface Repository {
   name: string
   description: string
   language: string
+  stargazers_count: number
+  forks_count: number
+  updated_at: string
+  contributors_url: string
+  owner: {
+    login: string
+    avatar_url: string
+    type: string
+  }
 }
 
 export default function GalleryPage() {
@@ -22,10 +31,12 @@ export default function GalleryPage() {
   const [isLoading, setIsLoading] = useState(false)
   const { searchTerm, setSearchTerm } = useSyncSearchTermWithLocalStorage()
 
+  const navigate = useNavigate()
+  const location = useLocation()
+
   useEffect(() => {
     const fetchRepositories = async (searchTerm: string) => {
       setIsLoading(true)
-      //setSearchTerm(searchTerm)
 
       try {
         const results = await getRepositores(searchTerm)
@@ -38,13 +49,27 @@ export default function GalleryPage() {
       }
     }
     fetchRepositories(searchTerm ? searchTerm : '')
-  }, [searchTerm /*, setSearchTerm*/])
+  }, [searchTerm])
 
   const onSearchButtonClick = (newSearchTerm: string) => {
     Log(`onSearchButton click in GalleryPage with new search Term: ${newSearchTerm}`)
     setSearchTerm(newSearchTerm)
   }
-  Log(`rendering:`)
+
+  const onCardClick = (owner: string, name: string) => {
+    Log(`onCardClick`)
+    navigate(`/repo/${owner}/${name}`)
+  }
+
+  const onMainBlockClick = () => {
+    console.log('-- card gallery block clicked ---')
+
+    if (location.pathname.includes('/repo')) {
+      navigate('/')
+    }
+  }
+
+  Log(`GalleryPage rendering:`)
   repositories?.forEach((item) => Log(item.name + item.language))
 
   if (isLoading) {
@@ -57,17 +82,11 @@ export default function GalleryPage() {
             searchTerm={searchTerm ? searchTerm : undefined}
             onSearchButtonClick={onSearchButtonClick}
           ></Search>
-          <div className='cards__lower-block'>
+          <div className='cards__lower-block' onClick={onMainBlockClick}>
             <div className='card-gallery'>
               {repositories ? (
                 repositories.map((item) => (
-                  <Card
-                    id={item.id}
-                    name={item.name}
-                    description={item.description}
-                    language={item.language}
-                    key={item.id}
-                  ></Card>
+                  <Card repository={item} key={item.id} onClick={onCardClick}></Card>
                 ))
               ) : (
                 <p>Gallery have no repositories loaded</p>
