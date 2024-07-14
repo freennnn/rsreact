@@ -134,7 +134,7 @@ beforeEach(() => {
   )
 })
 
-it('renders CardDetails', async () => {
+it('renders CardDetails with mocked JSON', async () => {
   render(
     <BrowserRouter>
       <CardDetails />

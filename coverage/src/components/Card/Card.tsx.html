@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">18.75% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/16</span>
+                <span class='fraction'>12/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">18.75% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/16</span>
+                <span class='fraction'>12/16</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -96,21 +96,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Repository } from '../../pages/GalleryPage/GalleryPage'
 import './Card.css'
 &nbsp;
@@ -119,22 +119,22 @@ interface CardProps {
   onClick: (owner: string, name: string) =&gt; void
 }
 &nbsp;
-export <span class="fstat-no" title="function not covered" >function Card(props: CardProps) {</span>
-<span class="cstat-no" title="statement not covered" >  return (</span>
-<span class="cstat-no" title="statement not covered" >    &lt;div</span>
-<span class="cstat-no" title="statement not covered" >      className='card'</span>
-<span class="cstat-no" title="statement not covered" >      onClick={(e: React.MouseEvent) =&gt; {</span>
+export function Card(props: CardProps) {
+  return (
+    &lt;div
+      className='card'
+      onClick={<span class="fstat-no" title="function not covered" >(e: React.MouseEvent) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        console.log('-- card clicked ---')</span>
 <span class="cstat-no" title="statement not covered" >        e.stopPropagation()</span>
 <span class="cstat-no" title="statement not covered" >        props.onClick(props.repository.owner.login, props.repository.name)</span>
 <span class="cstat-no" title="statement not covered" >      }}</span>
     &gt;
-<span class="cstat-no" title="statement not covered" >      &lt;p&gt;{props.repository.name}&lt;/p&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;p&gt;{props.repository.description}&lt;/p&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;p&gt;{props.repository.language}&lt;/p&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
+      &lt;p&gt;{props.repository.name}&lt;/p&gt;
+      &lt;p&gt;{props.repository.description}&lt;/p&gt;
+      &lt;p&gt;{props.repository.language}&lt;/p&gt;
+    &lt;/div&gt;
   )
-<span class="cstat-no" title="statement not covered" >}</span>
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -142,7 +142,7 @@ export <span class="fstat-no" title="function not covered" >function Card(props:
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-14T20:07:22.448Z
+                at 2024-07-14T21:07:36.897Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

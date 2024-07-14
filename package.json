@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "format:fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
     "prepare": "husky",
-    "lint-staged": "lint-staged",
+    "lint-staged": "lint-staged vitest",
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },
