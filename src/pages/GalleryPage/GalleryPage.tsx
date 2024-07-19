@@ -65,8 +65,8 @@ export default function GalleryPage() {
     navigate(`/repo/${owner}/${name}`)
   }
 
-  const onMainBlockClick = () => {
-    console.log('-- card gallery block clicked ---')
+  const onCardGalleryClick = () => {
+    console.log('-- card gallery clicked ---')
 
     if (location.pathname.includes('/repo')) {
       navigate(`/?${searchParams}`)
@@ -82,13 +82,13 @@ export default function GalleryPage() {
 
   return (
     <ErrorBoundary>
-      <div className='GalleryView'>
+      <div className='gallery-page'>
         <Search
           searchTerm={searchTerm ? searchTerm : undefined}
           onSearchButtonClick={onSearchButtonClick}
         ></Search>
-        <div className='cards__lower-block' onClick={onMainBlockClick}>
-          <div className='card-gallery'>
+        <div className='cards-and-details'>
+          <div className='card-gallery' onClick={onCardGalleryClick}>
             <Pagination
               currentPage={currentPage}
               numberOfPages={totalRepoCount / 5}

@@ -1,5 +1,6 @@
 .card {
-  background-color: bisque;
+  width: 420px;
+  background-color: white;
   margin: 20px 0px 20px 0px;
   padding: 20px;
   border: 1px solid transparent;
@@ -8,8 +9,8 @@
 
 .card:hover {
   cursor: pointer;
-  transition: transform 1s;
-  border: 1px solid #333333;
+  transition: all 0.25s;
+  border: 1px solid gray;
   border-radius: 5px;
 }
 

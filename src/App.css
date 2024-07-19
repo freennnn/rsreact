@@ -1,7 +1,6 @@
 #root {
   max-width: 1456px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
@@ -10,7 +9,7 @@
   margin: 0 auto;
   padding-left: 15px;
   padding-right: 15px;
-  background-color: beige;
+  background-color: #F7F8FA;
 }
 
 .logo {
