@@ -38,6 +38,7 @@ export default function GalleryPage() {
   const [searchParams, setSearchParams] = useSearchParams()
 
   useEffect(() => {
+    Log('GalleryPage, fetchRepositories useEffect triggered')
     const fetchRepositories = async (searchTerm: string, page: number) => {
       setIsLoading(true)
       setSearchParams(`search=${searchTerm}&page=${page}`)
@@ -77,8 +78,8 @@ export default function GalleryPage() {
     setCurrentPage(newPage)
   }
 
-  Log(`GalleryPage rendering:`)
-  repositories?.forEach((item) => Log(item.name + item.language))
+  Log(`GalleryPage render`)
+  // repositories?.forEach((item) => Log(item.name + item.language))
 
   return (
     <ErrorBoundary>
