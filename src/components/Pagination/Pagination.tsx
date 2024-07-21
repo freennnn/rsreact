@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import './Pagination.css'
 
 interface PaginationProps {
@@ -9,29 +7,25 @@ interface PaginationProps {
 }
 
 export function Pagination(props: PaginationProps) {
-  const [currentPage, setCurrentPage] = useState(props.currentPage)
-
   const leftPageExist = () => {
-    if (currentPage > 1) {
+    if (props.currentPage > 1) {
       return true
     }
     return false
   }
   const rightPageExist = () => {
-    if (currentPage < props.numberOfPages) {
+    if (props.currentPage < props.numberOfPages) {
       return true
     }
     return false
   }
 
   const leftClicked = () => {
-    setCurrentPage(currentPage - 1)
-    props.onPageChange(currentPage - 1)
+    props.onPageChange(props.currentPage - 1)
   }
 
   const rightClicked = () => {
-    setCurrentPage(currentPage + 1)
-    props.onPageChange(currentPage + 1)
+    props.onPageChange(props.currentPage + 1)
   }
 
   return (
@@ -40,7 +34,7 @@ export function Pagination(props: PaginationProps) {
         {'<'}
       </button>
       <button className='pagination__button' disabled={true}>
-        {currentPage}
+        {props.currentPage}
       </button>
       <button className='pagination__button' disabled={!rightPageExist()} onClick={rightClicked}>
         {'>'}

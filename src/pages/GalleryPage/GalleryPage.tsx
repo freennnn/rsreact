@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+
+import { useWhatChanged } from '@simbathesailor/use-what-changed'
 
 import { Card } from '../../components/Card/Card'
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary'
@@ -33,16 +35,21 @@ export default function GalleryPage() {
   const [isLoading, setIsLoading] = useState(false)
   const { searchTerm, setSearchTerm } = useSyncSearchTermWithLocalStorage()
   const [currentPage, setCurrentPage] = useState(1)
+  // React Router hooks:
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
 
+  useWhatChanged([searchTerm, currentPage], 'searchTerm', 'currentPage') // debugs the below useEffect
+
   useEffect(() => {
     Log('GalleryPage, fetchRepositories useEffect triggered')
     const fetchRepositories = async (searchTerm: string, page: number) => {
+      Log('--- fetchRepositories called ---')
       setIsLoading(true)
       setSearchParams(`search=${searchTerm}&page=${page}`)
       try {
+        Log('-- getRepositores called and awaited --')
         const results = await getRepositores(searchTerm, page)
         Log(results)
         setRepositories(results.items as Array<Repository>)
@@ -54,12 +61,19 @@ export default function GalleryPage() {
       }
     }
     fetchRepositories(searchTerm ? searchTerm : '', currentPage)
-  }, [searchTerm, currentPage, setSearchParams])
+    // adding setSearchParams function to dependecy list leads to useEffect() double
+    // firing. That's because setSearchParams() function is not stable; it's considered
+    // a known bug of React Router
+  }, [searchTerm, currentPage])
 
-  const onSearchButtonClick = (newSearchTerm: string) => {
-    Log(`onSearchButton click in GalleryPage with new search Term: ${newSearchTerm}`)
-    setSearchTerm(newSearchTerm)
-  }
+  const onSearchButtonClick = useCallback(
+    (newSearchTerm: string) => {
+      Log(`onSearchButton click in GalleryPage with new search Term: ${newSearchTerm}`)
+      setSearchTerm(newSearchTerm)
+      setCurrentPage(1)
+    },
+    [setSearchTerm],
+  )
 
   const onCardClick = (owner: string, name: string) => {
     Log(`onCardClick`)
