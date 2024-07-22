@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { Loader } from '../../components/Loader/Loader'
+import { useCSSThemePostfix } from '../../hooks/useCSSThemePostfix'
 import { Repository } from '../../pages/GalleryPage/GalleryPage'
 import { getRepository } from '../../services/api'
 import { Log, LogError } from '../../utils/utils'
@@ -16,6 +17,7 @@ export default function CardDetails() {
   const onCloseButtonClick = () => {
     navigate('/')
   }
+  const { classNames } = useCSSThemePostfix()
 
   useEffect(() => {
     const fetchRepository = async (owner: string, name: string) => {
@@ -50,7 +52,9 @@ export default function CardDetails() {
         <h3 className='card-details__name'>{`Owner:${repo?.owner?.login}`}</h3>
         <h3>Stars: {repo?.stargazers_count}</h3>
         <h3>Forks: {repo?.forks_count}</h3>
-        <button onClick={onCloseButtonClick}>Close details</button>
+        <button className={classNames('')} onClick={onCloseButtonClick}>
+          Close details
+        </button>
       </div>
     )
   }

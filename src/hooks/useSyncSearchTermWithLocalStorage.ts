@@ -6,18 +6,17 @@ const LS_SEARCH_TERM_KEY = 'SavedSearchTerm'
 
 export const useSyncSearchTermWithLocalStorage = () => {
   const storedValue = localStorage.getItem(LS_SEARCH_TERM_KEY)
-
   const [searchTerm, setSearchTerm] = useState(storedValue ? storedValue : '')
 
   const searchTermSetDuringStateInit = useRef(true)
 
-  // one useEffect hook for saving to LocalStorage - runs everytime
-  // `searchTerm` state changes (depends on reactive state `searchTerm`):
+  // one useEffect hook for saving to LocalStorage - runs everytime `searchTerm`
+  // state changes:
   useEffect(() => {
     // important detail: we initialize searchTerm with value from LocalStorage
-    // that's why we don't need to run this hook first time (skip circular saving to LocalStorage)
+    // that's why we don't need to run this hook the very first time (skip circular saving to LocalStorage)
     if (searchTermSetDuringStateInit.current) {
-      Log(`skipping first searchTerm change, as it was done in state initialization stage`)
+      // Log(`skipping first searchTerm change, as it was done in state initialization stage`)
       searchTermSetDuringStateInit.current = false
       return
     }
@@ -26,6 +25,7 @@ export const useSyncSearchTermWithLocalStorage = () => {
     localStorage.setItem(LS_SEARCH_TERM_KEY, searchTerm)
   }, [searchTerm])
 
+  /*  
   // another useEffect hook for reading/saving searchTerm from/to LocalStorage
   // runs only on onMount/onUnmount
   useEffect(() => {
@@ -42,6 +42,6 @@ export const useSyncSearchTermWithLocalStorage = () => {
       Log('onUnmount callback')
     }
   }, [])
-
+  */
   return { searchTerm, setSearchTerm }
 }

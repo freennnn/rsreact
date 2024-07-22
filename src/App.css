@@ -5,11 +5,32 @@
 }
 
 .container {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  color: #213547;
+  background-color: #ffffff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
   max-width: 1456px;
   margin: 0 auto;
   padding-left: 15px;
   padding-right: 15px;
   background-color: #F7F8FA;
+
+}
+
+.container.dark {
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #000408;
 }
 
 .logo {

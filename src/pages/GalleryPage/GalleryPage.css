@@ -2,7 +2,6 @@
   min-width: 800px;
 }
 
-
 .cards-and-details {
   display: flex;
   flex-direction: row;
@@ -24,4 +23,8 @@
 .card-gallery:not(:has(.card:hover)):hover {
   transition: all 0.25s;
   border: 1px solid black;
+}
+
+.card-gallery.dark:not(:has(.card:hover)):hover {
+  border: 1px solid gray;
 }

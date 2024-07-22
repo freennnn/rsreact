@@ -1,3 +1,4 @@
+import { useCSSThemePostfix } from '../../hooks/useCSSThemePostfix'
 import { Repository } from '../../pages/GalleryPage/GalleryPage'
 import './Card.css'
 
@@ -7,9 +8,10 @@ interface CardProps {
 }
 
 export function Card(props: CardProps) {
+  const { classNames } = useCSSThemePostfix()
   return (
     <div
-      className='card'
+      className={classNames('card')}
       onClick={(e: React.MouseEvent) => {
         console.log('-- card clicked ---')
         e.stopPropagation()

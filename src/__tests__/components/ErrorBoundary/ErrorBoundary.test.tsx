@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 
-import { ErrorBoundary } from '../../../components/ErrorBoundary/ErrorBoundary'
+import { ErrorBoundaryWithCSSThemePostfixHook } from '../../../components/ErrorBoundary/ErrorBoundaryWithCSSThemePostfixHook'
 
 describe('MyErrorBoundary', () => {
   // A very buggy component
@@ -10,19 +10,19 @@ describe('MyErrorBoundary', () => {
 
   it('renders children when everything is fine', async () => {
     render(
-      <ErrorBoundary>
+      <ErrorBoundaryWithCSSThemePostfixHook>
         <p>Everything is fine</p>
-      </ErrorBoundary>,
+      </ErrorBoundaryWithCSSThemePostfixHook>,
     )
     expect(screen.getByText(/Everything is fine/)).toBeInTheDocument()
   })
 
   it('shows an apologetic error message when an unhandled exception is thrown', () => {
     render(
-      <ErrorBoundary>
+      <ErrorBoundaryWithCSSThemePostfixHook>
         <ThrowError />
         <p>Everything is fine</p>
-      </ErrorBoundary>,
+      </ErrorBoundaryWithCSSThemePostfixHook>,
     )
 
     expect(screen.queryByText(/Everything is fine/)).not.toBeInTheDocument()

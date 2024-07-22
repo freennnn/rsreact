@@ -1,20 +1,3 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  /* color: rgba(255, 255, 255, 0.87);
-  background-color: #242424; */
-  color: #213547;
-  background-color: #ffffff;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 a {
   font-weight: 500;
   color: #646cff;
@@ -48,13 +31,28 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
+button.dark {
+  background-color: #000401;
+  border: 1px solid gray;
+
+}
+
 button:hover {
   background-color: rgba(233, 232, 232, 0.689)
 }
-button:disabled {
-  border-color: gray;
-  background-color: #f9f9f9;
+button.dark:hover {
+  background-color: #121a19
 
+}
+button:disabled {
+  cursor: default;
+  border-color: #f9f9f9;
+  background-color: #f9f9f9;
+}
+button.dark:disabled {
+  border-color: black;
+  background-color: black;
 }
 button:focus,
 button:focus-visible {

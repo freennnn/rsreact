@@ -1,3 +1,4 @@
+import { useCSSThemePostfix } from '../../hooks/useCSSThemePostfix'
 import './Pagination.css'
 
 interface PaginationProps {
@@ -7,6 +8,7 @@ interface PaginationProps {
 }
 
 export function Pagination(props: PaginationProps) {
+  const { classNames } = useCSSThemePostfix()
   const leftPageExist = () => {
     if (props.currentPage > 1) {
       return true
@@ -30,13 +32,21 @@ export function Pagination(props: PaginationProps) {
 
   return (
     <div className='pagination' onClick={(e) => e.stopPropagation()}>
-      <button className='pagination__button' disabled={!leftPageExist()} onClick={leftClicked}>
+      <button
+        className={classNames('pagination__button')}
+        disabled={!leftPageExist()}
+        onClick={leftClicked}
+      >
         {'<'}
       </button>
-      <button className='pagination__button' disabled={true}>
+      <button className={classNames('pagination__button')} disabled={true}>
         {props.currentPage}
       </button>
-      <button className='pagination__button' disabled={!rightPageExist()} onClick={rightClicked}>
+      <button
+        className={classNames('pagination__button')}
+        disabled={!rightPageExist()}
+        onClick={rightClicked}
+      >
         {'>'}
       </button>
     </div>
