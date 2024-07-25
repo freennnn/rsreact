@@ -1,8 +1,10 @@
+import { Provider } from 'react-redux'
 import { BrowserRouter, Params } from 'react-router-dom'
 
 import { render, screen } from '@testing-library/react'
 import { HttpResponse, http } from 'msw'
 
+import { store } from '../../state/store'
 import CardDetails from '../../views/CardDetails/CardDetails'
 import server from '../mock-api-server'
 
@@ -136,9 +138,12 @@ beforeEach(() => {
 
 it('renders CardDetails with mocked JSON', async () => {
   render(
-    <BrowserRouter>
-      <CardDetails />
-    </BrowserRouter>,
+    <Provider store={store}>
+      <BrowserRouter>
+        <CardDetails />
+      </BrowserRouter>
+      ,
+    </Provider>,
   )
 
   expect(await screen.findByText(/duxianwei520/)).toBeInTheDocument()

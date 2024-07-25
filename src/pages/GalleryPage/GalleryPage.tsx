@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 //import { useWhatChanged } from '@simbathesailor/use-what-changed'
@@ -13,15 +14,19 @@ import { useSyncSearchTermWithLocalStorage } from '../../hooks/useSyncSearchTerm
 import { githubApi } from '../../services/githubApi'
 import { Log, LogError } from '../../utils/utils'
 import './GalleryPage.css'
+import { selectPageNumber, setPage } from './pageNumberSlice'
 
 export default function GalleryPage() {
   const { searchTerm, setSearchTerm } = useSyncSearchTermWithLocalStorage()
-  const [currentPage, setCurrentPage] = useState(1)
+  //const [currentPage, setCurrentPage] = useState(1)
   // React Router hooks:
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
-  // RTK api data
+  // Redux toolkit state
+  const currentPage = useSelector(selectPageNumber)
+  const dispatch = useDispatch()
+  // RTK query api data
   const { data, error, isLoading } = githubApi.useGetRepositoriesQuery({
     searchTerm,
     pageNumber: currentPage,
@@ -36,7 +41,8 @@ export default function GalleryPage() {
   const onSearchButtonClick = (newSearchTerm: string) => {
     Log(`onSearchButton click in GalleryPage with new search Term: ${newSearchTerm}`)
     setSearchTerm(newSearchTerm)
-    setCurrentPage(1)
+    dispatch(setPage(1))
+    //setCurrentPage(1)
     //setSearchParams(`search=${newSearchTerm}&page=${currentPage}`)
   }
 
@@ -54,7 +60,8 @@ export default function GalleryPage() {
   }
 
   const onPageChange = (newPage: number) => {
-    setCurrentPage(newPage)
+    dispatch(setPage(newPage))
+    //setCurrentPage(newPage)
     //setSearchParams(`search=${searchTerm}&page=${newPage}`)
   }
 
