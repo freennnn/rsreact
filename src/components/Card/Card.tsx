@@ -1,5 +1,5 @@
-import { useCSSThemePostfix } from '../../hooks/useCSSThemePostfix'
-import { Repository } from '../../pages/GalleryPage/GalleryPage'
+import { useCSSThemeClass } from '../../hooks/useCSSThemeClass'
+import { Repository } from '../../services/types'
 import './Card.css'
 
 interface CardProps {
@@ -8,7 +8,7 @@ interface CardProps {
 }
 
 export function Card(props: CardProps) {
-  const { classNames } = useCSSThemePostfix()
+  const { classNames } = useCSSThemeClass()
   return (
     <div
       className={classNames('card')}

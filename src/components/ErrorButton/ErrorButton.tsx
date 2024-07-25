@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { useCSSThemePostfix } from '../../hooks/useCSSThemePostfix'
+import { useCSSThemeClass } from '../../hooks/useCSSThemeClass'
 import './ErrorButton.css'
 
 interface ErrorButtonProps {
@@ -8,7 +8,7 @@ interface ErrorButtonProps {
 }
 export function ErrorButton(props: ErrorButtonProps) {
   const [shouldProduceErrorInRender, setShouldProduceErrorInRender] = useState(false)
-  const { classNames } = useCSSThemePostfix()
+  const { classNames } = useCSSThemeClass()
 
   const onButtonClick = () => {
     setShouldProduceErrorInRender(!shouldProduceErrorInRender)

@@ -1,4 +1,4 @@
-import { useCSSThemePostfix } from '../../hooks/useCSSThemePostfix'
+import { useCSSThemeClass } from '../../hooks/useCSSThemeClass'
 import './Pagination.css'
 
 interface PaginationProps {
@@ -8,7 +8,7 @@ interface PaginationProps {
 }
 
 export function Pagination(props: PaginationProps) {
-  const { classNames } = useCSSThemePostfix()
+  const { classNames } = useCSSThemeClass()
   const leftPageExist = () => {
     if (props.currentPage > 1) {
       return true

@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { useCSSThemePostfix } from '../../hooks/useCSSThemePostfix'
+import { useCSSThemeClass } from '../../hooks/useCSSThemeClass'
 import { ErrorBoundary } from './ErrorBoundary'
 
 //High order component to enable useCSSTheme custom hook in class ErrorBoundary component
-export function ErrorBoundaryWithCSSThemePostfixHook(props: { children: React.ReactNode }) {
-  const { classNames } = useCSSThemePostfix()
+export function ErrorBoundaryWithCSSThemeClassHook(props: { children: React.ReactNode }) {
+  const { classNames } = useCSSThemeClass()
   return <ErrorBoundary {...props} myCSSHookFunction={classNames} />
 }
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { useCSSThemePostfix } from '../../hooks/useCSSThemePostfix'
+import { useCSSThemeClass } from '../../hooks/useCSSThemeClass'
 import { Log } from '../../utils/utils'
 import { ErrorButton } from '../ErrorButton/ErrorButton'
 import './Search.css'
@@ -30,7 +30,7 @@ export function Search(props: SearchProps) {
     props.onSearchButtonClick(enteredSearchTerm)
   }
 
-  const { classNames } = useCSSThemePostfix()
+  const { classNames } = useCSSThemeClass()
   //Log('Search re-render')
   return (
     <form onSubmit={onSubmit} className='search-form'>
