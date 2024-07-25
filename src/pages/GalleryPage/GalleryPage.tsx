@@ -15,6 +15,7 @@ import { githubApi } from '../../services/githubApi'
 import { Log, LogError } from '../../utils/utils'
 import './GalleryPage.css'
 import { selectPageNumber, setPage } from './pageNumberSlice'
+import { addId, removeId, selectSelectedIds } from './selectedItemsSlice'
 
 export default function GalleryPage() {
   const { searchTerm, setSearchTerm } = useSyncSearchTermWithLocalStorage()
@@ -25,6 +26,8 @@ export default function GalleryPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   // Redux toolkit state
   const currentPage = useSelector(selectPageNumber)
+  const selectedCardIds = useSelector(selectSelectedIds)
+
   const dispatch = useDispatch()
   // RTK query api data
   const { data, error, isLoading } = githubApi.useGetRepositoriesQuery({
@@ -49,6 +52,15 @@ export default function GalleryPage() {
   const onCardClick = (owner: string, name: string) => {
     Log(`onCardClick`)
     navigate(`/repo/${owner}/${name}/?${searchParams}`)
+  }
+
+  const onSelectCardToggle = (wasSelected: boolean, id: number) => {
+    Log(`onSelectCardToggle`)
+    if (wasSelected) {
+      dispatch(removeId(id))
+    } else {
+      dispatch(addId(id))
+    }
   }
 
   const onCardGalleryClick = () => {
@@ -89,7 +101,13 @@ export default function GalleryPage() {
               <Loader></Loader>
             ) : data ? (
               data.items.map((item) => (
-                <Card repository={item} key={item.id} onClick={onCardClick}></Card>
+                <Card
+                  repository={item}
+                  key={item.id}
+                  selected={selectedCardIds.includes(item.id)}
+                  onClick={onCardClick}
+                  onSelectToggle={onSelectCardToggle}
+                ></Card>
               ))
             ) : (
               <p>Gallery have no repositories loaded</p>

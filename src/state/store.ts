@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import pageNumberReducer from '../pages/GalleryPage/pageNumberSlice'
+import selectedItemsReducer from '../pages/GalleryPage/selectedItemsSlice'
 import { githubApi } from '../services/githubApi'
 
 export const store = configureStore({
   reducer: {
     [githubApi.reducerPath]: githubApi.reducer,
     pageNumber: pageNumberReducer,
+    selectedItems: selectedItemsReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(githubApi.middleware),
 })
