@@ -14,8 +14,12 @@ export function FlyOut(props: FlyOutProps) {
       <p className={classNames('flyout__text')}>
         {props.numberOfItems} items {props.numberOfItems > 1 ? 'are' : 'is'} selected
       </p>
-      <button className={classNames('flyout__button')}>Unselect all</button>
-      <button className={classNames('flyout__button')}>Donwload all</button>
+      <button className={classNames('flyout__button')} onClick={props.onUnselectAllClick}>
+        Unselect all
+      </button>
+      <button className={classNames('flyout__button')} onClick={props.onDownloadClick}>
+        Download all
+      </button>
     </div>
   )
 }

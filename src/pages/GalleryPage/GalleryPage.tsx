@@ -13,10 +13,17 @@ import { ThemeToggle } from '../../components/ThemeToggle/ThemeToggle'
 import { useCSSThemeClass } from '../../hooks/useCSSThemeClass'
 import { useSyncSearchTermWithLocalStorage } from '../../hooks/useSyncSearchTermWithLocalStorage'
 import { githubApi } from '../../services/githubApi'
+import { Repository } from '../../services/types'
 import { Log, LogError } from '../../utils/utils'
 import './GalleryPage.css'
 import { selectPageNumber, setPage } from './pageNumberSlice'
-import { addId, removeId, selectSelectedIds } from './selectedItemsSlice'
+import {
+  addRepository,
+  removeAllRepositories,
+  removeRepository,
+  selectSelectedIds,
+  selectSelectedRepositores,
+} from './selectedItemsSlice'
 
 export default function GalleryPage() {
   const { searchTerm, setSearchTerm } = useSyncSearchTermWithLocalStorage()
@@ -28,6 +35,7 @@ export default function GalleryPage() {
   // Redux toolkit state
   const currentPage = useSelector(selectPageNumber)
   const selectedCardIds = useSelector(selectSelectedIds)
+  const selectedRepositores = useSelector(selectSelectedRepositores)
 
   const dispatch = useDispatch()
   // RTK query api data
@@ -55,12 +63,12 @@ export default function GalleryPage() {
     navigate(`/repo/${owner}/${name}/?${searchParams}`)
   }
 
-  const onSelectCardToggle = (wasSelected: boolean, id: number) => {
+  const onSelectCardToggle = (wasSelected: boolean, repository: Repository) => {
     Log(`onSelectCardToggle`)
     if (wasSelected) {
-      dispatch(removeId(id))
+      dispatch(removeRepository(repository))
     } else {
-      dispatch(addId(id))
+      dispatch(addRepository(repository))
     }
   }
 
@@ -80,10 +88,29 @@ export default function GalleryPage() {
 
   // FlyOut callbacks
   const onUnselectAllInFlyoutClick = () => {
-    Log('unselect all')
+    dispatch(removeAllRepositories())
   }
 
   const onDownloadInFlyoutClick = () => {
+    //Log(selectedRepositores)
+    const csvReposData = selectedRepositores.map((item) => [
+      item.name,
+      item.owner.login,
+      item.stargazers_count,
+      item.description,
+    ])
+    const formattedData = [['name', 'owner', 'stars', 'description'], ...csvReposData]
+    let csvString = ''
+    formattedData.forEach((row) => {
+      csvString += row.join(',') + '\n'
+    })
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8,' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${selectedRepositores.length}_repositories.csv`
+    link.click()
+
     Log('downloading repos to csv')
   }
 

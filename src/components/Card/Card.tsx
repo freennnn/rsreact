@@ -6,7 +6,7 @@ interface CardProps {
   repository: Repository
   selected: boolean
   onClick: (owner: string, name: string) => void
-  onSelectToggle: (wasSelected: boolean, id: number) => void
+  onSelectToggle: (wasSelected: boolean, repository: Repository) => void
 }
 
 export function Card(props: CardProps) {
@@ -27,7 +27,7 @@ export function Card(props: CardProps) {
           onChange={(e: React.ChangeEvent) => {
             console.log('checkbox on change')
             e.stopPropagation()
-            props.onSelectToggle(props.selected, props.repository.id)
+            props.onSelectToggle(props.selected, props.repository)
           }}
           // stop propgataion 'click' event to prevent Card gallery item from clicking
           onClick={(e) => e.stopPropagation()}
