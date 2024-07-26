@@ -14,13 +14,15 @@ export function App() {
   const { classNames } = useCSSThemeClass()
 
   return (
-    <div className={classNames('container')}>
-      <Routes>
-        <Route path='/' element={<GalleryPage />}>
-          <Route path='/repo/:owner/:name' element={<CardDetails></CardDetails>} />
-        </Route>
-        <Route path='*' element={<NotFoundPage />} />
-      </Routes>
+    <div className={classNames('window-background')}>
+      <div className={classNames('container')}>
+        <Routes>
+          <Route path='/' element={<GalleryPage />}>
+            <Route path='/repo/:owner/:name' element={<CardDetails></CardDetails>} />
+          </Route>
+          <Route path='*' element={<NotFoundPage />} />
+        </Routes>
+      </div>
     </div>
   )
 }

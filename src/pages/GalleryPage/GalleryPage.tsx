@@ -5,6 +5,7 @@ import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-
 //import { useWhatChanged } from '@simbathesailor/use-what-changed'
 import { Card } from '../../components/Card/Card'
 import { ErrorBoundaryWithCSSThemeClassHook } from '../../components/ErrorBoundary/ErrorBoundaryWithCSSThemeClassHook'
+import { FlyOut } from '../../components/FlyOut/FlyOut'
 import { Loader } from '../../components/Loader/Loader'
 import { Pagination } from '../../components/Pagination/Pagination'
 import { Search } from '../../components/Search/Search'
@@ -77,6 +78,15 @@ export default function GalleryPage() {
     //setSearchParams(`search=${searchTerm}&page=${newPage}`)
   }
 
+  // FlyOut callbacks
+  const onUnselectAllInFlyoutClick = () => {
+    Log('unselect all')
+  }
+
+  const onDownloadInFlyoutClick = () => {
+    Log('downloading repos to csv')
+  }
+
   Log(`GalleryPage render`)
   if (error) {
     LogError(error)
@@ -90,6 +100,7 @@ export default function GalleryPage() {
           searchTerm={searchTerm ? searchTerm : undefined}
           onSearchButtonClick={onSearchButtonClick}
         ></Search>
+
         <div className='cards-and-details'>
           <div className={classNames('card-gallery')} onClick={onCardGalleryClick}>
             <Pagination
@@ -115,6 +126,13 @@ export default function GalleryPage() {
           </div>
           <Outlet></Outlet>
         </div>
+        {selectedCardIds.length > 0 && (
+          <FlyOut
+            numberOfItems={selectedCardIds.length}
+            onDownloadClick={onDownloadInFlyoutClick}
+            onUnselectAllClick={onUnselectAllInFlyoutClick}
+          ></FlyOut>
+        )}
       </div>
     </ErrorBoundaryWithCSSThemeClassHook>
   )

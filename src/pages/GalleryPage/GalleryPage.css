@@ -1,12 +1,19 @@
 .gallery-page {
   min-width: 800px;
+  display:flex;
+  flex-direction: column;
+}
+
+.gallery-page.dark{
+  background-color:#161b22ec
+
 }
 
 .cards-and-details {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  min-height: 100vh;
+
 }
 
 .card-gallery {
@@ -17,7 +24,7 @@
   border: 1px solid transparent;
   border-radius: 5px;
   min-width: 50%;
-  min-height: 100%;
+
 }
 
 .card-gallery:not(:has(.card:hover)):hover {
