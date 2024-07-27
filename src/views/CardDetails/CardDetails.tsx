@@ -8,13 +8,13 @@ import './CardDetails.css'
 export default function CardDetails() {
   const { owner = 'facebook', name = 'react' } = useParams()
   const [searchParams] = useSearchParams()
-  const { data, error, isLoading } = githubApi.useGetRepositoryQuery({ name, owner })
+  const { data, error, isLoading, isFetching } = githubApi.useGetRepositoryQuery({ name, owner })
   const navigate = useNavigate()
   const { classNames } = useCSSThemeClass()
   const onCloseButtonClick = () => {
     navigate(`/?${searchParams}`)
   }
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div className='card-details'>
         <Loader></Loader>

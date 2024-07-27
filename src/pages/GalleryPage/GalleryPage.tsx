@@ -39,7 +39,7 @@ export default function GalleryPage() {
 
   const dispatch = useDispatch()
   // RTK query api data
-  const { data, error, isLoading } = githubApi.useGetRepositoriesQuery({
+  const { data, error, isLoading, isFetching } = githubApi.useGetRepositoriesQuery({
     searchTerm,
     pageNumber: currentPage,
   })
@@ -135,7 +135,7 @@ export default function GalleryPage() {
               numberOfPages={data ? data.total_count / 5 : 1}
               onPageChange={onPageChange}
             ></Pagination>
-            {isLoading ? (
+            {isLoading || isFetching ? (
               <Loader></Loader>
             ) : data ? (
               data.items.map((item) => (
