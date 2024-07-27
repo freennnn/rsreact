@@ -7,6 +7,14 @@ describe('MyErrorBoundary', () => {
   const ThrowError = () => {
     throw new Error('Test')
   }
+  const consoleMock = vi
+    .spyOn(console, 'error')
+    .mockImplementation(() =>
+      console.log('Error happened, but we made sdtout/stder cleaner by mocking'),
+    )
+  afterAll(() => {
+    consoleMock.mockReset()
+  })
 
   it('renders children when everything is fine', async () => {
     render(
