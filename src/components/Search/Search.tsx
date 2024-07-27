@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import { useCSSThemeClass } from '../../hooks/useCSSThemeClass'
 import { Log } from '../../utils/utils'
 import { ErrorButton } from '../ErrorButton/ErrorButton'
 import './Search.css'
@@ -29,7 +30,8 @@ export function Search(props: SearchProps) {
     props.onSearchButtonClick(enteredSearchTerm)
   }
 
-  Log('Search re-render')
+  const { classNames } = useCSSThemeClass()
+  //Log('Search re-render')
   return (
     <form onSubmit={onSubmit} className='search-form'>
       <input
@@ -39,7 +41,7 @@ export function Search(props: SearchProps) {
         onChange={onSearchInputChange}
         value={enteredSearchTerm}
       ></input>
-      <button type='submit' className='search-button'>
+      <button type='submit' className={classNames('search-button')}>
         Search
       </button>
       <ErrorButton>Generate Error</ErrorButton>

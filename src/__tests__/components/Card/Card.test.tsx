@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 
 import { Card } from '../../../components/Card/Card'
-import { Repository } from '../../../pages/GalleryPage/GalleryPage'
+import { Repository } from '../../../services/types'
 
 const repository: Repository = {
   id: 1,

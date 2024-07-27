@@ -1,9 +1,14 @@
-import { HttpResponse, http } from 'msw'
-import { describe, expect, it } from 'vitest'
+import { MemoryRouter } from 'react-router-dom'
 
-import { getRepositores } from '../../services/api'
-import { RepositoriesSearchResult } from '../../services/types'
+import { fireEvent, screen } from '@testing-library/react'
+import { act, renderHook } from '@testing-library/react'
+import { HttpResponse, http } from 'msw'
+
+import { useSyncSearchTermWithLocalStorage } from '../../hooks/useSyncSearchTermWithLocalStorage'
+import GalleryPage from '../../pages/GalleryPage/GalleryPage'
 import server from '../mock-api-server'
+// We're using our own custom render function and not RTL's render.
+import { renderWithProviders } from '../test-utils/test-utils'
 
 beforeEach(() => {
   server.use(
@@ -619,25 +624,55 @@ beforeEach(() => {
   )
 })
 
-describe('getRepositores', () => {
-  it('msw should intercept that', async () => {
-    const repositoriesResponse: RepositoriesSearchResult = await getRepositores('react', 1)
-    expect(repositoriesResponse.items.length).toBe(5)
-  })
-})
+test('fetches & receives a repositories search after clicking the search user button', async () => {
+  const { result } = renderHook(() => useSyncSearchTermWithLocalStorage())
 
-describe('test code', () => {
-  it('3 + 5 should be 8', () => {
-    expect(3 + 5).toBe(8)
-  })
-})
-
-describe('something truthy and falsy', () => {
-  it('true to be true', () => {
-    expect(true).toBe(true)
+  act(() => {
+    result.current.setSearchTerm('react')
   })
 
-  it('false to be false', () => {
-    expect(false).toBe(false)
-  })
+  renderWithProviders(
+    <MemoryRouter>
+      <GalleryPage />
+    </MemoryRouter>,
+    {
+      preloadedState: {
+        pageNumber: {
+          value: 1,
+        },
+        selectedItems: {
+          selectedRepositores: [
+            {
+              id: 75396575,
+              name: 'react',
+              owner: {
+                login: 'duxianwei520',
+                avatar_url: 'https://avatars.githubusercontent.com/u/3249653?v=4',
+                type: 'User',
+              },
+              description: ' React+webpack+redux+ant design+axios+less全家桶后台管理框架',
+              stargazers_count: 5008,
+              language: 'JavaScript',
+              forks_count: 1746,
+              updated_at: '01/01/2024',
+              contributors_url: 'www.tochka.pl',
+            },
+          ],
+          selectedIds: [75396575],
+        },
+      },
+    },
+  )
+
+  fireEvent.click(screen.getByRole('button', { name: /Search/i }))
+  expect(
+    await screen.findByText(/The library for web and native user interfaces/),
+  ).toBeInTheDocument()
+
+  expect(await screen.findByText(/1 items is selected/)).toBeInTheDocument()
+  //fireEvent.click(screen.getByRole('button', { name: /Download all/i }))
+  fireEvent.click(screen.getByRole('button', { name: /Unselect all/i }))
+  expect(await screen.queryByText(/1 items is selected/i)).not.toBeInTheDocument()
+  fireEvent.click(screen.getByText(/The library for web and native user interfaces/))
+  //expect(await screen.queryByText(/Owner:fabebook/i)).toBeInTheDocument()
 })

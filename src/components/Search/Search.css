@@ -1,6 +1,5 @@
 .search-form {
   display: flex;
-  background-color: beige;
 }
 
 /* Style the search box inside the navigation bar */
@@ -10,7 +9,7 @@
   border: 1px;
   border-radius: 5px;
   border-color: black;
-  margin: 8px 20px 8px 20px;
+  margin: 8px 20px 8px 0px;
   font-size: 17px; 
 }
 

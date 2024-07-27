@@ -1,19 +1,22 @@
 import React from 'react'
 
-import { LogError } from '../../utils/utils'
+// import { LogError } from '../../utils/utils'
 
-export class ErrorBoundary extends React.Component<{ children: React.ReactNode }> {
+export class ErrorBoundary extends React.Component<{
+  children: React.ReactNode
+  myCSSHookFunction: (className: string) => string
+}> {
   state = { hasError: false }
 
   resetErrorBoundary = () => {
     this.setState({ hasError: false })
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+  componentDidCatch(/*error: Error, errorInfo: React.ErrorInfo*/): void {
     // same error as in getDerivedStateFromError, yet method is called at completely
     // different lifecycle stage
-    LogError(error.message)
-    LogError(errorInfo.componentStack)
+    //LogError(error.message)
+    //LogError(errorInfo.componentStack)
     //this.setState({ hasError: true })
   }
 
@@ -22,7 +25,9 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
       return (
         <div>
           <h1>Something went wrong!</h1>
-          <button onClick={this.resetErrorBoundary}>Reset</button>
+          <button onClick={this.resetErrorBoundary} className={this.props.myCSSHookFunction('')}>
+            Reset
+          </button>
         </div>
       )
     }
@@ -30,8 +35,8 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
     return this.props.children
   }
 
-  static getDerivedStateFromError(error: Error) {
-    LogError(error.message)
+  static getDerivedStateFromError(/*error: Error*/) {
+    //LogError(error.message)
     return { hasError: true }
   }
 }

@@ -1,20 +1,37 @@
-.cards__lower-block {
+.gallery-page {
+  min-width: 800px;
+  display:flex;
+  flex-direction: column;
+}
+
+.gallery-page.dark{
+  background-color:#161b22ec
+
+}
+
+.cards-and-details {
   display: flex;
   flex-direction: row;
+  justify-content: center;
+
 }
 
 .card-gallery {
-  max-width: 400px;
-
-}
-
-.cards__lower-block {
-  border: 2px solid transparent;
-}
-
-.cards__lower-block:hover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   cursor: pointer;
-  transition: all 1s;
-  border: 2px solid blue;
+  border: 1px solid transparent;
   border-radius: 5px;
+  min-width: 50%;
+
+}
+
+.card-gallery:not(:has(.card:hover)):hover {
+  transition: all 0.25s;
+  border: 1px solid black;
+}
+
+.card-gallery.dark:not(:has(.card:hover)):hover {
+  border: 1px solid gray;
 }
