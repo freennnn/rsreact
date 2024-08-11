@@ -7,7 +7,7 @@ const PATH_REPOS = '/repos'
 
 // github.api doesn't allow to fetch unspecified 'all'
 // repositories - so we fetch 'allitems' repos instead
-export async function getRepositores(searchTerm: string, pageNumber: number) {
+export async function getRepositores(searchTerm: string | undefined, pageNumber: number) {
   return fetch(
     `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm ? searchTerm : DEFAULT_SEARCH_QUERY}${PARAMS_ADDITIONAL}${pageNumber}`,
   ).then((response) => response.json())

@@ -14,18 +14,23 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "moduleDetection": "force",
+    "esModuleInterop": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-
+    "jsx": "preserve",
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "strictNullChecks": true,
-
-    "types": ["vitest/globals", "@testing-library/jest-dom"]
+    "types": ["vitest/globals", "@testing-library/jest-dom"],
+    "plugins": [{"name": "next"}]
 
   },
-  "include": ["src"]
+  "include": ["src", "./dist/types/**/*.ts", "./next-env.d.ts", "next",],
+  "exclude": ["./node_modules"]
 }
