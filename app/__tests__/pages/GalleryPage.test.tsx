@@ -5,12 +5,9 @@ import nextRouterMock from 'next-router-mock'
 import { MemoryRouterProvider } from 'next-router-mock/MemoryRouterProvider'
 
 import GalleryPage from '../../GalleryPageClient.tsx'
-//import GalleryPage from '../../../pages/index.tsx'
-// import AppThemeProvider from '../../../next/components/AppThemeProvider.tsx'
-// import GalleryView from '../../../next/components/GalleryView/GalleryView.tsx'
-import { RepositoriesSearchResult } from '../../data/types.ts'
+import { RepositoriesSearchResult, Repository } from '../../data/types.ts'
 import server from '../mock-api-server.ts'
-//import { repoDetails } from '../mock-data/repoDetails.ts'
+import { repoDetails } from '../mock-data/repoDetails.ts'
 import { repoSearchData } from '../mock-data/repoSearch.ts'
 
 vi.mock('next/router', () => nextRouterMock)
@@ -21,23 +18,10 @@ vi.mock('next/navigation', () => ({
     new URLSearchParams({ search: 'react', page: '1', owner: 'mockedOwner', name: 'mockedName' }),
 }))
 
-// vi.mock('next/navigation', () => {
-//   const useRouter = useMemoryRouter
-//   const useSearchParams = () => {
-//     const { router } = nextRouterMock
-//     return new URLSearchParams(router.query)
-//   }
-//   return {
-//     useRouter,
-//     useSearchParams,
-//   }
-// })
-
 beforeEach(() => {
   server.use(
     http.get(
       'https://api.github.com/search/repositories?q=react&sort=starts&per_page=5&page=1',
-      //'https://api.github.com/search/',
       () => {
         return HttpResponse.json(repoSearchData)
       },
@@ -65,7 +49,7 @@ test('galleryView render', async () => {
     <MemoryRouterProvider url={'/?search=react&page=1&owner=mockedOwner&name=mockedName'}>
       <GalleryPage
         repoSearch={repoSearchData as unknown as RepositoriesSearchResult}
-        repoDetails={undefined}
+        repoDetails={repoDetails as Repository}
       />
     </MemoryRouterProvider>,
   )
@@ -91,35 +75,3 @@ test('galleryView render', async () => {
   fireEvent.click(screen.getAllByRole('checkbox')[0])
   fireEvent.click(screen.getByRole('button', { name: /Search/i }))
 })
-
-//TODO: somewhy whole Page only renders empty body/div, not even layout, figure out if it's possible in future
-//<body>
-//  <div />
-//</body>
-/*
-test('renders GalleryPage with all components', async () => {
-  mockRouter.push('/?search=react&page=1&owner=mockedOwner&name=mockedName')
-  console.log(mockRouter.asPath)
-  render(
-    <MemoryRouterProvider url={'/?search=react&page=1&owner=mockedOwner&name=mockedName'}>
-      <GalleryPage
-        repoSearch={repoSearchData as unknown as RepositoriesSearchResult}
-        repoDetails={repoDetails as Repository}
-      />
-    </MemoryRouterProvider>,
-  )
-  screen.debug()
-
-  fireEvent.click(screen.getByRole('button', { name: /Search/i }))
-  expect(
-    await screen.findByText(/The library for web and native user interfaces/),
-  ).toBeInTheDocument()
-
-  expect(await screen.findByText(/1 items is selected/)).toBeInTheDocument()
-  //fireEvent.click(screen.getByRole('button', { name: /Download all/i }))
-  fireEvent.click(screen.getByRole('button', { name: /Unselect all/i }))
-  expect(await screen.queryByText(/1 items is selected/i)).not.toBeInTheDocument()
-  fireEvent.click(screen.getByText(/The library for web and native user interfaces/))
-  //expect(await screen.queryByText(/Owner:fabebook/i)).toBeInTheDocument()
-})
-*/
