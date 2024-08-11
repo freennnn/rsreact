@@ -3,11 +3,13 @@
 import React from 'react'
 
 import { getCookie } from 'cookies-next'
+import dynamic from 'next/dynamic'
 
-import AppThemeProvider from './components/AppThemeProvider'
 import GalleryView from './components/GalleryView/GalleryView'
 //import { Log, LogError } from '../next/utils/utils'
 import { RepositoriesSearchResult, Repository } from './data/types'
+
+const AppThemeProvider = dynamic(() => import('./components/AppThemeProvider'), { ssr: false })
 
 export default function GalleryPage({
   repoSearch,
