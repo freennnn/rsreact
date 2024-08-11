@@ -1,0 +1,17 @@
+.search-form {
+  display: flex;
+}
+
+.searchbar {
+  float: right;
+  padding: 6px;
+  border: 1px;
+  border-radius: 5px;
+  border-color: black;
+  margin: 8px 20px 8px 0px;
+  font-size: 17px; 
+}
+
+.search-button {
+  margin: 8px 0px;
+}
