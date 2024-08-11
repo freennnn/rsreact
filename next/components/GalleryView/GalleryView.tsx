@@ -6,7 +6,7 @@ import { useTheme } from 'next-themes'
 import { useRouter } from 'next/router'
 import { useLocalStorage } from 'usehooks-ts'
 
-import { RepositoriesSearchResult, Repository } from '../../../src/services/types'
+import { RepositoriesSearchResult, Repository } from '../../../next/data/types'
 import { useCssClassWithTheme } from '../../hooks/useCssClassWithTheme'
 import { Log } from '../../utils/utils'
 import { Card } from '../Card/Card'

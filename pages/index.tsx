@@ -8,8 +8,8 @@ import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import GalleryView from '../next/components/GalleryView/GalleryView'
 import Layout from '../next/components/layout'
 //import { Log, LogError } from '../next/utils/utils'
-import { getRepositores, getRepository } from '../src/services/api'
-import { RepositoriesSearchResult, Repository } from '../src/services/types'
+import { getRepositores, getRepository } from '../next/data/api'
+import { RepositoriesSearchResult, Repository } from '../next/data/types'
 
 export const getServerSideProps = (async (context) => {
   // Fetch data from external API

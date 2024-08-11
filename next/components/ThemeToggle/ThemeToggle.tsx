@@ -11,21 +11,8 @@ export function ThemeToggle() {
     } else {
       setTheme('dark')
     }
-
-    // setTheme((prevTheme) => {
-    //   console.log(prevTheme)
-    //   console.log(`toggleTheme with ${prevTheme}`)
-    //   if (prevTheme === 'light') {
-    //     return 'dark'
-    //   }
-    //   return 'light'
-    // })
   }
 
-  // const toggleTheme = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setTheme(e.target.value)
-  // }
-  console.log('ThemeToggle render')
   return (
     <div className='theme-toggle'>
       <label className='switch'>

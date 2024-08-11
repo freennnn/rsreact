@@ -1,4 +1,4 @@
-import { Repository } from '../../../src/services/types'
+import { Repository } from '../../../next/data/types'
 import { useCssClassWithTheme } from '../../hooks/useCssClassWithTheme'
 
 interface CardProps {
