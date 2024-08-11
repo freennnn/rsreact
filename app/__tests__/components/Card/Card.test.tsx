@@ -1,23 +1,10 @@
 import { render, screen } from '@testing-library/react'
 
-import { Card } from '../../components/Card/Card'
-import { Repository } from '../../data/types'
+import { Card } from '../../../components/Card/Card'
+import { Repository } from '../../../data/types'
+import { repoDetails } from '../../mock-data/repoDetails.ts'
 
-const repository: Repository = {
-  id: 1,
-  name: 'test repo',
-  description: 'test description',
-  language: 'ru',
-  stargazers_count: 1000,
-  forks_count: 999,
-  updated_at: '14-07-2024',
-  contributors_url: 'https://github.com/freennnn',
-  owner: {
-    login: 'freennnn',
-    avatar_url: 'some avatar url',
-    type: 'definitely cool type',
-  },
-}
+const repository = repoDetails as Repository
 
 const onClick = () => {
   console.log('you wanted onclick? I gave you onclick!')
@@ -39,7 +26,7 @@ describe('Card Component', () => {
     // const paragraphElement = screen.getByRole('paragraph')
     // const expectedText = 'test repo'
     // expect(paragraphElement).toHaveTextContent(expectedText)
-    expect(await screen.findByText(/test description/)).toBeInTheDocument()
-    expect(await screen.findByText(/test repo/)).toBeInTheDocument()
+    expect(await screen.findByText(/react/)).toBeInTheDocument()
+    expect(await screen.findByText(/webpack/)).toBeInTheDocument()
   })
 })

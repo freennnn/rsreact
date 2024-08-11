@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react'
 
 import { useTheme } from 'next-themes'
-import { useRouter } from 'next/router'
+import { ReadonlyURLSearchParams, useRouter, useSearchParams } from 'next/navigation'
 import { useLocalStorage } from 'usehooks-ts'
 
-import { RepositoriesSearchResult, Repository } from '../../../next/data/types'
+import { RepositoriesSearchResult, Repository } from '../../data/types'
 import { useCssClassWithTheme } from '../../hooks/useCssClassWithTheme'
 import { Log } from '../../utils/utils'
 import { Card } from '../Card/Card'
@@ -29,8 +29,9 @@ export default function GalleryView({
   const { theme } = useTheme()
   const { classNames } = useCssClassWithTheme()
   const router = useRouter()
-  const searchTerm = router.query.search as string | undefined
-  const currentPageNumber = router.query.page as number | undefined
+  const searchParams = useSearchParams() as ReadonlyURLSearchParams
+  const searchTerm = searchParams.get('search') as string | undefined
+  const currentPageNumber = searchParams.get('page') as unknown as number | undefined
 
   const initialValue: Array<Repository> = []
   const [selectedRepos, setSelectedRepos] = useLocalStorage('SELECTED_REPOS', initialValue, {
@@ -49,7 +50,8 @@ export default function GalleryView({
     }
   }
   const onCardGalleryClick = () => {
-    const owner = router.query.owner as string | undefined
+    //check if we have Details section opened (owner and name search params should be in URL)
+    const owner = searchParams.get('owner') as string | undefined
     if (owner) {
       const newUrl = `/?search=${searchTerm ? searchTerm : ''}&page=${currentPageNumber ? currentPageNumber : 1}`
       router.replace(newUrl)
@@ -71,8 +73,10 @@ export default function GalleryView({
   }
 
   const onPageChange = (newPage: number) => {
-    const repoDetailsOwnerPart = `${router.query.owner ? `&owner=${router.query.owner}` : ''}`
-    const repoDetailsNamePart = `${router.query.name ? `&name=${router.query.name}` : ''}`
+    const owner = searchParams.get('owner') as string | undefined
+    const name = searchParams.get('name') as string | undefined
+    const repoDetailsOwnerPart = `${owner ? `&owner=${owner}` : ''}`
+    const repoDetailsNamePart = `${name ? `&name=${name}` : ''}`
 
     const newUrl =
       `/?search=${searchTerm ? searchTerm : ''}&page=${newPage}` +

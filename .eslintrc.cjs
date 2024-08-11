@@ -18,7 +18,7 @@ module.exports = {
   ],
   rules: {
     'react-refresh/only-export-components': [
-      'warn',
+      'off',
       { allowConstantExport: true },
     ],
     'react-compiler/react-compiler': 'error',

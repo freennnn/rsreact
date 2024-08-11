@@ -1,18 +1,37 @@
 import { fireEvent, screen } from '@testing-library/react'
 import { render } from '@testing-library/react'
 import { HttpResponse, http } from 'msw'
-import mockRouter from 'next-router-mock'
+import nextRouterMock from 'next-router-mock'
 import { MemoryRouterProvider } from 'next-router-mock/MemoryRouterProvider'
 
+import GalleryPage from '../../GalleryPageClient.tsx'
 //import GalleryPage from '../../../pages/index.tsx'
-import AppThemeProvider from '../../components/AppThemeProvider.tsx'
-import GalleryView from '../../components/GalleryView/GalleryView.tsx'
+// import AppThemeProvider from '../../../next/components/AppThemeProvider.tsx'
+// import GalleryView from '../../../next/components/GalleryView/GalleryView.tsx'
 import { RepositoriesSearchResult } from '../../data/types.ts'
 import server from '../mock-api-server.ts'
 //import { repoDetails } from '../mock-data/repoDetails.ts'
 import { repoSearchData } from '../mock-data/repoSearch.ts'
 
-vi.mock('next/router', () => vi.importActual('next-router-mock'))
+vi.mock('next/router', () => nextRouterMock)
+
+vi.mock('next/navigation', () => ({
+  ...require('next-router-mock'),
+  useSearchParams: () =>
+    new URLSearchParams({ search: 'react', page: '1', owner: 'mockedOwner', name: 'mockedName' }),
+}))
+
+// vi.mock('next/navigation', () => {
+//   const useRouter = useMemoryRouter
+//   const useSearchParams = () => {
+//     const { router } = nextRouterMock
+//     return new URLSearchParams(router.query)
+//   }
+//   return {
+//     useRouter,
+//     useSearchParams,
+//   }
+// })
 
 beforeEach(() => {
   server.use(
@@ -40,17 +59,15 @@ beforeEach(() => {
 })
 
 test('galleryView render', async () => {
-  mockRouter.push('/?search=react&page=1&owner=mockedOwner&name=mockedName')
+  nextRouterMock.push('/?search=react&page=1&owner=mockedOwner&name=mockedName')
 
   render(
-    <AppThemeProvider>
-      <MemoryRouterProvider url={'/?search=react&page=1&owner=mockedOwner&name=mockedName'}>
-        <GalleryView
-          repoSearch={repoSearchData as unknown as RepositoriesSearchResult}
-          repoDetails={undefined}
-        />
-      </MemoryRouterProvider>
-    </AppThemeProvider>,
+    <MemoryRouterProvider url={'/?search=react&page=1&owner=mockedOwner&name=mockedName'}>
+      <GalleryPage
+        repoSearch={repoSearchData as unknown as RepositoriesSearchResult}
+        repoDetails={undefined}
+      />
+    </MemoryRouterProvider>,
   )
   screen.debug()
   //fireEvent.click(screen.getByRole('button', { name: /Search/i }))

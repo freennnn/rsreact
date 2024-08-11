@@ -1,6 +1,8 @@
+'use client'
+
 import { useEffect, useState } from 'react'
 
-import { useRouter } from 'next/router'
+import { ReadonlyURLSearchParams, useRouter, useSearchParams } from 'next/navigation'
 
 import { Loader } from '../../components/Loader/Loader'
 import { Repository } from '../../data/types'
@@ -13,12 +15,13 @@ export default function CardDetails({ repo }: { repo: Repository }) {
 
   const { classNames } = useCssClassWithTheme()
 
-  const searchTerm = router.query.search as string | undefined
-  let сurrentPageNumber = router.query.page as number | undefined
-  if (сurrentPageNumber === undefined) сurrentPageNumber = 1
+  const searchParams = useSearchParams() as ReadonlyURLSearchParams
+  const searchTerm = searchParams.get('search') as string | undefined
+  let currentPageNumber = searchParams.get('page') as unknown as number | undefined
+  if (currentPageNumber === undefined) currentPageNumber = 1
 
   const onCloseButtonClick = () => {
-    const newUrl = `/?search=${searchTerm ? searchTerm : ''}&page=${сurrentPageNumber}`
+    const newUrl = `/?search=${searchTerm ? searchTerm : ''}&page=${currentPageNumber}`
     router.replace(newUrl) //router.asPath
   }
 
