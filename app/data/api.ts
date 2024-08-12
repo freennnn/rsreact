@@ -10,9 +10,12 @@ const PATH_REPOS = '/repos'
 export async function getRepositores(searchTerm: string | undefined, pageNumber: number) {
   return fetch(
     `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm ? searchTerm : DEFAULT_SEARCH_QUERY}${PARAMS_ADDITIONAL}${pageNumber}`,
+    { cache: 'no-store' },
   ).then((response) => response.json())
 }
 
 export async function getRepository(owner: string, name: string) {
-  return fetch(`${PATH_BASE}${PATH_REPOS}/${owner}/${name}`).then((response) => response.json())
+  return fetch(`${PATH_BASE}${PATH_REPOS}/${owner}/${name}`, { cache: 'no-store' }).then(
+    (response) => response.json(),
+  )
 }

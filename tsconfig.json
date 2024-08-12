@@ -41,7 +41,7 @@
     "**/*.tsx",
     "./dist/types/**/*.ts",
     "./next-env.d.ts",
-     "next",
+     "next", "app/__tests__", "app/data", "app/utils", "app/hooks",
   ],
   "exclude": ["node_modules"]
 }

@@ -1,9 +1,9 @@
 import { HttpResponse, http } from 'msw'
 import { describe, expect, it } from 'vitest'
 
-import { getRepositores, getRepository } from '../../data/api'
-import { RepositoriesSearchResult, Repository } from '../../data/types'
-import server from '../mock-api-server'
+import { getRepositores, getRepository } from '../../data/api.ts'
+import { RepositoriesSearchResult, Repository } from '../../data/types.ts'
+import server from '../mock-api-server.ts'
 import { repoDetails } from '../mock-data/repoDetails.ts'
 import { repoSearchData } from '../mock-data/repoSearch.ts'
 

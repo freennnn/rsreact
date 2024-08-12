@@ -12,7 +12,7 @@ export default defineConfig({
     // run tests in jsdom environment
     environment: "jsdom",
     // global test setup
-    setupFiles: "./next/__tests__/setup.ts",
-    include:['./next/__tests__/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    setupFiles: "./app/__tests__/setup.ts",
+    include:['./app/__tests__/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
   },
 })
