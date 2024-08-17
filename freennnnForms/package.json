@@ -6,16 +6,18 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "format": "prettier \"src/**/*.{ts,tsx,scss}\"",
     "format:fix": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
     "lint": "eslint --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "prepare": "cd .. && husky freennnnForms/.husky",
-    "precommit": "npx lint-staged && npm run test"
-
+    "precommit": "npx lint-staged",
+    "precommitWithTests": "npx lint-staged && npm run test"
   },
   "dependencies": {
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
