@@ -1,9 +1,12 @@
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { countryNames } from '../../data/countries'
+import { convertImageToBase64 } from '../../data/imageUtils'
+import { useAppDispatch } from '../../data/store'
+import { addUser } from '../../data/usersSlice'
 import { FormFields, schema } from '../../data/zodFormSchema'
 //import { User } from '../../data/types'
 import '../UserRegistrationFormPage.css'
@@ -12,14 +15,23 @@ export default function UserRegistrationHookFormPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty, isValid },
   } = useForm<FormFields>({ resolver: zodResolver(schema) })
 
-  const onSumbit: SubmitHandler<FormFields> = (data) => {
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+  const onSumbit: SubmitHandler<FormFields> = async (data) => {
+    try {
+      if (data.avatar instanceof File) {
+        const avatarImage = await convertImageToBase64(data.avatar)
+        dispatch(addUser({ ...data, avatarImage }))
+        navigate('/')
+      }
+    } catch (error) {
+      console.error(error)
+    }
     console.log(data)
   }
-
-  console.log(errors)
 
   return (
     <div>
@@ -117,7 +129,9 @@ export default function UserRegistrationHookFormPage() {
         </label>
         <div className='error-div text-red-500'>{errors.country?.message}</div>
 
-        <button type='submit'>Submit</button>
+        <button type='submit' disabled={!isDirty || !isValid}>
+          Submit
+        </button>
       </form>
     </div>
   )
