@@ -1,8 +1,9 @@
-import { type FormEvent, useState } from 'react'
+import { ChangeEvent, type FormEvent, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { v4 as uuidv4 } from 'uuid'
 
+import { PasswordStrength } from '../../components/PasswordStrength'
 import { countryNames } from '../../data/countries'
 import { convertImageToBase64 } from '../../data/imageUtils'
 import { useAppDispatch } from '../../data/store'
@@ -14,8 +15,16 @@ type FormErrors = Record<string, string>
 
 export default function UserRegistrationUncontrolledFormPage() {
   const [errors, setErrors] = useState<FormErrors>({})
+  const [password, setPassword] = useState('')
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  //tehcnically don't event need ref, since we using state to update strength onChange
+  const passwordRef = useRef(null)
+
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.currentTarget.value)
+  }
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
     const form = new FormData(event.currentTarget as HTMLFormElement)
@@ -32,6 +41,7 @@ export default function UserRegistrationUncontrolledFormPage() {
         formData.avatarImage = await convertImageToBase64(avatar)
       }
       formData.id = uuidv4()
+
       dispatch(addUser(formData))
       navigate('/')
     } else {
@@ -72,8 +82,15 @@ export default function UserRegistrationUncontrolledFormPage() {
 
         <label className='form-label' key='password'>
           {'Password: '}
-          <input name='password' type='password' placeholder='Password' />
+          <input
+            name='password'
+            type='password'
+            placeholder='Password'
+            ref={passwordRef}
+            onChange={handlePasswordChange}
+          />
         </label>
+        <PasswordStrength password={password} />
         <div className='error-div text-red-500'>{errors.password}</div>
 
         <label className='form-label' key='confirmPassword'>
