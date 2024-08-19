@@ -1,14 +1,13 @@
 import { Link } from 'react-router-dom'
 
+import { Card } from '../../components/Card'
 import { useAppSelector } from '../../data/store'
-import {
-  /*addUser, selectLastAddedUserId,*/
-  selectUsers,
-} from '../../data/usersSlice'
+import { selectLastAddedUserId, selectUsers } from '../../data/usersSlice'
 import './UsersPage.css'
 
 export default function UsersPage() {
   const users = useAppSelector(selectUsers)
+  const lastAddedUserId = useAppSelector(selectLastAddedUserId)
   //const lastUserId = useAppSelector(selectLastAddedUserId)
 
   return (
@@ -19,7 +18,9 @@ export default function UsersPage() {
       <div className='cards-and-details'>
         <div className='card-gallery'>
           {users ? (
-            users.map((item) => <div>i am the user and my name is {item.name}</div>)
+            users.map((item) => (
+              <Card user={item} wasAddedLast={lastAddedUserId === item.id}></Card>
+            ))
           ) : (
             <p>No users were created yet</p>
           )}
