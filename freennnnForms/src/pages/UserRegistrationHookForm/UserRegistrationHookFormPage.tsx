@@ -15,7 +15,7 @@ export default function UserRegistrationHookFormPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty, isValid },
+    formState: { errors },
   } = useForm<FormFields>({ resolver: zodResolver(schema) })
 
   const dispatch = useAppDispatch()
@@ -41,17 +41,7 @@ export default function UserRegistrationHookFormPage() {
         <label className='form-label' key='name'>
           {'Name: '}
           <input
-            {...register(
-              'name' /*{
-              required: 'Email is required',
-              validate: (value) => {
-                if (!value.includes('@')) {
-                  return 'Email must include @'
-                }
-                return true
-              },
-            }*/,
-            )}
+            {...register('name')}
             type='text'
             placeholder='Name'
             autoComplete='one-time-code'
@@ -129,9 +119,7 @@ export default function UserRegistrationHookFormPage() {
         </label>
         <div className='error-div text-red-500'>{errors.country?.message}</div>
 
-        <button type='submit' disabled={!isDirty || !isValid}>
-          Submit
-        </button>
+        <button type='submit'>Submit</button>
       </form>
     </div>
   )
