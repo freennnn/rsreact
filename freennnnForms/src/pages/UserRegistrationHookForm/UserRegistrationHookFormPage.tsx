@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 
+import { countryNames } from '../../data/countries'
 import { FormFields, schema } from '../../data/zodFormSchema'
 //import { User } from '../../data/types'
 import '../UserRegistrationFormPage.css'
@@ -74,11 +75,14 @@ export default function UserRegistrationHookFormPage() {
         </label>
         <div className='error-div text-red-500'>{errors.confirmPassword?.message}</div>
 
-        <label className='form-label' key='gender'>
-          {'Is male: '}
-          <input {...register('isMale')} type='checkbox' />
-        </label>
-        <div className='error-div text-red-500'>{errors.isMale?.message}</div>
+        <div className='form-label' key='gender'>
+          {'Gender: '}
+          <input type='radio' id='male' value='male' {...register('gender')} />
+          <label htmlFor='male'>Male</label>
+          <input type='radio' id='female' value='female' {...register('gender')} />
+          <label htmlFor='female'>Female</label>
+        </div>
+        <div className='error-div text-red-500'>{errors.gender?.message}</div>
 
         <label className='form-label' key='termsAndConditions'>
           {'Accept terms and conditions: '}
@@ -90,14 +94,26 @@ export default function UserRegistrationHookFormPage() {
         </label>
         <div className='error-div text-red-500'>{errors.termsAndContions?.message}</div>
 
+        <label className='form-label' key='Avatar'>
+          {'Avatar: '}
+          <input {...register('avatar')} type='file' placeholder='Select and upload an avatar' />
+        </label>
+        <div className='error-div text-red-500'>{errors.avatar?.message}</div>
+
         <label className='form-label' key='country'>
           {'Contry: '}
           <input
             {...register('country')}
             type='text'
+            list='countries'
             placeholder='Country'
             autoComplete='one-time-code'
           />
+          <datalist id='countries'>
+            {countryNames.map((name) => {
+              return <option key={name} value={name} />
+            })}
+          </datalist>
         </label>
         <div className='error-div text-red-500'>{errors.country?.message}</div>
 

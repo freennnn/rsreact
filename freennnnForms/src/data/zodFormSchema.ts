@@ -1,5 +1,8 @@
 import { z } from 'zod'
 
+import { countryNames } from './countries'
+import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE } from './imageUtils'
+
 export const schema = z
   .object({
     name: z.string().refine(
@@ -12,10 +15,31 @@ export const schema = z
     email: z.string().email(),
     password: z.string(),
     confirmPassword: z.string(),
-    termsAndContions: z.boolean(),
-    avatar: z.string(),
-    isMale: z.boolean(),
-    country: z.string(),
+    gender: z.union([z.literal('male'), z.literal('female')], {
+      message: 'Please choose either male or female',
+    }),
+    termsAndContions: z.literal(true),
+    avatar: z
+      .custom<FileList>()
+      .transform((value) => {
+        if (value instanceof File) {
+          return value
+        }
+        if (value instanceof FileList && value.length > 0) {
+          return value.item(0)
+        }
+      })
+      .refine(
+        (file) => file && file.size < MAX_IMAGE_SIZE,
+        `Pofile picture should be under ${MAX_IMAGE_SIZE / 1024 / 1024} mb`,
+      )
+      .refine(
+        (file) => file && ACCEPTED_IMAGE_TYPES.includes(file.type),
+        'Only jpg/jpeg/webp/png files are allowed',
+      ),
+    country: z
+      .string()
+      .refine((value) => countryNames.includes(value), 'We do not operate in that country'),
   })
   .superRefine(({ password }, checkPassComplexity) => {
     const containsUppercase = (ch: string) => /[A-Z]/.test(ch)
