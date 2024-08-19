@@ -2,7 +2,9 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { v4 as uuidv4 } from 'uuid'
 
+import { PasswordStrength } from '../../components/PasswordStrength'
 import { countryNames } from '../../data/countries'
 import { convertImageToBase64 } from '../../data/imageUtils'
 import { useAppDispatch } from '../../data/store'
@@ -16,15 +18,18 @@ export default function UserRegistrationHookFormPage() {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<FormFields>({ resolver: zodResolver(schema) })
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const password = watch('password')
+
   const onSumbit: SubmitHandler<FormFields> = async (data) => {
     try {
       if (data.avatar instanceof File) {
         const avatarImage = await convertImageToBase64(data.avatar)
-        dispatch(addUser({ ...data, avatarImage }))
+        dispatch(addUser({ ...data, avatarImage, id: uuidv4() }))
         navigate('/')
       }
     } catch (error) {
@@ -69,6 +74,7 @@ export default function UserRegistrationHookFormPage() {
           {'Password: '}
           <input {...register('password')} type='password' placeholder='Password' />
         </label>
+        <PasswordStrength password={password} />
         <div className='error-div text-red-500'>{errors.password?.message}</div>
 
         <label className='form-label' key='confirmPassword'>
