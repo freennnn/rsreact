@@ -34,10 +34,6 @@ const tempUsers: User[] = [
   },
 ]
 
-// const initialState: InitialStateType = {
-//   users: new Array<User>(),
-//   lastAddedUserId: null,
-// }
 const initialState: InitialStateType = {
   users: tempUsers,
   lastAddedUserId: tempUsers[1].id,
