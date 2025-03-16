@@ -18,7 +18,8 @@ const tempUsers: User[] = [
     password: 'strongPassword',
     gender: 'male',
     termsAndContions: true,
-    avatarImage: 'kindaImage',
+    avatarImage:
+      'https://img.ifunny.co/images/657f48cc8acb3723795d27f954be1d9e59d5a6dd74ea5208c777ec1c11c394b5_1.jpg',
     country: 'Poland',
   },
   {
@@ -29,7 +30,8 @@ const tempUsers: User[] = [
     password: 'mediumPassword',
     gender: 'female',
     termsAndContions: true,
-    avatarImage: 'kindaImage',
+    avatarImage:
+      'https://preview.redd.it/purrrr-fancy-v0-aeb8uyk6gtxa1.jpg?width=640&crop=smart&auto=webp&s=fcbd638da5143a8c5b25848b48d01271bc789eaf',
     country: 'Belarus',
   },
 ]
