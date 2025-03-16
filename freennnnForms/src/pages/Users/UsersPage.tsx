@@ -12,14 +12,20 @@ export default function UsersPage() {
 
   return (
     <div className='gallery-page'>
-      <p>Users Page</p>
-      <Link to='/registrationHookForm'>Add user with React Hook Form</Link>
-      <Link to='/registrationUncontrolledForm'>Add user with uncontrolled Form</Link>
+      <h1 className='page-title'>User Management</h1>
+      <div className='nav-links'>
+        <Link to='/registrationHookForm' className='nav-link'>
+          Add user with React Hook Form
+        </Link>
+        <Link to='/registrationUncontrolledForm' className='nav-link'>
+          Add user with uncontrolled Form
+        </Link>
+      </div>
       <div className='cards-and-details'>
         <div className='card-gallery'>
           {users ? (
             users.map((item) => (
-              <Card user={item} wasAddedLast={lastAddedUserId === item.id}></Card>
+              <Card key={item.id} user={item} wasAddedLast={lastAddedUserId === item.id}></Card>
             ))
           ) : (
             <p>No users were created yet</p>

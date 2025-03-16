@@ -40,8 +40,10 @@ export default function UserRegistrationHookFormPage() {
 
   return (
     <div>
-      <p>UserRegistrationHookFormPage</p>
-      <Link to='/'> back to users lists</Link>
+      <h1 className='page-title'>React Hook Form Registration</h1>
+      <Link to='/' className='back-link'>
+        ← Back to users list
+      </Link>
       <form className='form gap-x-3' onSubmit={handleSubmit(onSumbit)} autoComplete='one-time-code'>
         <label className='form-label' key='name'>
           {'Name: '}

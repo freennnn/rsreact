@@ -59,8 +59,10 @@ export default function UserRegistrationUncontrolledFormPage() {
 
   return (
     <div>
-      <p>UserRegistrationUncontrolledFormPage</p>
-      <Link to='/'> Back to user list</Link>
+      <h1 className='page-title'>Uncontrolled Form Registration</h1>
+      <Link to='/' className='back-link'>
+        ← Back to users list
+      </Link>
       <form className='form gap-x-3' onSubmit={handleSubmit} autoComplete='one-time-code'>
         <label className='form-label' key='name'>
           {'Name: '}
