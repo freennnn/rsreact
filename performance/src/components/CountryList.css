@@ -1,0 +1,40 @@
+.country-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.country-item {
+  width: calc(50% - 0.5rem);
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .country-item {
+    width: calc(33.333% - 0.667rem);
+  }
+}
+
+@media (min-width: 768px) {
+  .country-item {
+    width: calc(25% - 0.75rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .country-item {
+    width: calc(20% - 0.8rem);
+  }
+}
+
+@media (min-width: 1280px) {
+  .country-item {
+    width: calc(16.666% - 0.833rem);
+  }
+}
+
+@media (min-width: 1536px) {
+  .country-item {
+    width: calc(14.285% - 0.857rem);
+  }
+} 
