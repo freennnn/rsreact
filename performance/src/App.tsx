@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Country } from './types/country';
 import { CountryList } from './components/CountryList';
+import { SearchBar } from './components/SearchBar';
 import './App.css';
 
 function App() {
   const [countries, setCountries] = useState<Country[]>([]);
+  const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,6 +33,7 @@ function App() {
         );
         
         setCountries(sortedCountries);
+        setFilteredCountries(sortedCountries);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
@@ -40,6 +43,14 @@ function App() {
 
     fetchCountries();
   }, []);
+
+  const handleSearch = (query: string) => {
+    const searchTerm = query.toLowerCase().trim();
+    const filtered = countries.filter(country => 
+      country.name.toLowerCase().includes(searchTerm)
+    );
+    setFilteredCountries(filtered);
+  };
 
   if (loading) {
     return (
@@ -62,11 +73,12 @@ function App() {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto py-4 px-4">
           <h1 className="text-3xl font-bold text-gray-900">Countries of the World</h1>
-          <p className="text-gray-600 mt-2">Total countries: {countries.length}</p>
+          <p className="text-gray-600 mt-2">Total countries: {filteredCountries.length}</p>
         </div>
       </header>
       <main className="max-w-7xl mx-auto py-6 px-4">
-        <CountryList countries={countries} />
+        <SearchBar onSearch={handleSearch} />
+        <CountryList countries={filteredCountries} />
       </main>
     </div>
   );
