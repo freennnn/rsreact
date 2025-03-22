@@ -3,4 +3,4 @@ export interface Country {
   population: number;
   region: string;
   flag: string;
-} 
+}

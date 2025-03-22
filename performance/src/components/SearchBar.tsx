@@ -9,10 +9,10 @@ export function SearchBar({ onSearch }: SearchBarProps) {
     <div className="search-container">
       <input
         type="text"
-        placeholder="Search countries..."
+        placeholder="Search by name..."
         onChange={(e) => onSearch(e.target.value)}
         className="search-input"
       />
     </div>
   );
-} 
+}

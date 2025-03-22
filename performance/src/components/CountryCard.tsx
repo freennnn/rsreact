@@ -16,9 +16,7 @@ export function CountryCard({ country }: CountryCardProps) {
         />
       </div>
       <div className="card-content">
-        <h2 className="country-name">
-          {country.name}
-        </h2>
+        <h2 className="country-name">{country.name}</h2>
         <div className="country-details">
           <p className="detail-item">
             <span className="detail-label">Population:</span>{' '}
@@ -31,4 +29,4 @@ export function CountryCard({ country }: CountryCardProps) {
       </div>
     </div>
   );
-} 
+}
