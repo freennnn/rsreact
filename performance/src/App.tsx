@@ -47,7 +47,6 @@ function App() {
         setRegions(uniqueRegions);
 
         setCountries(sortedCountries);
-        setFilteredCountries(sortedCountries);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
