@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Country } from './types/country';
 import { SortField, SortOrder, SORT_FIELDS, SORT_ORDERS } from './types/sort';
 import { CountryList } from './components/CountryList';
@@ -89,18 +89,18 @@ function App() {
     return filtered;
   }, [countries, searchQuery, selectedRegion, sortField, sortOrder]);
 
-  const handleSearch = (query: string) => {
+  const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
-  };
+  }, []);
 
-  const handleRegionFilter = (region: string) => {
+  const handleRegionFilter = useCallback((region: string) => {
     setSelectedRegion(region);
-  };
+  }, []);
 
-  const handleSort = (field: SortField, order: SortOrder) => {
+  const handleSort = useCallback((field: SortField, order: SortOrder) => {
     setSortField(field);
     setSortOrder(order);
-  };
+  }, []);
 
   if (loading) {
     return (
