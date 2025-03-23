@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Country } from './types/country';
+import { Country, CountryApiResponse } from './types/country';
 import { SortField, SortOrder, SORT_FIELDS, SORT_ORDERS } from './types/sort';
 import { CountryList } from './components/CountryList';
 import { SearchBar } from './components/SearchBar';
@@ -25,26 +25,21 @@ function App() {
         if (!response.ok) {
           throw new Error('Failed to fetch countries');
         }
-        const data = await response.json();
+        const data: CountryApiResponse[] = await response.json();
 
         // Transform the json data to match Country interface
-        const transformedCountries: Country[] = data.map((country: any) => ({
+        const transformedCountries: Country[] = data.map((country) => ({
           name: country.name.common,
           population: country.population,
           region: country.region,
           flag: country.flags.png,
         }));
-
-        // Sort countries by name - this is the default sort, before user input
-        const sortedCountries = transformedCountries.sort((a, b) =>
-          a.name.localeCompare(b.name)
-        );
         
         // Get unique regions
-        const uniqueRegions = Array.from(new Set(sortedCountries.map(country => country.region)));
+        const uniqueRegions = Array.from(new Set(transformedCountries.map(country => country.region)));
         setRegions(uniqueRegions);
         
-        setCountries(sortedCountries);
+        setCountries(transformedCountries);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {

@@ -4,3 +4,14 @@ export interface Country {
   region: string;
   flag: string;
 }
+
+export interface CountryApiResponse {
+  name: {
+    common: string;
+  };
+  population: number;
+  region: string;
+  flags: {
+    png: string;
+  };
+}
