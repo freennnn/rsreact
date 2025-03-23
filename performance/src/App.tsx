@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Country } from './types/country';
 import { SortField, SortOrder, SORT_FIELDS, SORT_ORDERS } from './types/sort';
 import { CountryList } from './components/CountryList';
@@ -9,7 +9,6 @@ import './App.css';
 
 function App() {
   const [countries, setCountries] = useState<Country[]>([]);
-  const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -35,17 +34,15 @@ function App() {
           flag: country.flags.png,
         }));
 
-        // Sort countries by name - default sort, before user input
+        // Sort countries by name - this is the default sort, before user input
         const sortedCountries = transformedCountries.sort((a, b) =>
           a.name.localeCompare(b.name)
         );
-
+        
         // Get unique regions
-        const uniqueRegions = Array.from(
-          new Set(sortedCountries.map((country) => country.region))
-        );
+        const uniqueRegions = Array.from(new Set(sortedCountries.map(country => country.region)));
         setRegions(uniqueRegions);
-
+        
         setCountries(sortedCountries);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -57,7 +54,7 @@ function App() {
     fetchCountries();
   }, []);
 
-  useEffect(() => {
+  const filteredCountries = useMemo(() => {
     let filtered = [...countries];
 
     // Apply search filter
@@ -77,19 +74,18 @@ function App() {
 
     // Apply sorting
     filtered.sort((a, b) => {
-      if (sortField === SORT_FIELDS[0]) {
-        // aka `name`
-        return sortOrder === SORT_ORDERS[0] // aka `asc`
+      if (sortField === 'name') {
+        return sortOrder === 'asc' 
           ? a.name.localeCompare(b.name)
           : b.name.localeCompare(a.name);
       } else {
-        return sortOrder === SORT_ORDERS[0] // aka `asc`
+        return sortOrder === 'asc'
           ? a.population - b.population
           : b.population - a.population;
       }
     });
 
-    setFilteredCountries(filtered);
+    return filtered;
   }, [countries, searchQuery, selectedRegion, sortField, sortOrder]);
 
   const handleSearch = (query: string) => {
@@ -126,9 +122,7 @@ function App() {
       <header className="app-header">
         <div className="header-content">
           <h1 className="app-title">Countries of the World</h1>
-          <p className="country-count">
-            Total countries: {filteredCountries.length}
-          </p>
+          <p className="country-count">Total countries: {filteredCountries.length}</p>
         </div>
       </header>
       <main className="app-main">

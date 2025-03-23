@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Country } from '../types/country';
 import './CountryCard.css';
 
@@ -5,7 +6,7 @@ interface CountryCardProps {
   country: Country;
 }
 
-export function CountryCard({ country }: CountryCardProps) {
+export const CountryCard = memo(function CountryCard({ country }: CountryCardProps) {
   return (
     <div className="country-card">
       <div className="flag-container">
@@ -29,4 +30,4 @@ export function CountryCard({ country }: CountryCardProps) {
       </div>
     </div>
   );
-}
+});
