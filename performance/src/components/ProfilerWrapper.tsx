@@ -28,4 +28,4 @@ export function ProfilerWrapper({ id, children }: ProfilerWrapperProps) {
       {children}
     </Profiler>
   );
-} 
+}

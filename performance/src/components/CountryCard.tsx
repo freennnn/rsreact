@@ -8,9 +8,13 @@ interface CountryCardProps {
   onToggleVisited: (countryName: string) => void;
 }
 
-export const CountryCard = memo(function CountryCard({ country, visited, onToggleVisited }: CountryCardProps) {
+export const CountryCard = memo(function CountryCard({
+  country,
+  visited,
+  onToggleVisited,
+}: CountryCardProps) {
   return (
-    <div 
+    <div
       className={`country-card ${visited ? 'visited' : ''}`}
       onClick={() => onToggleVisited(country.name)}
     >

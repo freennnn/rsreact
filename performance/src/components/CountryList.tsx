@@ -8,7 +8,11 @@ interface CountryListProps {
   onToggleVisited: (countryName: string) => void;
 }
 
-export function CountryList({ countries, visitedCountries, onToggleVisited }: CountryListProps) {
+export function CountryList({
+  countries,
+  visitedCountries,
+  onToggleVisited,
+}: CountryListProps) {
   if (countries.length === 0) {
     return (
       <div className="no-results">

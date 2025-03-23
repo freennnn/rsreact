@@ -12,7 +12,9 @@ const VISITED_COUNTRIES_KEY = 'visitedCountries';
 
 function App() {
   const [countries, setCountries] = useState<Country[]>([]);
-  const [visitedCountries, setVisitedCountries] = useState<Set<string>>(new Set());
+  const [visitedCountries, setVisitedCountries] = useState<Set<string>>(
+    new Set()
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -43,11 +45,13 @@ function App() {
           region: country.region,
           flag: country.flags.png,
         }));
-        
+
         // Get unique regions
-        const uniqueRegions = Array.from(new Set(transformedCountries.map(country => country.region)));
+        const uniqueRegions = Array.from(
+          new Set(transformedCountries.map((country) => country.region))
+        );
         setRegions(uniqueRegions);
-        
+
         setCountries(transformedCountries);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -80,7 +84,7 @@ function App() {
     // Apply sorting
     filtered.sort((a, b) => {
       if (sortField === 'name') {
-        return sortOrder === 'asc' 
+        return sortOrder === 'asc'
           ? a.name.localeCompare(b.name)
           : b.name.localeCompare(a.name);
       } else {
@@ -107,17 +111,17 @@ function App() {
   }, []);
 
   const handleToggleVisited = useCallback((countryName: string) => {
-    setVisitedCountries(prev => {
+    setVisitedCountries((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(countryName)) {
         newSet.delete(countryName);
       } else {
         newSet.add(countryName);
       }
-      
+
       // Update localStorage
       localStorage.setItem(VISITED_COUNTRIES_KEY, JSON.stringify([...newSet]));
-      
+
       return newSet;
     });
   }, []);
@@ -144,7 +148,9 @@ function App() {
         <header className="app-header">
           <div className="header-content">
             <h1 className="app-title">Countries of the World</h1>
-            <p className="country-count">Total countries: {filteredCountries.length}</p>
+            <p className="country-count">
+              Total countries: {filteredCountries.length}
+            </p>
           </div>
         </header>
         <main className="app-main">
@@ -158,8 +164,8 @@ function App() {
             <Sort onSort={handleSort} />
           </div>
           <ProfilerWrapper id="CountryList">
-            <CountryList 
-              countries={filteredCountries} 
+            <CountryList
+              countries={filteredCountries}
               visitedCountries={visitedCountries}
               onToggleVisited={handleToggleVisited}
             />
