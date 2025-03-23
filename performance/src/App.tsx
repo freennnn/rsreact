@@ -5,6 +5,7 @@ import { CountryList } from './components/CountryList';
 import { SearchBar } from './components/SearchBar';
 import { Filter } from './components/Filter';
 import { Sort } from './components/Sort';
+import { ProfilerWrapper } from './components/ProfilerWrapper';
 import './App.css';
 
 function App() {
@@ -118,26 +119,30 @@ function App() {
   }
 
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <div className="header-content">
-          <h1 className="app-title">Countries of the World</h1>
-          <p className="country-count">Total countries: {filteredCountries.length}</p>
-        </div>
-      </header>
-      <main className="app-main">
-        <div className="filters-container">
-          <SearchBar onSearch={handleSearch} />
-          <Filter
-            regions={regions}
-            selectedRegion={selectedRegion}
-            onFilterChange={handleRegionFilter}
-          />
-          <Sort onSort={handleSort} />
-        </div>
-        <CountryList countries={filteredCountries} />
-      </main>
-    </div>
+    <ProfilerWrapper id="App">
+      <div className="app-container">
+        <header className="app-header">
+          <div className="header-content">
+            <h1 className="app-title">Countries of the World</h1>
+            <p className="country-count">Total countries: {filteredCountries.length}</p>
+          </div>
+        </header>
+        <main className="app-main">
+          <div className="filters-container">
+            <SearchBar onSearch={handleSearch} />
+            <Filter
+              regions={regions}
+              selectedRegion={selectedRegion}
+              onFilterChange={handleRegionFilter}
+            />
+            <Sort onSort={handleSort} />
+          </div>
+          <ProfilerWrapper id="CountryList">
+            <CountryList countries={filteredCountries} />
+          </ProfilerWrapper>
+        </main>
+      </div>
+    </ProfilerWrapper>
   );
 }
 
