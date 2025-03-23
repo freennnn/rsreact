@@ -4,11 +4,16 @@ import './CountryCard.css';
 
 interface CountryCardProps {
   country: Country;
+  visited: boolean;
+  onToggleVisited: (countryName: string) => void;
 }
 
-export const CountryCard = memo(function CountryCard({ country }: CountryCardProps) {
+export const CountryCard = memo(function CountryCard({ country, visited, onToggleVisited }: CountryCardProps) {
   return (
-    <div className="country-card">
+    <div 
+      className={`country-card ${visited ? 'visited' : ''}`}
+      onClick={() => onToggleVisited(country.name)}
+    >
       <div className="flag-container">
         <img
           src={country.flag}

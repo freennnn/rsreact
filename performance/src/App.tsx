@@ -8,8 +8,11 @@ import { Sort } from './components/Sort';
 import { ProfilerWrapper } from './components/ProfilerWrapper';
 import './App.css';
 
+const VISITED_COUNTRIES_KEY = 'visitedCountries';
+
 function App() {
   const [countries, setCountries] = useState<Country[]>([]);
+  const [visitedCountries, setVisitedCountries] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,6 +24,12 @@ function App() {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
+        // Load visited countries from localStorage first
+        const visitedCountriesStr = localStorage.getItem(VISITED_COUNTRIES_KEY);
+        if (visitedCountriesStr) {
+          setVisitedCountries(new Set(JSON.parse(visitedCountriesStr)));
+        }
+
         const response = await fetch('https://restcountries.com/v3.1/all');
         if (!response.ok) {
           throw new Error('Failed to fetch countries');
@@ -97,6 +106,22 @@ function App() {
     setSortOrder(order);
   }, []);
 
+  const handleToggleVisited = useCallback((countryName: string) => {
+    setVisitedCountries(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(countryName)) {
+        newSet.delete(countryName);
+      } else {
+        newSet.add(countryName);
+      }
+      
+      // Update localStorage
+      localStorage.setItem(VISITED_COUNTRIES_KEY, JSON.stringify([...newSet]));
+      
+      return newSet;
+    });
+  }, []);
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -133,7 +158,11 @@ function App() {
             <Sort onSort={handleSort} />
           </div>
           <ProfilerWrapper id="CountryList">
-            <CountryList countries={filteredCountries} />
+            <CountryList 
+              countries={filteredCountries} 
+              visitedCountries={visitedCountries}
+              onToggleVisited={handleToggleVisited}
+            />
           </ProfilerWrapper>
         </main>
       </div>
