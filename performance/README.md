@@ -1,54 +1,101 @@
-# React + TypeScript + Vite
+# Application Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The Country Explorer app:
 
-Currently, two official plugins are available:
+- List of countries with their flags and basic information
+- Search countries by name
+- Filter countries by region
+- Sort countries by name or population
+- Mark countries as visited
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Performance Analysis
 
-## Expanding the ESLint configuration
+- Both search, region filter and sort functionalities works the same way - we filter out arrray of countries we fetched from API based on changed parameter. Before optiomization we used state and useEffect() to keep track of filtered countries and re-render the list every time. After optimization we switched to useMemo()[search, region, sort] value and use it together with memo() of individual Card components.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Before Optimization
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
+#### Initial Load
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- Commit Duration: ~69ms
+- Render Duration: ~63ms
+  - App: ~4ms
+  - CountryList: ~61ms
+  - CountryCard: ~0.1-0.2ms per card
+- Total Components: ~250 (including all CountryCards)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+#### User Interactions
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-});
-```
+1. **Filter Operation or Search Operation or SortOperation**
+   - Commit Duration: ~19ms
+   - Re-renders: All CountryCards
+   - Render Duration: ~17 ms
+
+2. **Toggle Visited Status**
+   - Re-renders: Only the toggled CountryCard
+
+### After Optimization (with memo, useMemo, useCallback)
+
+#### Initial Load
+
+- Commit Duration: ~68ms
+- Render Duration:
+  - App: ~66ms
+  - CountryList: ~59.7ms
+  - CountryCard: ~0.1-0.2ms per card
+- Total Components: ~250
+
+#### User Interactions
+
+1. **Filter Operation or Search Operation or SortOperation**
+   - Commit Duration: ~4.5ms
+   - Re-renders:  Only affected CountryCards
+   - Render Duration: ~2.5ms
+
+2. **Toggle Visited Status**
+   - Re-renders: Only the toggled CountryCard
+
+## Performance Improvements
+
+1. **Component Memoization**
+   - Used `React.memo` for `CountryCard` to prevent unnecessary re-renders
+   - Only re-renders when props actually change
+
+2. **Callback Optimization**
+   - Implemented `useCallback` for event handlers
+   - Prevents recreation of function references on every render.
+
+3. **Computed Values**
+   - Used `useMemo` for expensive computations (sort, filter by region, sort by name and population)
+   - Caches filtered and sorted results
+
+## Key Findings
+
+1. **Render Optimization**
+   - Before: All CountryCards re-rendered on any state change
+   - After: Only affected components re-render
+
+2. **Performance Gains**
+   - Search, Filter, Sort: ~5 times faster
+
+## Screenshots
+
+### Before Optimization
+
+![Before Optimization - Initial Load Flame Graph](screenshots/non-optimized-code-profiler-initial.png)
+![Before Optimization - Initial Load Ranked Chart](screenshots/non-optimized-ranked-initial.png)
+![Before Optimization - Filter Operation - Ranked Chart](screenshots/non-optimized-ranked-filtered.png)
+![Before Optimization - Initial Load Profiler in code](screenshots/non-optimized-code-profiler-initial.png)
+![Before Optimization - Filter Operation Profiler in code](screenshots/non-optimized-code-profiler-filtered.png)
+
+### After Optimization
+
+![After Optimization - Initial Load Ranked Chart](screenshots/optimized-ranked-initial.png)
+![After Optimization - Filter Operation - Ranked Chart](screenshots/optimized-ranked-filtered.png)
+![After Optimization - Initial Load Profiler in code](screenshots/optimized-code-profiler-initial.png)
+![After Optimization - Filter Operation Profiler in code](screenshots/optimized-code-profiler-filtered.png)
+
+## Conclusion
+
+The most significant improvements were seen in:
+
+1. Search, filter and sort operations (5 times faster)
