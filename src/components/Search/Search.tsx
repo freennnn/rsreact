@@ -1,34 +1,47 @@
 import React from 'react';
 
-import { Log } from '../../utils/utils';
 import { ErrorButton } from '../ErrorButton/ErrorButton';
 import './Search.css';
 
 interface SearchProps {
   searchTerm?: string;
-  onSearchButtonClick(searchTerm: string): void;
+  onSearchButtonClick(trimmedTerm: string): void;
 }
 
 export class Search extends React.Component<SearchProps> {
-  // we'll implement 'controlled style' input, event though technically
-  // `const inputRef = useRef();` would suffice here
-  state = { searchTerm: this.props.searchTerm ? this.props.searchTerm : '' };
+  state = {
+    searchTerm: this.props.searchTerm ? this.props.searchTerm : '',
+  };
+
+  componentDidMount(): void {
+    const saved = localStorage.getItem('SavedSearchTerm');
+    if (saved !== null) {
+      this.setState({ searchTerm: saved.trim() });
+    }
+  }
+
+  componentDidUpdate(prevProps: SearchProps): void {
+    if (this.props.searchTerm !== prevProps.searchTerm) {
+      const next =
+        this.props.searchTerm === undefined ? '' : this.props.searchTerm;
+      if (next !== this.state.searchTerm) {
+        this.setState({ searchTerm: next });
+      }
+    }
+  }
 
   onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //`we can implement auto search, with cancelling previous FetchRequest
-    // Promises in future`
-    //Log(`onSearchInputChange ${e.target.value}`)
     this.setState({ searchTerm: e.target.value });
   };
 
   onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    Log(this.state.searchTerm);
-    this.props.onSearchButtonClick(this.state.searchTerm);
+    const trimmed = this.state.searchTerm.trim();
+    this.setState({ searchTerm: trimmed });
+    this.props.onSearchButtonClick(trimmed);
   };
 
   render() {
-    Log('Search re-render');
     return (
       <form onSubmit={this.onSubmit} className="search-form">
         <input
@@ -37,7 +50,7 @@ export class Search extends React.Component<SearchProps> {
           className="searchbar"
           onChange={this.onSearchInputChange}
           value={this.state.searchTerm}
-        ></input>
+        />
         <button type="submit" className="search-button">
           Search
         </button>

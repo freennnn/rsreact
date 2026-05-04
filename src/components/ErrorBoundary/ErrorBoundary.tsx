@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { LogError } from '../../utils/utils';
-
 export class ErrorBoundary extends React.Component<{
   children: React.ReactNode;
 }> {
@@ -12,19 +10,17 @@ export class ErrorBoundary extends React.Component<{
   };
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    // same error as in getDerivedStateFromError, yet method is called at completely
-    // different lifecycle stage
-    LogError(error.message);
-    LogError(errorInfo.componentStack);
-    //this.setState({ hasError: true })
+    console.error(error.message, errorInfo.componentStack);
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div>
+        <div className="error-boundary-fallback">
           <h1>Something went wrong!</h1>
-          <button onClick={this.resetErrorBoundary}>Reset</button>
+          <button type="button" onClick={this.resetErrorBoundary}>
+            Reset
+          </button>
         </div>
       );
     }
@@ -32,8 +28,7 @@ export class ErrorBoundary extends React.Component<{
     return this.props.children;
   }
 
-  static getDerivedStateFromError(error: Error) {
-    LogError(error.message);
+  static getDerivedStateFromError() {
     return { hasError: true };
   }
 }
