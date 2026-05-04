@@ -2,7 +2,7 @@ const DEFAULT_SEARCH_QUERY = 'allitems';
 const PATH_BASE = 'https://api.github.com';
 const PATH_SEARCH = '/search/repositories';
 const PARAM_SEARCH = 'q=';
-const PARAMS_ADDITIONAL = '&sort=stars&page=1&per_page=3';
+const PARAMS_ADDITIONAL = '&page=1&per_page=3';
 
 export interface GitHubSearchResponse {
   items: Array<{
