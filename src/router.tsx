@@ -13,7 +13,7 @@ function RootLayout() {
     <div>
       <header className="app-header">
         <nav className="app-nav" aria-label="Main navigation">
-          <Link to="/" className="app-nav-link">
+          <Link to="/" search={{ page: 1 }} className="app-nav-link">
             Home
           </Link>
           <Link to="/about" className="app-nav-link">
@@ -29,10 +29,36 @@ function RootLayout() {
 }
 
 function ListLayout() {
+  const navigate = listRoute.useNavigate();
+  const { page } = listRoute.useSearch();
+
+  const onPageChange = (nextPage: number) => {
+    const safePage = nextPage < 1 ? 1 : nextPage;
+    navigate({
+      search: (prev) => ({ ...prev, page: safePage }),
+      replace: safePage === page,
+    });
+  };
+
+  const onSearchInputChange = () => {
+    if (page === 1) {
+      return;
+    }
+
+    navigate({
+      search: (prev) => ({ ...prev, page: 1 }),
+      replace: true,
+    });
+  };
+
   return (
     <div className="list-layout">
       <section className="list-layout-master" aria-label="Repository list panel">
-        <Gallery />
+        <Gallery
+          currentPage={page}
+          onPageChange={onPageChange}
+          onSearchInputChange={onSearchInputChange}
+        />
       </section>
       <section className="list-layout-detail" aria-label="Repository detail panel">
         <Outlet />
@@ -71,7 +97,9 @@ function NotFoundPage() {
   return (
     <section className="app-page" aria-label="Not found page">
       <h1>404 - Page not found</h1>
-      <Link to="/">Return to main app</Link>
+      <Link to="/" search={{ page: 1 }}>
+        Return to main app
+      </Link>
     </section>
   );
 }
@@ -84,6 +112,12 @@ const rootRoute = createRootRoute({
 const listRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
+  validateSearch: (search: Record<string, unknown>) => {
+    const rawPage = Number(search.page);
+    const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1;
+
+    return { page };
+  },
   component: ListLayout,
 });
 

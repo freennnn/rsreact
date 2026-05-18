@@ -17,36 +17,46 @@ export interface Repository {
 interface GalleryState {
   results: Array<Repository> | null;
   searchTerm: string;
+  totalCount: number;
   isLoading: boolean;
   error: string | null;
-  lastRequestedTrimmed: string | undefined;
+  lastRequestedKey: string | undefined;
   lastFetchSucceeded: boolean;
 }
+
+interface GalleryProps {
+  currentPage?: number;
+  onPageChange?(nextPage: number): void;
+  onSearchInputChange?(): void;
+}
+
+const ITEMS_PER_PAGE = 3;
 
 function readSavedSearchTerm(): string {
   const raw = localStorage.getItem('SavedSearchTerm');
   return raw === null ? '' : raw.trim();
 }
 
-export function Gallery() {
+export function Gallery({
+  currentPage = 1,
+  onPageChange,
+  onSearchInputChange,
+}: GalleryProps) {
   const [state, setState] = useState<GalleryState>({
     results: null,
     searchTerm: readSavedSearchTerm(),
+    totalCount: 0,
     isLoading: true,
     error: null,
-    lastRequestedTrimmed: undefined,
+    lastRequestedKey: undefined,
     lastFetchSucceeded: false,
   });
-  const lastRequestedTrimmedRef = useRef<string | undefined>(
-    state.lastRequestedTrimmed
-  );
+  const lastRequestedKeyRef = useRef<string | undefined>(state.lastRequestedKey);
   const lastFetchSucceededRef = useRef(state.lastFetchSucceeded);
 
-  const fetchRepositories = useCallback((trimmed: string) => {
-    if (
-      lastRequestedTrimmedRef.current === trimmed &&
-      lastFetchSucceededRef.current
-    ) {
+  const fetchRepositories = useCallback((trimmed: string, page: number) => {
+    const requestKey = `${trimmed}|${page}`;
+    if (lastRequestedKeyRef.current === requestKey && lastFetchSucceededRef.current) {
       return;
     }
 
@@ -59,7 +69,7 @@ export function Gallery() {
       results: null,
     }));
 
-    getRepositores(trimmed)
+    getRepositores(trimmed, page)
       .then((data) => {
         const items = (data.items ?? []).map((item) => ({
           id: item.id,
@@ -67,28 +77,30 @@ export function Gallery() {
           description: item.description ?? '',
           language: item.language ?? '',
         }));
-        lastRequestedTrimmedRef.current = trimmed;
+        lastRequestedKeyRef.current = requestKey;
         lastFetchSucceededRef.current = true;
         setState((prevState) => ({
           ...prevState,
           results: items,
+          totalCount: data.total_count ?? 0,
           isLoading: false,
           error: null,
-          lastRequestedTrimmed: trimmed,
+          lastRequestedKey: requestKey,
           lastFetchSucceeded: true,
         }));
       })
       .catch((err: unknown) => {
         const message =
           err instanceof Error ? err.message : 'Something went wrong.';
-        lastRequestedTrimmedRef.current = trimmed;
+        lastRequestedKeyRef.current = requestKey;
         lastFetchSucceededRef.current = false;
         setState((prevState) => ({
           ...prevState,
           isLoading: false,
           error: message,
+          totalCount: 0,
           results: null,
-          lastRequestedTrimmed: trimmed,
+          lastRequestedKey: requestKey,
           lastFetchSucceeded: false,
         }));
       });
@@ -96,14 +108,18 @@ export function Gallery() {
 
   const onSearchButtonClick = useCallback(
     (trimmedFromSearch: string) => {
-      fetchRepositories(trimmedFromSearch);
+      fetchRepositories(trimmedFromSearch, currentPage);
     },
-    [fetchRepositories]
+    [currentPage, fetchRepositories]
   );
 
   useEffect(() => {
-    fetchRepositories(state.searchTerm);
-  }, [fetchRepositories, state.searchTerm]);
+    fetchRepositories(state.searchTerm, currentPage);
+  }, [currentPage, fetchRepositories, state.searchTerm]);
+
+  const totalPages = Math.max(1, Math.ceil(state.totalCount / ITEMS_PER_PAGE));
+  const canGoPrev = currentPage > 1;
+  const canGoNext = currentPage < totalPages;
 
   return (
     <ErrorBoundary>
@@ -115,6 +131,7 @@ export function Gallery() {
           <Search
             searchTerm={state.searchTerm}
             onSearchButtonClick={onSearchButtonClick}
+            onSearchInputChange={onSearchInputChange}
           />
         </section>
         <section className="gallery-results-section" aria-label="Search results">
@@ -149,6 +166,27 @@ export function Gallery() {
             ) : (
               <p className="gallery-empty">No repositories loaded.</p>
             )
+          ) : null}
+          {!state.isLoading && !state.error && state.results ? (
+            <nav className="gallery-pagination" aria-label="Results pagination">
+              <button
+                type="button"
+                onClick={() => onPageChange?.(currentPage - 1)}
+                disabled={!canGoPrev}
+              >
+                Previous
+              </button>
+              <span className="gallery-pagination-current">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                type="button"
+                onClick={() => onPageChange?.(currentPage + 1)}
+                disabled={!canGoNext}
+              >
+                Next
+              </button>
+            </nav>
           ) : null}
         </section>
       </div>

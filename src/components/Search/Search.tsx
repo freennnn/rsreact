@@ -6,9 +6,14 @@ import './Search.css';
 interface SearchProps {
   searchTerm?: string;
   onSearchButtonClick(trimmedTerm: string): void;
+  onSearchInputChange?(nextTerm: string): void;
 }
 
-export function Search({ searchTerm, onSearchButtonClick }: SearchProps) {
+export function Search({
+  searchTerm,
+  onSearchButtonClick,
+  onSearchInputChange: onSearchTextChanged,
+}: SearchProps) {
   const [inputValue, setInputValue] = useState(searchTerm ? searchTerm : '');
 
   useEffect(() => {
@@ -22,8 +27,9 @@ export function Search({ searchTerm, onSearchButtonClick }: SearchProps) {
     setInputValue(searchTerm === undefined ? '' : searchTerm);
   }, [searchTerm]);
 
-  const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
+    onSearchTextChanged?.(e.target.value);
   };
 
   const onSubmit = (e: React.FormEvent) => {
@@ -39,7 +45,7 @@ export function Search({ searchTerm, onSearchButtonClick }: SearchProps) {
         type="text"
         placeholder="Search.."
         className="searchbar"
-        onChange={onSearchInputChange}
+        onChange={handleSearchInputChange}
         value={inputValue}
       />
       <button type="submit" className="search-button">
