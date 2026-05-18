@@ -72,3 +72,48 @@ button:focus-visible {
   max-width: 40rem;
   margin: 0 auto;
 }
+
+.app-header {
+  margin-bottom: 1rem;
+}
+
+.app-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.app-nav-link {
+  text-decoration: underline;
+}
+
+.app-main {
+  width: 100%;
+}
+
+.app-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.list-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.list-layout-detail:empty {
+  display: none;
+}
+
+@media (min-width: 960px) {
+  .list-layout {
+    grid-template-columns: 1.5fr 1fr;
+    align-items: start;
+  }
+
+  .list-layout-detail:empty {
+    display: block;
+  }
+}
