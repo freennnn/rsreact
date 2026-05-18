@@ -17,13 +17,6 @@ export function Search({
   const [inputValue, setInputValue] = useState(searchTerm ? searchTerm : '');
 
   useEffect(() => {
-    const saved = localStorage.getItem('SavedSearchTerm');
-    if (saved !== null) {
-      setInputValue(saved.trim());
-    }
-  }, []);
-
-  useEffect(() => {
     setInputValue(searchTerm === undefined ? '' : searchTerm);
   }, [searchTerm]);
 

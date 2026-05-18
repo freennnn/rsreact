@@ -4,6 +4,7 @@ import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
 import { GalleryItem } from '../../components/GalleryItem/GalleryItem';
 import { Loader } from '../../components/Loader/Loader';
 import { Search } from '../../components/Search/Search';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { getRepositores } from '../../services/api';
 import './Gallery.css';
 
@@ -34,11 +35,6 @@ interface GalleryProps {
 
 const ITEMS_PER_PAGE = 3;
 
-function readSavedSearchTerm(): string {
-  const raw = localStorage.getItem('SavedSearchTerm');
-  return raw === null ? '' : raw.trim();
-}
-
 export function Gallery({
   currentPage = 1,
   onPageChange,
@@ -46,9 +42,14 @@ export function Gallery({
   selectedRepositoryId = null,
   onRepositorySelect,
 }: GalleryProps) {
+  const [savedSearchTerm, setSavedSearchTerm] = useLocalStorage<string>(
+    'SavedSearchTerm',
+    ''
+  );
+
   const [state, setState] = useState<GalleryState>({
     results: null,
-    searchTerm: readSavedSearchTerm(),
+    searchTerm: savedSearchTerm.trim(),
     totalCount: 0,
     isLoading: true,
     error: null,
@@ -64,7 +65,7 @@ export function Gallery({
       return;
     }
 
-    localStorage.setItem('SavedSearchTerm', trimmed);
+    setSavedSearchTerm(trimmed);
     setState((prevState) => ({
       ...prevState,
       isLoading: true,
@@ -108,7 +109,7 @@ export function Gallery({
           lastFetchSucceeded: false,
         }));
       });
-  }, []);
+  }, [setSavedSearchTerm]);
 
   const onSearchButtonClick = useCallback(
     (trimmedFromSearch: string) => {
