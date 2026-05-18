@@ -55,61 +55,69 @@ export function Gallery({
     lastRequestedKey: undefined,
     lastFetchSucceeded: false,
   });
-  const lastRequestedKeyRef = useRef<string | undefined>(state.lastRequestedKey);
+  const lastRequestedKeyRef = useRef<string | undefined>(
+    state.lastRequestedKey
+  );
   const lastFetchSucceededRef = useRef(state.lastFetchSucceeded);
   const searchTermRef = useRef(state.searchTerm);
 
-  const fetchRepositories = useCallback((trimmed: string, page: number) => {
-    const requestKey = `${trimmed}|${page}`;
-    if (lastRequestedKeyRef.current === requestKey && lastFetchSucceededRef.current) {
-      return;
-    }
+  const fetchRepositories = useCallback(
+    (trimmed: string, page: number) => {
+      const requestKey = `${trimmed}|${page}`;
+      if (
+        lastRequestedKeyRef.current === requestKey &&
+        lastFetchSucceededRef.current
+      ) {
+        return;
+      }
 
-    setSavedSearchTerm(trimmed);
-    setState((prevState) => ({
-      ...prevState,
-      isLoading: true,
-      error: null,
-      searchTerm: trimmed,
-      results: null,
-    }));
+      setSavedSearchTerm(trimmed);
+      setState((prevState) => ({
+        ...prevState,
+        isLoading: true,
+        error: null,
+        searchTerm: trimmed,
+        results: null,
+      }));
 
-    getRepositores(trimmed, page)
-      .then((data) => {
-        const items = (data.items ?? []).map((item) => ({
-          id: item.id,
-          name: item.name,
-          description: item.description ?? '',
-          language: item.language ?? '',
-        }));
-        lastRequestedKeyRef.current = requestKey;
-        lastFetchSucceededRef.current = true;
-        setState((prevState) => ({
-          ...prevState,
-          results: items,
-          totalCount: data.total_count ?? 0,
-          isLoading: false,
-          error: null,
-          lastRequestedKey: requestKey,
-          lastFetchSucceeded: true,
-        }));
-      })
-      .catch((err: unknown) => {
-        const message =
-          err instanceof Error ? err.message : 'Something went wrong.';
-        lastRequestedKeyRef.current = requestKey;
-        lastFetchSucceededRef.current = false;
-        setState((prevState) => ({
-          ...prevState,
-          isLoading: false,
-          error: message,
-          totalCount: 0,
-          results: null,
-          lastRequestedKey: requestKey,
-          lastFetchSucceeded: false,
-        }));
-      });
-  }, [setSavedSearchTerm]);
+      getRepositores(trimmed, page)
+        .then((data) => {
+          const items = (data.items ?? []).map((item) => ({
+            id: item.id,
+            name: item.name,
+            description: item.description ?? '',
+            language: item.language ?? '',
+          }));
+          lastRequestedKeyRef.current = requestKey;
+          lastFetchSucceededRef.current = true;
+          setState((prevState) => ({
+            ...prevState,
+            results: items,
+            totalCount: data.total_count ?? 0,
+            isLoading: false,
+            error: null,
+            lastRequestedKey: requestKey,
+            lastFetchSucceeded: true,
+          }));
+        })
+        .catch((err: unknown) => {
+          const message =
+            err instanceof Error ? err.message : 'Something went wrong.';
+          lastRequestedKeyRef.current = requestKey;
+          lastFetchSucceededRef.current = false;
+          setState((prevState) => ({
+            ...prevState,
+            isLoading: false,
+            error: message,
+            totalCount: 0,
+            results: null,
+            lastRequestedKey: requestKey,
+            lastFetchSucceeded: false,
+          }));
+        });
+    },
+    [setSavedSearchTerm]
+  );
 
   const onSearchButtonClick = useCallback(
     (trimmedFromSearch: string) => {

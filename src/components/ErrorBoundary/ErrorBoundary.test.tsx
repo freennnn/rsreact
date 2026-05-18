@@ -1,51 +1,51 @@
-import { vi } from 'vitest'
+import { vi } from 'vitest';
 
-import { renderWithUser, screen, waitFor } from '../../test-utils/render'
-import { ErrorButton } from '../ErrorButton/ErrorButton'
-import { ErrorBoundary } from './ErrorBoundary'
+import { renderWithUser, screen, waitFor } from '../../test-utils/render';
+import { ErrorButton } from '../ErrorButton/ErrorButton';
+import { ErrorBoundary } from './ErrorBoundary';
 
 describe('ErrorBoundary', () => {
   it('shows fallback UI and logs the error when ErrorButton throws', async () => {
     const consoleErrorSpy = vi
       .spyOn(console, 'error')
-      .mockImplementation(() => undefined)
+      .mockImplementation(() => undefined);
     const { user } = renderWithUser(
       <ErrorBoundary>
         <ErrorButton>Generate Error</ErrorButton>
       </ErrorBoundary>
-    )
+    );
 
-    await user.click(screen.getByRole('button', { name: 'Generate Error' }))
+    await user.click(screen.getByRole('button', { name: 'Generate Error' }));
 
     expect(
       await screen.findByRole('heading', { name: 'Something went wrong!' })
-    ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Reset' })).toBeInTheDocument()
-    expect(consoleErrorSpy).toHaveBeenCalled()
-  })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Reset' })).toBeInTheDocument();
+    expect(consoleErrorSpy).toHaveBeenCalled();
+  });
 
   it('restores the children after reset', async () => {
-    vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const { user } = renderWithUser(
       <ErrorBoundary>
         <ErrorButton>Generate Error</ErrorButton>
       </ErrorBoundary>
-    )
+    );
 
-    await user.click(screen.getByRole('button', { name: 'Generate Error' }))
+    await user.click(screen.getByRole('button', { name: 'Generate Error' }));
     expect(
       await screen.findByRole('heading', { name: 'Something went wrong!' })
-    ).toBeInTheDocument()
+    ).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: 'Reset' }))
+    await user.click(screen.getByRole('button', { name: 'Reset' }));
 
     await waitFor(() => {
       expect(
         screen.getByRole('button', { name: 'Generate Error' })
-      ).toBeInTheDocument()
-    })
+      ).toBeInTheDocument();
+    });
     expect(
       screen.queryByRole('heading', { name: 'Something went wrong!' })
-    ).not.toBeInTheDocument()
-  })
-})
+    ).not.toBeInTheDocument();
+  });
+});

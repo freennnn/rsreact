@@ -11,7 +11,10 @@ import { useEffect, useState } from 'react';
 
 import { Loader } from './components/Loader/Loader';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
-import { getRepositoryById, type GitHubRepositoryDetails } from './services/api';
+import {
+  getRepositoryById,
+  type GitHubRepositoryDetails,
+} from './services/api';
 import { Gallery } from './views/Gallery/Gallery';
 
 function RootLayout() {
@@ -91,7 +94,10 @@ function ListLayout() {
           onRepositorySelect={onRepositorySelect}
         />
       </section>
-      <section className="list-layout-detail" aria-label="Repository detail panel">
+      <section
+        className="list-layout-detail"
+        aria-label="Repository detail panel"
+      >
         {selectedRepositoryId !== null ? (
           <DetailsPanel
             detailsId={selectedRepositoryId}
@@ -113,7 +119,11 @@ function AboutPage() {
       <h1>About</h1>
       <p>Author: Alex Frinster</p>
       <p>
-        <a href="https://rs.school/courses/reactjs" target="_blank" rel="noreferrer">
+        <a
+          href="https://rs.school/courses/reactjs"
+          target="_blank"
+          rel="noreferrer"
+        >
           RS School React course
         </a>
       </p>
@@ -160,7 +170,10 @@ function DetailsPanel({ detailsId, onClose }: DetailsPanelProps) {
   }, [detailsId]);
 
   return (
-    <aside className="app-page details-panel" aria-label="Selected repository details">
+    <aside
+      className="app-page details-panel"
+      aria-label="Selected repository details"
+    >
       <button type="button" className="details-panel-close" onClick={onClose}>
         Close
       </button>

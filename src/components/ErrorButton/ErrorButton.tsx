@@ -19,9 +19,7 @@ export function ErrorButton({ children }: ErrorButtonProps) {
   return (
     <button
       type="button"
-      onClick={() =>
-        setShouldProduceErrorInRender((prevState) => !prevState)
-      }
+      onClick={() => setShouldProduceErrorInRender((prevState) => !prevState)}
       className="error-button"
     >
       {children}

@@ -1,21 +1,21 @@
-import { vi } from 'vitest'
+import { vi } from 'vitest';
 
-import { getRepositores } from './api'
+import { getRepositores } from './api';
 
 function createMockResponse({
   ok,
   status,
   json,
 }: {
-  ok: boolean
-  status: number
-  json: () => Promise<unknown>
+  ok: boolean;
+  status: number;
+  json: () => Promise<unknown>;
 }): Response {
   return {
     ok,
     status,
     json,
-  } as Response
+  } as Response;
 }
 
 describe('getRepositores', () => {
@@ -26,14 +26,14 @@ describe('getRepositores', () => {
         status: 200,
         json: async () => ({ items: [] }),
       })
-    )
+    );
 
-    await getRepositores('')
+    await getRepositores('');
 
     expect(fetchSpy).toHaveBeenCalledWith(
       'https://api.github.com/search/repositories?q=allitems&page=1&per_page=3'
-    )
-  })
+    );
+  });
 
   it('encodes the search term in the request URL', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
@@ -42,14 +42,14 @@ describe('getRepositores', () => {
         status: 200,
         json: async () => ({ items: [] }),
       })
-    )
+    );
 
-    await getRepositores('react query')
+    await getRepositores('react query');
 
     expect(fetchSpy).toHaveBeenCalledWith(
       'https://api.github.com/search/repositories?q=react%20query&page=1&per_page=3'
-    )
-  })
+    );
+  });
 
   it('returns parsed data on a successful response', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
@@ -67,7 +67,7 @@ describe('getRepositores', () => {
           ],
         }),
       })
-    )
+    );
 
     await expect(getRepositores('tanstack')).resolves.toEqual({
       items: [
@@ -78,8 +78,8 @@ describe('getRepositores', () => {
           language: 'TypeScript',
         },
       ],
-    })
-  })
+    });
+  });
 
   it('throws the API message for non-ok responses', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
@@ -88,12 +88,12 @@ describe('getRepositores', () => {
         status: 403,
         json: async () => ({ message: 'API rate limit exceeded' }),
       })
-    )
+    );
 
     await expect(getRepositores('tanstack')).rejects.toThrow(
       'API rate limit exceeded'
-    )
-  })
+    );
+  });
 
   it('falls back to the status code when the error body cannot be parsed', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
@@ -101,13 +101,13 @@ describe('getRepositores', () => {
         ok: false,
         status: 500,
         json: async () => {
-          throw new Error('Invalid JSON')
+          throw new Error('Invalid JSON');
         },
       })
-    )
+    );
 
     await expect(getRepositores('tanstack')).rejects.toThrow(
       'Request failed (500)'
-    )
-  })
-})
+    );
+  });
+});
