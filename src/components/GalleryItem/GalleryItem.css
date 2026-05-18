@@ -1,4 +1,12 @@
 .GalleryItem {
   background-color: bisque;
   padding: 0 20px 0 20px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #e6d0b6;
+  border-radius: 8px;
+}
+
+.GalleryItem--selected {
+  border-color: #8fa3b0;
 }

@@ -14,6 +14,18 @@ export interface GitHubSearchResponse {
   }>;
 }
 
+export interface GitHubRepositoryDetails {
+  id: number;
+  full_name: string;
+  description: string | null;
+  language: string | null;
+  stargazers_count: number;
+  html_url: string;
+  owner: {
+    login: string;
+  };
+}
+
 // GitHub search API does not allow an empty query; use a default token instead.
 export async function getRepositores(
   searchTerm: string,
@@ -42,4 +54,28 @@ export async function getRepositores(
   }
 
   return body as GitHubSearchResponse;
+}
+
+export async function getRepositoryById(
+  detailsId: number
+): Promise<GitHubRepositoryDetails> {
+  const response = await fetch(`${PATH_BASE}/repositories/${detailsId}`);
+
+  let body: unknown = null;
+  try {
+    body = await response.json();
+  } catch {
+    body = null;
+  }
+
+  if (!response.ok) {
+    const payload = body as { message?: string } | null;
+    const message =
+      typeof payload?.message === 'string'
+        ? payload.message
+        : `Request failed (${response.status})`;
+    throw new Error(message);
+  }
+
+  return body as GitHubRepositoryDetails;
 }

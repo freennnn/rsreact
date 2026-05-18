@@ -1,14 +1,30 @@
 import { Repository } from '../../views/Gallery/Gallery';
 import './GalleryItem.css';
 
-type GalleryItemProps = Repository;
+interface GalleryItemProps extends Repository {
+  isSelected?: boolean;
+  onSelect?(): void;
+}
 
-export function GalleryItem({ name, description, language }: GalleryItemProps) {
+export function GalleryItem({
+  name,
+  description,
+  language,
+  isSelected = false,
+  onSelect,
+}: GalleryItemProps) {
   return (
-    <div className="GalleryItem">
+    <button
+      type="button"
+      className={`GalleryItem ${isSelected ? 'GalleryItem--selected' : ''}`}
+      onClick={(event) => {
+        event.stopPropagation();
+        onSelect?.();
+      }}
+    >
       <p>{name}</p>
       <p>{description}</p>
       <p>{language}</p>
-    </div>
+    </button>
   );
 }

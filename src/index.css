@@ -107,6 +107,26 @@ button:focus-visible {
   display: none;
 }
 
+.details-panel {
+  border: 1px solid #8fa3b0;
+  border-radius: 8px;
+  background-color: #eef4f8;
+}
+
+.details-panel-close {
+  margin-bottom: 0.5rem;
+}
+
+.details-panel-loader {
+  display: flex;
+  justify-content: center;
+  min-height: 80px;
+}
+
+.details-panel-error {
+  color: #7a1f1f;
+}
+
 @media (min-width: 960px) {
   .list-layout {
     grid-template-columns: 1.5fr 1fr;

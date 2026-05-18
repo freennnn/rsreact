@@ -28,6 +28,8 @@ interface GalleryProps {
   currentPage?: number;
   onPageChange?(nextPage: number): void;
   onSearchInputChange?(): void;
+  selectedRepositoryId?: number | null;
+  onRepositorySelect?(repositoryId: number): void;
 }
 
 const ITEMS_PER_PAGE = 3;
@@ -41,6 +43,8 @@ export function Gallery({
   currentPage = 1,
   onPageChange,
   onSearchInputChange,
+  selectedRepositoryId = null,
+  onRepositorySelect,
 }: GalleryProps) {
   const [state, setState] = useState<GalleryState>({
     results: null,
@@ -159,6 +163,8 @@ export function Gallery({
                       name={item.name}
                       description={item.description}
                       language={item.language}
+                      isSelected={selectedRepositoryId === item.id}
+                      onSelect={() => onRepositorySelect?.(item.id)}
                     />
                   </li>
                 ))}
