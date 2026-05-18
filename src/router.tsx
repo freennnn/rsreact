@@ -44,6 +44,19 @@ function ListLayout() {
   const { page, details } = listRoute.useSearch();
   const selectedRepositoryId = details ?? null;
 
+  useEffect(() => {
+    const rawPage = new URLSearchParams(window.location.search).get('page');
+    const parsedPage = rawPage === null ? Number.NaN : Number(rawPage);
+    const hasValidPageParam = Number.isInteger(parsedPage) && parsedPage > 0;
+
+    if (!hasValidPageParam) {
+      navigate({
+        search: (prev) => ({ ...prev, page }),
+        replace: true,
+      });
+    }
+  }, [navigate, page]);
+
   const onPageChange = (nextPage: number) => {
     const safePage = nextPage < 1 ? 1 : nextPage;
     navigate({
