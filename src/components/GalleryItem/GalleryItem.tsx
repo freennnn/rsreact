@@ -1,18 +1,14 @@
-import React from 'react';
-
 import { Repository } from '../../views/Gallery/Gallery';
 import './GalleryItem.css';
 
 type GalleryItemProps = Repository;
 
-export class GalleryItem extends React.Component<GalleryItemProps> {
-  render() {
-    return (
-      <div className="GalleryItem">
-        <p>{this.props.name}</p>
-        <p>{this.props.description}</p>
-        <p>{this.props.language}</p>
-      </div>
-    );
-  }
+export function GalleryItem({ name, description, language }: GalleryItemProps) {
+  return (
+    <div className="GalleryItem">
+      <p>{name}</p>
+      <p>{description}</p>
+      <p>{language}</p>
+    </div>
+  );
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 
 import { ErrorButton } from '../ErrorButton/ErrorButton';
 import './Search.css';
@@ -8,54 +8,44 @@ interface SearchProps {
   onSearchButtonClick(trimmedTerm: string): void;
 }
 
-export class Search extends React.Component<SearchProps> {
-  state = {
-    searchTerm: this.props.searchTerm ? this.props.searchTerm : '',
-  };
+export function Search({ searchTerm, onSearchButtonClick }: SearchProps) {
+  const [inputValue, setInputValue] = useState(searchTerm ? searchTerm : '');
 
-  componentDidMount(): void {
+  useEffect(() => {
     const saved = localStorage.getItem('SavedSearchTerm');
     if (saved !== null) {
-      this.setState({ searchTerm: saved.trim() });
+      setInputValue(saved.trim());
     }
-  }
+  }, []);
 
-  componentDidUpdate(prevProps: SearchProps): void {
-    if (this.props.searchTerm !== prevProps.searchTerm) {
-      const next =
-        this.props.searchTerm === undefined ? '' : this.props.searchTerm;
-      if (next !== this.state.searchTerm) {
-        this.setState({ searchTerm: next });
-      }
-    }
-  }
+  useEffect(() => {
+    setInputValue(searchTerm === undefined ? '' : searchTerm);
+  }, [searchTerm]);
 
-  onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchTerm: e.target.value });
+  const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
   };
 
-  onSubmit = (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmed = this.state.searchTerm.trim();
-    this.setState({ searchTerm: trimmed });
-    this.props.onSearchButtonClick(trimmed);
+    const trimmed = inputValue.trim();
+    setInputValue(trimmed);
+    onSearchButtonClick(trimmed);
   };
 
-  render() {
-    return (
-      <form onSubmit={this.onSubmit} className="search-form">
-        <input
-          type="text"
-          placeholder="Search.."
-          className="searchbar"
-          onChange={this.onSearchInputChange}
-          value={this.state.searchTerm}
-        />
-        <button type="submit" className="search-button">
-          Search
-        </button>
-        <ErrorButton>Generate Error</ErrorButton>
-      </form>
-    );
-  }
+  return (
+    <form onSubmit={onSubmit} className="search-form">
+      <input
+        type="text"
+        placeholder="Search.."
+        className="searchbar"
+        onChange={onSearchInputChange}
+        value={inputValue}
+      />
+      <button type="submit" className="search-button">
+        Search
+      </button>
+      <ErrorButton>Generate Error</ErrorButton>
+    </form>
+  );
 }

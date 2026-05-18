@@ -1,4 +1,4 @@
-import React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
 import { GalleryItem } from '../../components/GalleryItem/GalleryItem';
@@ -28,31 +28,36 @@ function readSavedSearchTerm(): string {
   return raw === null ? '' : raw.trim();
 }
 
-export class Gallery extends React.Component {
-  state: GalleryState = {
+export function Gallery() {
+  const [state, setState] = useState<GalleryState>({
     results: null,
     searchTerm: readSavedSearchTerm(),
     isLoading: true,
     error: null,
     lastRequestedTrimmed: undefined,
     lastFetchSucceeded: false,
-  };
+  });
+  const lastRequestedTrimmedRef = useRef<string | undefined>(
+    state.lastRequestedTrimmed
+  );
+  const lastFetchSucceededRef = useRef(state.lastFetchSucceeded);
 
-  fetchRepositories = (trimmed: string) => {
+  const fetchRepositories = useCallback((trimmed: string) => {
     if (
-      this.state.lastRequestedTrimmed === trimmed &&
-      this.state.lastFetchSucceeded
+      lastRequestedTrimmedRef.current === trimmed &&
+      lastFetchSucceededRef.current
     ) {
       return;
     }
 
     localStorage.setItem('SavedSearchTerm', trimmed);
-    this.setState({
+    setState((prevState) => ({
+      ...prevState,
       isLoading: true,
       error: null,
       searchTerm: trimmed,
       results: null,
-    });
+    }));
 
     getRepositores(trimmed)
       .then((data) => {
@@ -62,87 +67,91 @@ export class Gallery extends React.Component {
           description: item.description ?? '',
           language: item.language ?? '',
         }));
-        this.setState({
+        lastRequestedTrimmedRef.current = trimmed;
+        lastFetchSucceededRef.current = true;
+        setState((prevState) => ({
+          ...prevState,
           results: items,
           isLoading: false,
           error: null,
           lastRequestedTrimmed: trimmed,
           lastFetchSucceeded: true,
-        });
+        }));
       })
       .catch((err: unknown) => {
         const message =
           err instanceof Error ? err.message : 'Something went wrong.';
-        this.setState({
+        lastRequestedTrimmedRef.current = trimmed;
+        lastFetchSucceededRef.current = false;
+        setState((prevState) => ({
+          ...prevState,
           isLoading: false,
           error: message,
           results: null,
           lastRequestedTrimmed: trimmed,
           lastFetchSucceeded: false,
-        });
+        }));
       });
-  };
+  }, []);
 
-  onSearchButtonClick = (trimmedFromSearch: string) => {
-    this.fetchRepositories(trimmedFromSearch);
-  };
+  const onSearchButtonClick = useCallback(
+    (trimmedFromSearch: string) => {
+      fetchRepositories(trimmedFromSearch);
+    },
+    [fetchRepositories]
+  );
 
-  componentDidMount(): void {
-    this.fetchRepositories(this.state.searchTerm);
-  }
+  useEffect(() => {
+    fetchRepositories(state.searchTerm);
+  }, [fetchRepositories, state.searchTerm]);
 
-  render() {
-    return (
-      <ErrorBoundary>
-        <div className="GalleryView">
-          <section
-            className="gallery-search-section"
-            aria-label="Search repositories"
-          >
-            <Search
-              searchTerm={this.state.searchTerm}
-              onSearchButtonClick={this.onSearchButtonClick}
-            />
-          </section>
-          <section
-            className="gallery-results-section"
-            aria-label="Search results"
-          >
-            {this.state.isLoading ? (
-              <div
-                className="gallery-results-loader"
-                role="status"
-                aria-live="polite"
-              >
-                <Loader />
-              </div>
-            ) : null}
-            {!this.state.isLoading && this.state.error ? (
-              <div className="gallery-error" role="alert">
-                {this.state.error}
-              </div>
-            ) : null}
-            {!this.state.isLoading && !this.state.error ? (
-              this.state.results && this.state.results.length > 0 ? (
-                <ul className="gallery-results-list">
-                  {this.state.results.map((item) => (
-                    <li key={item.id} className="gallery-results-list-item">
-                      <GalleryItem
-                        id={item.id}
-                        name={item.name}
-                        description={item.description}
-                        language={item.language}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="gallery-empty">No repositories loaded.</p>
-              )
-            ) : null}
-          </section>
-        </div>
-      </ErrorBoundary>
-    );
-  }
+  return (
+    <ErrorBoundary>
+      <div className="GalleryView">
+        <section
+          className="gallery-search-section"
+          aria-label="Search repositories"
+        >
+          <Search
+            searchTerm={state.searchTerm}
+            onSearchButtonClick={onSearchButtonClick}
+          />
+        </section>
+        <section className="gallery-results-section" aria-label="Search results">
+          {state.isLoading ? (
+            <div
+              className="gallery-results-loader"
+              role="status"
+              aria-live="polite"
+            >
+              <Loader />
+            </div>
+          ) : null}
+          {!state.isLoading && state.error ? (
+            <div className="gallery-error" role="alert">
+              {state.error}
+            </div>
+          ) : null}
+          {!state.isLoading && !state.error ? (
+            state.results && state.results.length > 0 ? (
+              <ul className="gallery-results-list">
+                {state.results.map((item) => (
+                  <li key={item.id} className="gallery-results-list-item">
+                    <GalleryItem
+                      id={item.id}
+                      name={item.name}
+                      description={item.description}
+                      language={item.language}
+                    />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="gallery-empty">No repositories loaded.</p>
+            )
+          ) : null}
+        </section>
+      </div>
+    </ErrorBoundary>
+  );
 }
