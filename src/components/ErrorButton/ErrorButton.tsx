@@ -1,32 +1,28 @@
-import React from 'react';
+import { useState } from 'react';
 
 import './ErrorButton.css';
 
-export class ErrorButton extends React.Component<{
+interface ErrorButtonProps {
   children: React.ReactNode;
-}> {
-  state = { shouldProduceErrorInRender: false };
+}
 
-  onButtonClick = () => {
-    this.setState({
-      shouldProduceErrorInRender: !this.state.shouldProduceErrorInRender,
-    });
-  };
+export function ErrorButton({ children }: ErrorButtonProps) {
+  const [shouldProduceErrorInRender, setShouldProduceErrorInRender] =
+    useState(false);
 
-  render() {
-    if (this.state.shouldProduceErrorInRender) {
-      throw new Error(
-        'I just wanted some github repos and all they gave me was an Error!'
-      );
-    }
-    return (
-      <button
-        type="button"
-        onClick={this.onButtonClick}
-        className="error-button"
-      >
-        {this.props.children}
-      </button>
+  if (shouldProduceErrorInRender) {
+    throw new Error(
+      'I just wanted some github repos and all they gave me was an Error!'
     );
   }
+
+  return (
+    <button
+      type="button"
+      onClick={() => setShouldProduceErrorInRender((prevState) => !prevState)}
+      className="error-button"
+    >
+      {children}
+    </button>
+  );
 }

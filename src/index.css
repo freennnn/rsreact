@@ -24,10 +24,12 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+#root {
+  width: 100%;
 }
 
 h1 {
@@ -71,4 +73,96 @@ button:focus-visible {
   padding: 1.5rem;
   max-width: 40rem;
   margin: 0 auto;
+}
+
+.app-header {
+  margin-bottom: 1rem;
+}
+
+.app-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.app-nav-link {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  text-decoration: underline;
+}
+
+.app-nav-link:hover {
+  border-color: #8fa3b0;
+}
+
+.app-nav-link.active,
+.app-nav-link[data-status='active'] {
+  text-decoration: none;
+  border-color: #8fa3b0;
+  background-color: #d9e7f0;
+  color: #1e293b;
+}
+
+.app-main {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.app-page {
+  width: 100%;
+  padding: 1rem;
+}
+
+.about-page-panel {
+  width: min(100%, 576px);
+  box-sizing: border-box;
+  margin: 0 auto;
+  border: 1px solid #8fa3b0;
+  border-radius: 8px;
+  background-color: #eef4f8;
+  min-height: 360px;
+}
+
+.list-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.list-layout-detail:empty {
+  display: none;
+}
+
+.list-layout-detail {
+  padding-top: 1rem;
+}
+
+.details-panel {
+  border: 1px solid #8fa3b0;
+  border-radius: 8px;
+  background-color: #eef4f8;
+}
+
+.details-panel-close {
+  margin-bottom: 0.5rem;
+}
+
+.details-panel-loader {
+  display: flex;
+  justify-content: center;
+  min-height: 80px;
+}
+
+.details-panel-error {
+  color: #7a1f1f;
+}
+
+@media (min-width: 960px) {
+  .list-layout {
+    grid-template-columns: 1.5fr 1fr;
+    align-items: start;
+  }
 }

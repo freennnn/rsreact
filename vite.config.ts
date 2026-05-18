@@ -17,6 +17,7 @@ export default defineConfig({
         'src/main.tsx',
         'src/setupTests.ts',
         'src/**/*.d.ts',
+        'src/router.tsx',
       ],
       thresholds: {
         statements: 80,

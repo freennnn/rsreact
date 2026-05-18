@@ -1,18 +1,30 @@
-import React from 'react';
-
 import { Repository } from '../../views/Gallery/Gallery';
 import './GalleryItem.css';
 
-type GalleryItemProps = Repository;
+interface GalleryItemProps extends Repository {
+  isSelected?: boolean;
+  onSelect?(): void;
+}
 
-export class GalleryItem extends React.Component<GalleryItemProps> {
-  render() {
-    return (
-      <div className="GalleryItem">
-        <p>{this.props.name}</p>
-        <p>{this.props.description}</p>
-        <p>{this.props.language}</p>
-      </div>
-    );
-  }
+export function GalleryItem({
+  name,
+  description,
+  language,
+  isSelected = false,
+  onSelect,
+}: GalleryItemProps) {
+  return (
+    <button
+      type="button"
+      className={`GalleryItem ${isSelected ? 'GalleryItem--selected' : ''}`}
+      onClick={(event) => {
+        event.stopPropagation();
+        onSelect?.();
+      }}
+    >
+      <p>{name}</p>
+      <p>{description}</p>
+      <p>{language}</p>
+    </button>
+  );
 }

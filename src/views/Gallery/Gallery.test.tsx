@@ -1,29 +1,29 @@
-import { vi } from 'vitest'
+import { vi } from 'vitest';
 
-import { getRepositores, type GitHubSearchResponse } from '../../services/api'
-import { act, renderWithUser, screen, waitFor } from '../../test-utils/render'
-import { createDeferred } from '../../test-utils/deferred'
-import { Gallery } from './Gallery'
+import { getRepositores, type GitHubSearchResponse } from '../../services/api';
+import { act, renderWithUser, screen, waitFor } from '../../test-utils/render';
+import { createDeferred } from '../../test-utils/deferred';
+import { Gallery } from './Gallery';
 
 vi.mock('../../services/api', () => ({
   getRepositores: vi.fn(),
-}))
+}));
 
-const mockedGetRepositores = vi.mocked(getRepositores)
+const mockedGetRepositores = vi.mocked(getRepositores);
 
 function buildResponse(
   items: GitHubSearchResponse['items']
 ): GitHubSearchResponse {
-  return { items }
+  return { items, total_count: items.length };
 }
 
 describe('Gallery', () => {
   beforeEach(() => {
-    mockedGetRepositores.mockReset()
-  })
+    mockedGetRepositores.mockReset();
+  });
 
   it('loads saved search term from localStorage on mount and renders results', async () => {
-    localStorage.setItem('SavedSearchTerm', '  tanstack  ')
+    localStorage.setItem('SavedSearchTerm', '  tanstack  ');
     mockedGetRepositores.mockResolvedValue(
       buildResponse([
         {
@@ -33,28 +33,32 @@ describe('Gallery', () => {
           language: 'TypeScript',
         },
       ])
-    )
+    );
 
-    renderWithUser(<Gallery />)
+    renderWithUser(<Gallery />);
 
-    expect(screen.getByRole('status')).toBeInTheDocument()
-    expect(mockedGetRepositores).toHaveBeenCalledWith('tanstack')
-    expect(await screen.findByDisplayValue('tanstack')).toBeInTheDocument()
-    expect(await screen.findByText('tanstack/query')).toBeInTheDocument()
+    expect(screen.getByRole('status')).toBeInTheDocument();
+    expect(mockedGetRepositores).toHaveBeenCalledWith('tanstack', 1);
+    expect(await screen.findByDisplayValue('tanstack')).toBeInTheDocument();
+    expect(await screen.findByText('tanstack/query')).toBeInTheDocument();
     expect(
       screen.getByText('Powerful async state management')
-    ).toBeInTheDocument()
-    expect(localStorage.getItem('SavedSearchTerm')).toBe('tanstack')
-  })
+    ).toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem('SavedSearchTerm') ?? '""')).toBe(
+      'tanstack'
+    );
+  });
 
   it('keeps the loader visible while the initial request is pending', async () => {
-    const deferred = createDeferred<GitHubSearchResponse>()
-    mockedGetRepositores.mockReturnValue(deferred.promise)
+    const deferred = createDeferred<GitHubSearchResponse>();
+    mockedGetRepositores.mockReturnValue(deferred.promise);
 
-    renderWithUser(<Gallery />)
+    renderWithUser(<Gallery />);
 
-    expect(screen.getByRole('status')).toBeInTheDocument()
-    expect(screen.getByRole('region', { name: 'Search repositories' })).toBeInTheDocument()
+    expect(screen.getByRole('status')).toBeInTheDocument();
+    expect(
+      screen.getByRole('region', { name: 'Search repositories' })
+    ).toBeInTheDocument();
 
     await act(async () => {
       deferred.resolve(
@@ -66,35 +70,37 @@ describe('Gallery', () => {
             language: 'TypeScript',
           },
         ])
-      )
-    })
+      );
+    });
 
-    expect(await screen.findByText('tanstack/router')).toBeInTheDocument()
+    expect(await screen.findByText('tanstack/router')).toBeInTheDocument();
     await waitFor(() => {
-      expect(screen.queryByRole('status')).not.toBeInTheDocument()
-    })
-  })
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    });
+  });
 
   it('renders the empty state when the API returns no items', async () => {
-    mockedGetRepositores.mockResolvedValue(buildResponse([]))
+    mockedGetRepositores.mockResolvedValue(buildResponse([]));
 
-    renderWithUser(<Gallery />)
+    renderWithUser(<Gallery />);
 
     expect(
       await screen.findByText('No repositories loaded.')
-    ).toBeInTheDocument()
-  })
+    ).toBeInTheDocument();
+  });
 
   it('renders an error message when the API request fails', async () => {
-    mockedGetRepositores.mockRejectedValue(new Error('GitHub rate limit exceeded'))
+    mockedGetRepositores.mockRejectedValue(
+      new Error('GitHub rate limit exceeded')
+    );
 
-    renderWithUser(<Gallery />)
+    renderWithUser(<Gallery />);
 
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'GitHub rate limit exceeded'
-    )
-    expect(screen.queryByRole('status')).not.toBeInTheDocument()
-  })
+    );
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
 
   it('trims submitted input, saves it, and fetches new results', async () => {
     mockedGetRepositores
@@ -117,29 +123,31 @@ describe('Gallery', () => {
             language: 'TypeScript',
           },
         ])
-      )
+      );
 
-    const { user } = renderWithUser(<Gallery />)
+    const { user } = renderWithUser(<Gallery />);
 
-    expect(await screen.findByText('initial/repo')).toBeInTheDocument()
+    expect(await screen.findByText('initial/repo')).toBeInTheDocument();
 
-    const input = screen.getByPlaceholderText('Search..')
-    await user.clear(input)
-    await user.type(input, '  react query  ')
-    await user.click(screen.getByRole('button', { name: 'Search' }))
+    const input = screen.getByPlaceholderText('Search..');
+    await user.clear(input);
+    await user.type(input, '  react query  ');
+    await user.click(screen.getByRole('button', { name: 'Search' }));
 
     await waitFor(() => {
-      expect(mockedGetRepositores).toHaveBeenLastCalledWith('react query')
-    })
+      expect(mockedGetRepositores).toHaveBeenLastCalledWith('react query', 1);
+    });
     await waitFor(() => {
-      expect(screen.getByDisplayValue('react query')).toBeInTheDocument()
-    })
-    expect(localStorage.getItem('SavedSearchTerm')).toBe('react query')
-    expect(await screen.findByText('react/query')).toBeInTheDocument()
-  })
+      expect(screen.getByDisplayValue('react query')).toBeInTheDocument();
+    });
+    expect(JSON.parse(localStorage.getItem('SavedSearchTerm') ?? '""')).toBe(
+      'react query'
+    );
+    expect(await screen.findByText('react/query')).toBeInTheDocument();
+  });
 
   it('does not fetch again when the same successful search is submitted', async () => {
-    localStorage.setItem('SavedSearchTerm', 'tanstack')
+    localStorage.setItem('SavedSearchTerm', 'tanstack');
     mockedGetRepositores.mockResolvedValue(
       buildResponse([
         {
@@ -149,22 +157,22 @@ describe('Gallery', () => {
           language: 'TypeScript',
         },
       ])
-    )
+    );
 
-    const { user } = renderWithUser(<Gallery />)
+    const { user } = renderWithUser(<Gallery />);
 
-    expect(await screen.findByText('tanstack/table')).toBeInTheDocument()
-    expect(mockedGetRepositores).toHaveBeenCalledTimes(1)
+    expect(await screen.findByText('tanstack/table')).toBeInTheDocument();
+    expect(mockedGetRepositores).toHaveBeenCalledTimes(1);
 
-    await user.click(screen.getByRole('button', { name: 'Search' }))
+    await user.click(screen.getByRole('button', { name: 'Search' }));
 
     await waitFor(() => {
-      expect(mockedGetRepositores).toHaveBeenCalledTimes(1)
-    })
-  })
+      expect(mockedGetRepositores).toHaveBeenCalledTimes(1);
+    });
+  });
 
   it('retries the same search term after a failed request', async () => {
-    localStorage.setItem('SavedSearchTerm', 'tanstack')
+    localStorage.setItem('SavedSearchTerm', 'tanstack');
     mockedGetRepositores
       .mockRejectedValueOnce(new Error('Temporary failure'))
       .mockResolvedValueOnce(
@@ -176,20 +184,20 @@ describe('Gallery', () => {
             language: 'TypeScript',
           },
         ])
-      )
+      );
 
-    const { user } = renderWithUser(<Gallery />)
+    const { user } = renderWithUser(<Gallery />);
 
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'Temporary failure'
-    )
-    expect(mockedGetRepositores).toHaveBeenCalledTimes(1)
+    );
+    expect(mockedGetRepositores).toHaveBeenCalledTimes(1);
 
-    await user.click(screen.getByRole('button', { name: 'Search' }))
+    await user.click(screen.getByRole('button', { name: 'Search' }));
 
     await waitFor(() => {
-      expect(mockedGetRepositores).toHaveBeenCalledTimes(2)
-    })
-    expect(await screen.findByText('tanstack/form')).toBeInTheDocument()
-  })
-})
+      expect(mockedGetRepositores).toHaveBeenCalledTimes(2);
+    });
+    expect(await screen.findByText('tanstack/form')).toBeInTheDocument();
+  });
+});
