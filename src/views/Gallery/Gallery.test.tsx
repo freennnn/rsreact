@@ -14,7 +14,7 @@ const mockedGetRepositores = vi.mocked(getRepositores)
 function buildResponse(
   items: GitHubSearchResponse['items']
 ): GitHubSearchResponse {
-  return { items }
+  return { items, total_count: items.length }
 }
 
 describe('Gallery', () => {
@@ -38,13 +38,15 @@ describe('Gallery', () => {
     renderWithUser(<Gallery />)
 
     expect(screen.getByRole('status')).toBeInTheDocument()
-    expect(mockedGetRepositores).toHaveBeenCalledWith('tanstack')
+    expect(mockedGetRepositores).toHaveBeenCalledWith('tanstack', 1)
     expect(await screen.findByDisplayValue('tanstack')).toBeInTheDocument()
     expect(await screen.findByText('tanstack/query')).toBeInTheDocument()
     expect(
       screen.getByText('Powerful async state management')
     ).toBeInTheDocument()
-    expect(localStorage.getItem('SavedSearchTerm')).toBe('tanstack')
+    expect(JSON.parse(localStorage.getItem('SavedSearchTerm') ?? '""')).toBe(
+      'tanstack'
+    )
   })
 
   it('keeps the loader visible while the initial request is pending', async () => {
@@ -129,12 +131,14 @@ describe('Gallery', () => {
     await user.click(screen.getByRole('button', { name: 'Search' }))
 
     await waitFor(() => {
-      expect(mockedGetRepositores).toHaveBeenLastCalledWith('react query')
+      expect(mockedGetRepositores).toHaveBeenLastCalledWith('react query', 1)
     })
     await waitFor(() => {
       expect(screen.getByDisplayValue('react query')).toBeInTheDocument()
     })
-    expect(localStorage.getItem('SavedSearchTerm')).toBe('react query')
+    expect(
+      JSON.parse(localStorage.getItem('SavedSearchTerm') ?? '""')
+    ).toBe('react query')
     expect(await screen.findByText('react/query')).toBeInTheDocument()
   })
 

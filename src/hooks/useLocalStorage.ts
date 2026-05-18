@@ -10,7 +10,15 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
         return initialValue;
       }
 
-      return JSON.parse(rawValue) as T;
+      try {
+        return JSON.parse(rawValue) as T;
+      } catch {
+        if (typeof initialValue === 'string') {
+          return rawValue as T;
+        }
+
+        return initialValue;
+      }
     } catch {
       return initialValue;
     }

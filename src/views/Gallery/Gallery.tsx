@@ -58,6 +58,7 @@ export function Gallery({
   });
   const lastRequestedKeyRef = useRef<string | undefined>(state.lastRequestedKey);
   const lastFetchSucceededRef = useRef(state.lastFetchSucceeded);
+  const searchTermRef = useRef(state.searchTerm);
 
   const fetchRepositories = useCallback((trimmed: string, page: number) => {
     const requestKey = `${trimmed}|${page}`;
@@ -113,14 +114,19 @@ export function Gallery({
 
   const onSearchButtonClick = useCallback(
     (trimmedFromSearch: string) => {
+      searchTermRef.current = trimmedFromSearch;
       fetchRepositories(trimmedFromSearch, currentPage);
     },
     [currentPage, fetchRepositories]
   );
 
   useEffect(() => {
-    fetchRepositories(state.searchTerm, currentPage);
-  }, [currentPage, fetchRepositories, state.searchTerm]);
+    searchTermRef.current = state.searchTerm;
+  }, [state.searchTerm]);
+
+  useEffect(() => {
+    fetchRepositories(searchTermRef.current, currentPage);
+  }, [currentPage, fetchRepositories]);
 
   const totalPages = Math.max(1, Math.ceil(state.totalCount / ITEMS_PER_PAGE));
   const canGoPrev = currentPage > 1;

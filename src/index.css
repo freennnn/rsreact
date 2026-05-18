@@ -84,7 +84,25 @@ button:focus-visible {
 }
 
 .app-nav-link {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
   text-decoration: underline;
+}
+
+.app-nav-link:hover {
+  border-color: #8fa3b0;
+}
+
+.app-nav-link.active,
+.app-nav-link[data-status='active'] {
+  text-decoration: none;
+  border-color: #8fa3b0;
+  background-color: #d9e7f0;
+  color: #1e293b;
+  pointer-events: none;
+  cursor: default;
 }
 
 .app-main {

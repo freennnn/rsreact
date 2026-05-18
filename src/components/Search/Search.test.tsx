@@ -16,10 +16,10 @@ describe('Search', () => {
     ).toBeInTheDocument()
   })
 
-  it('loads the saved search term from localStorage on mount', async () => {
-    localStorage.setItem('SavedSearchTerm', '  tanstack  ')
-
-    renderWithUser(<Search onSearchButtonClick={vi.fn()} />)
+  it('renders the provided searchTerm prop value', async () => {
+    renderWithUser(
+      <Search searchTerm="tanstack" onSearchButtonClick={vi.fn()} />
+    )
 
     expect(await screen.findByDisplayValue('tanstack')).toBeInTheDocument()
   })
