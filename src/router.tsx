@@ -5,43 +5,41 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
-  useMatchRoute,
   useNavigate,
 } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 import { Loader } from './components/Loader/Loader';
+import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import { getRepositoryById, type GitHubRepositoryDetails } from './services/api';
 import { Gallery } from './views/Gallery/Gallery';
 
 function RootLayout() {
   return (
-    <div>
-      <header className="app-header">
-        <nav className="app-nav" aria-label="Main navigation">
-          <Link to="/" search={{ page: 1 }} className="app-nav-link">
-            Home
-          </Link>
-          <Link to="/about" className="app-nav-link">
-            About
-          </Link>
-        </nav>
-      </header>
-      <main className="app-main">
-        <Outlet />
-      </main>
-    </div>
+    <ErrorBoundary>
+      <div>
+        <header className="app-header">
+          <nav className="app-nav" aria-label="Main navigation">
+            <Link to="/" search={{ page: 1 }} className="app-nav-link">
+              Home
+            </Link>
+            <Link to="/about" className="app-nav-link">
+              About
+            </Link>
+          </nav>
+        </header>
+        <main className="app-main">
+          <Outlet />
+        </main>
+      </div>
+    </ErrorBoundary>
   );
 }
 
 function ListLayout() {
   const navigate = useNavigate({ from: listRoute.fullPath });
-  const matchRoute = useMatchRoute();
-  const { page } = listRoute.useSearch();
-  const detailsMatch = matchRoute({ to: detailsRoute.fullPath });
-  const selectedRepositoryId = detailsMatch
-    ? Number(detailsMatch.detailsId)
-    : null;
+  const { page, details } = listRoute.useSearch();
+  const selectedRepositoryId = details ?? null;
 
   const onPageChange = (nextPage: number) => {
     const safePage = nextPage < 1 ? 1 : nextPage;
@@ -52,21 +50,19 @@ function ListLayout() {
   };
 
   const onSearchInputChange = () => {
-    if (page === 1) {
+    if (page === 1 && selectedRepositoryId === null) {
       return;
     }
 
     navigate({
-      search: (prev) => ({ ...prev, page: 1 }),
+      search: (prev) => ({ ...prev, page: 1, details: undefined }),
       replace: true,
     });
   };
 
   const onRepositorySelect = (repositoryId: number) => {
     navigate({
-      to: detailsRoute.to,
-      params: { detailsId: String(repositoryId) },
-      search: (prev) => ({ ...prev, page }),
+      search: (prev) => ({ ...prev, details: repositoryId }),
     });
   };
 
@@ -76,8 +72,7 @@ function ListLayout() {
     }
 
     navigate({
-      to: listRoute.to,
-      search: (prev) => ({ ...prev, page }),
+      search: (prev) => ({ ...prev, details: undefined }),
     });
   };
 
@@ -97,7 +92,16 @@ function ListLayout() {
         />
       </section>
       <section className="list-layout-detail" aria-label="Repository detail panel">
-        <Outlet />
+        {selectedRepositoryId !== null ? (
+          <DetailsPanel
+            detailsId={selectedRepositoryId}
+            onClose={() =>
+              navigate({
+                search: (prev) => ({ ...prev, details: undefined }),
+              })
+            }
+          />
+        ) : null}
       </section>
     </div>
   );
@@ -105,9 +109,9 @@ function ListLayout() {
 
 function AboutPage() {
   return (
-    <section className="app-page" aria-label="About page">
+    <section className="app-page about-page-panel" aria-label="About page">
       <h1>About</h1>
-      <p>Author: RS React student</p>
+      <p>Author: Alex Frinster</p>
       <p>
         <a href="https://rs.school/courses/reactjs" target="_blank" rel="noreferrer">
           RS School React course
@@ -117,23 +121,24 @@ function AboutPage() {
   );
 }
 
-function DetailsPanel() {
-  const navigate = useNavigate({ from: detailsRoute.fullPath });
-  const { page } = listRoute.useSearch();
-  const { detailsId } = detailsRoute.useParams();
+interface DetailsPanelProps {
+  detailsId: number;
+  onClose(): void;
+}
+
+function DetailsPanel({ detailsId, onClose }: DetailsPanelProps) {
   const [details, setDetails] = useState<GitHubRepositoryDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const repositoryId = Number(detailsId);
     let isCancelled = false;
 
     setIsLoading(true);
     setError(null);
     setDetails(null);
 
-    getRepositoryById(repositoryId)
+    getRepositoryById(detailsId)
       .then((payload) => {
         if (!isCancelled) {
           setDetails(payload);
@@ -153,13 +158,6 @@ function DetailsPanel() {
       isCancelled = true;
     };
   }, [detailsId]);
-
-  const onClose = () => {
-    navigate({
-      to: listRoute.to,
-      search: (prev) => ({ ...prev, page }),
-    });
-  };
 
   return (
     <aside className="app-page details-panel" aria-label="Selected repository details">
@@ -228,16 +226,13 @@ const listRoute = createRoute({
   validateSearch: (search: Record<string, unknown>) => {
     const rawPage = Number(search.page);
     const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1;
+    const rawDetails = Number(search.details);
+    const details =
+      Number.isInteger(rawDetails) && rawDetails > 0 ? rawDetails : undefined;
 
-    return { page };
+    return { page, details };
   },
   component: ListLayout,
-});
-
-const detailsRoute = createRoute({
-  getParentRoute: () => listRoute,
-  path: 'details/$detailsId',
-  component: DetailsPanel,
 });
 
 const aboutRoute = createRoute({
@@ -246,10 +241,7 @@ const aboutRoute = createRoute({
   component: AboutPage,
 });
 
-const routeTree = rootRoute.addChildren([
-  listRoute.addChildren([detailsRoute]),
-  aboutRoute,
-]);
+const routeTree = rootRoute.addChildren([listRoute, aboutRoute]);
 
 export const router = createRouter({ routeTree });
 

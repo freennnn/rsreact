@@ -24,10 +24,12 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+#root {
+  width: 100%;
 }
 
 h1 {
@@ -101,18 +103,27 @@ button:focus-visible {
   border-color: #8fa3b0;
   background-color: #d9e7f0;
   color: #1e293b;
-  pointer-events: none;
-  cursor: default;
 }
 
 .app-main {
   width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 .app-page {
-  max-width: 960px;
-  margin: 0 auto;
+  width: 100%;
   padding: 1rem;
+}
+
+.about-page-panel {
+  width: min(100%, 576px);
+  box-sizing: border-box;
+  margin: 0 auto;
+  border: 1px solid #8fa3b0;
+  border-radius: 8px;
+  background-color: #eef4f8;
+  min-height: 360px;
 }
 
 .list-layout {
@@ -149,9 +160,5 @@ button:focus-visible {
   .list-layout {
     grid-template-columns: 1.5fr 1fr;
     align-items: start;
-  }
-
-  .list-layout-detail:empty {
-    display: block;
   }
 }

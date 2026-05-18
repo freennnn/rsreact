@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
 import { GalleryItem } from '../../components/GalleryItem/GalleryItem';
 import { Loader } from '../../components/Loader/Loader';
 import { Search } from '../../components/Search/Search';
@@ -133,76 +132,74 @@ export function Gallery({
   const canGoNext = currentPage < totalPages;
 
   return (
-    <ErrorBoundary>
-      <div className="GalleryView">
-        <section
-          className="gallery-search-section"
-          aria-label="Search repositories"
-        >
-          <Search
-            searchTerm={state.searchTerm}
-            onSearchButtonClick={onSearchButtonClick}
-            onSearchInputChange={onSearchInputChange}
-          />
-        </section>
-        <section className="gallery-results-section" aria-label="Search results">
-          {state.isLoading ? (
-            <div
-              className="gallery-results-loader"
-              role="status"
-              aria-live="polite"
+    <div className="GalleryView">
+      <section
+        className="gallery-search-section"
+        aria-label="Search repositories"
+      >
+        <Search
+          searchTerm={state.searchTerm}
+          onSearchButtonClick={onSearchButtonClick}
+          onSearchInputChange={onSearchInputChange}
+        />
+      </section>
+      <section className="gallery-results-section" aria-label="Search results">
+        {state.isLoading ? (
+          <div
+            className="gallery-results-loader"
+            role="status"
+            aria-live="polite"
+          >
+            <Loader />
+          </div>
+        ) : null}
+        {!state.isLoading && state.error ? (
+          <div className="gallery-error" role="alert">
+            {state.error}
+          </div>
+        ) : null}
+        {!state.isLoading && !state.error ? (
+          state.results && state.results.length > 0 ? (
+            <ul className="gallery-results-list">
+              {state.results.map((item) => (
+                <li key={item.id} className="gallery-results-list-item">
+                  <GalleryItem
+                    id={item.id}
+                    name={item.name}
+                    description={item.description}
+                    language={item.language}
+                    isSelected={selectedRepositoryId === item.id}
+                    onSelect={() => onRepositorySelect?.(item.id)}
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="gallery-empty">No repositories loaded.</p>
+          )
+        ) : null}
+        {!state.isLoading && !state.error && state.results ? (
+          <nav className="gallery-pagination" aria-label="Results pagination">
+            <button
+              type="button"
+              onClick={() => onPageChange?.(currentPage - 1)}
+              disabled={!canGoPrev}
             >
-              <Loader />
-            </div>
-          ) : null}
-          {!state.isLoading && state.error ? (
-            <div className="gallery-error" role="alert">
-              {state.error}
-            </div>
-          ) : null}
-          {!state.isLoading && !state.error ? (
-            state.results && state.results.length > 0 ? (
-              <ul className="gallery-results-list">
-                {state.results.map((item) => (
-                  <li key={item.id} className="gallery-results-list-item">
-                    <GalleryItem
-                      id={item.id}
-                      name={item.name}
-                      description={item.description}
-                      language={item.language}
-                      isSelected={selectedRepositoryId === item.id}
-                      onSelect={() => onRepositorySelect?.(item.id)}
-                    />
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="gallery-empty">No repositories loaded.</p>
-            )
-          ) : null}
-          {!state.isLoading && !state.error && state.results ? (
-            <nav className="gallery-pagination" aria-label="Results pagination">
-              <button
-                type="button"
-                onClick={() => onPageChange?.(currentPage - 1)}
-                disabled={!canGoPrev}
-              >
-                Previous
-              </button>
-              <span className="gallery-pagination-current">
-                Page {currentPage} of {totalPages}
-              </span>
-              <button
-                type="button"
-                onClick={() => onPageChange?.(currentPage + 1)}
-                disabled={!canGoNext}
-              >
-                Next
-              </button>
-            </nav>
-          ) : null}
-        </section>
-      </div>
-    </ErrorBoundary>
+              Previous
+            </button>
+            <span className="gallery-pagination-current">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              type="button"
+              onClick={() => onPageChange?.(currentPage + 1)}
+              disabled={!canGoNext}
+            >
+              Next
+            </button>
+          </nav>
+        ) : null}
+      </section>
+    </div>
   );
 }
