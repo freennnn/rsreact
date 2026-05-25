@@ -18,7 +18,12 @@ export function GalleryItem({
 }: GalleryItemProps) {
   return (
     <div className={`GalleryItem ${isSelected ? 'GalleryItem--selected' : ''}`}>
-      <label className="GalleryItem-checkbox-label">
+      <label
+        className="GalleryItem-checkbox-label"
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
+      >
         <input
           type="checkbox"
           className="GalleryItem-checkbox"

@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { Loader } from './components/Loader/Loader';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import { SelectedItemsFlyout } from './components/SelectedItemsFlyout/SelectedItemsFlyout';
+import { ThemeSwitcher } from './components/ThemeSwitcher/ThemeSwitcher';
 import { selectionSelectors, useSelectionStore } from './store/selectionStore';
 import { downloadSelectedItemsCsv } from './utils/downloadSelectedItemsCsv';
 import {
@@ -23,7 +24,7 @@ import { Gallery } from './views/Gallery/Gallery';
 function RootLayout() {
   return (
     <ErrorBoundary>
-      <div>
+      <div className="app-shell">
         <header className="app-header">
           <nav className="app-nav" aria-label="Main navigation">
             <Link
@@ -36,6 +37,7 @@ function RootLayout() {
             <Link to="/about" className="app-nav-link">
               About
             </Link>
+            <ThemeSwitcher />
           </nav>
         </header>
         <main className="app-main">
