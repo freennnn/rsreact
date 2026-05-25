@@ -188,6 +188,8 @@ export function Gallery({
                     name={item.name}
                     description={item.description}
                     language={item.language}
+                    htmlUrl={item.htmlUrl}
+                    detailsUrl={item.detailsUrl}
                     isSelected={selectedRepositoryIds.includes(item.id)}
                     onOpenDetails={() => onRepositoryOpen?.(item.id)}
                     onToggleSelection={() => toggleRepositorySelection(item)}

@@ -3,6 +3,11 @@ import { vi } from 'vitest';
 import { renderWithUser, screen } from '../../test-utils/render';
 import { GalleryItem } from './GalleryItem';
 
+const repositoryUrls = {
+  htmlUrl: 'https://github.com/tanstack/query',
+  detailsUrl: 'https://github.com/tanstack/query',
+};
+
 describe('GalleryItem', () => {
   it('renders repository name, description, language, and checkbox', () => {
     renderWithUser(
@@ -11,6 +16,7 @@ describe('GalleryItem', () => {
         name="tanstack/query"
         description="Powerful async state management"
         language="TypeScript"
+        {...repositoryUrls}
       />
     );
 
@@ -33,6 +39,7 @@ describe('GalleryItem', () => {
         name="tanstack/query"
         description="Powerful async state management"
         language="TypeScript"
+        {...repositoryUrls}
         onOpenDetails={onOpenDetails}
         onToggleSelection={onToggleSelection}
       />
@@ -55,6 +62,7 @@ describe('GalleryItem', () => {
         name="tanstack/query"
         description="Powerful async state management"
         language="TypeScript"
+        {...repositoryUrls}
         onOpenDetails={onOpenDetails}
         onToggleSelection={onToggleSelection}
       />
