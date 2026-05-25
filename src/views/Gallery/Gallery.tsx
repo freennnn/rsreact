@@ -16,6 +16,8 @@ export interface Repository {
   name: string;
   description: string;
   language: string;
+  htmlUrl: string;
+  detailsUrl: string;
 }
 
 interface GalleryState {
@@ -95,6 +97,8 @@ export function Gallery({
             name: item.name,
             description: item.description ?? '',
             language: item.language ?? '',
+            htmlUrl: item.html_url ?? '',
+            detailsUrl: item.html_url ?? '',
           }));
           lastRequestedKeyRef.current = requestKey;
           lastFetchSucceededRef.current = true;
@@ -186,7 +190,7 @@ export function Gallery({
                     language={item.language}
                     isSelected={selectedRepositoryIds.includes(item.id)}
                     onOpenDetails={() => onRepositoryOpen?.(item.id)}
-                    onToggleSelection={() => toggleRepositorySelection(item.id)}
+                    onToggleSelection={() => toggleRepositorySelection(item)}
                   />
                 </li>
               ))}

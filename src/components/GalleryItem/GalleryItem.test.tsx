@@ -38,7 +38,9 @@ describe('GalleryItem', () => {
       />
     );
 
-    await user.click(screen.getByRole('checkbox', { name: 'Select repository 1' }));
+    await user.click(
+      screen.getByRole('checkbox', { name: 'Select repository 1' })
+    );
 
     expect(onToggleSelection).toHaveBeenCalledTimes(1);
     expect(onOpenDetails).not.toHaveBeenCalled();

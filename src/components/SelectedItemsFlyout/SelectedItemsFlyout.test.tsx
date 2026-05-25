@@ -1,8 +1,22 @@
 import { vi } from 'vitest';
 
-import { resetSelectionStore, useSelectionStore } from '../../store/selectionStore';
+import {
+  resetSelectionStore,
+  useSelectionStore,
+} from '../../store/selectionStore';
 import { renderWithUser, screen } from '../../test-utils/render';
 import { SelectedItemsFlyout } from './SelectedItemsFlyout';
+
+function buildSelectedRepository(id: number) {
+  return {
+    id,
+    name: `repo-${id}`,
+    description: `Description ${id}`,
+    language: 'TypeScript',
+    htmlUrl: `https://github.com/example/repo-${id}`,
+    detailsUrl: `https://github.com/example/repo-${id}`,
+  };
+}
 
 describe('SelectedItemsFlyout', () => {
   beforeEach(() => {
@@ -18,8 +32,8 @@ describe('SelectedItemsFlyout', () => {
   });
 
   it('renders selected count when there are selected items', () => {
-    useSelectionStore.getState().selectRepository(1);
-    useSelectionStore.getState().selectRepository(2);
+    useSelectionStore.getState().selectRepository(buildSelectedRepository(1));
+    useSelectionStore.getState().selectRepository(buildSelectedRepository(2));
 
     renderWithUser(<SelectedItemsFlyout />);
 
@@ -31,7 +45,7 @@ describe('SelectedItemsFlyout', () => {
   });
 
   it('clears selection when clicking Unselect all', async () => {
-    useSelectionStore.getState().selectRepository(1);
+    useSelectionStore.getState().selectRepository(buildSelectedRepository(1));
     const { user } = renderWithUser(<SelectedItemsFlyout />);
 
     await user.click(screen.getByRole('button', { name: 'Unselect all' }));
@@ -44,7 +58,7 @@ describe('SelectedItemsFlyout', () => {
 
   it('calls download handler when clicking Download', async () => {
     const onDownloadSelected = vi.fn();
-    useSelectionStore.getState().selectRepository(7);
+    useSelectionStore.getState().selectRepository(buildSelectedRepository(7));
     const { user } = renderWithUser(
       <SelectedItemsFlyout onDownloadSelected={onDownloadSelected} />
     );

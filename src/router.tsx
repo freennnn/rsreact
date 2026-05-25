@@ -12,6 +12,8 @@ import { useEffect, useState } from 'react';
 import { Loader } from './components/Loader/Loader';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import { SelectedItemsFlyout } from './components/SelectedItemsFlyout/SelectedItemsFlyout';
+import { selectionSelectors, useSelectionStore } from './store/selectionStore';
+import { downloadSelectedItemsCsv } from './utils/downloadSelectedItemsCsv';
 import {
   getRepositoryById,
   type GitHubRepositoryDetails,
@@ -38,7 +40,15 @@ function RootLayout() {
         </header>
         <main className="app-main">
           <Outlet />
-          <SelectedItemsFlyout />
+          <SelectedItemsFlyout
+            onDownloadSelected={() =>
+              downloadSelectedItemsCsv(
+                selectionSelectors.selectedRepositories(
+                  useSelectionStore.getState()
+                )
+              )
+            }
+          />
         </main>
       </div>
     </ErrorBoundary>

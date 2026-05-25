@@ -19,7 +19,10 @@ export function SelectedItemsFlyout({
   }
 
   return (
-    <section className="selected-items-flyout" aria-label="Selected items summary">
+    <section
+      className="selected-items-flyout"
+      aria-label="Selected items summary"
+    >
       <p className="selected-items-flyout-count">
         Selected items: <strong>{selectedCount}</strong>
       </p>
