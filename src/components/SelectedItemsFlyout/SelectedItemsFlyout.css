@@ -1,0 +1,40 @@
+.selected-items-flyout {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  padding: 12px 16px;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background-color: var(--panel-bg);
+}
+
+.selected-items-flyout-count {
+  margin: 0;
+}
+
+.selected-items-flyout-actions {
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .selected-items-flyout {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .selected-items-flyout-actions {
+    width: 100%;
+  }
+
+  .selected-items-flyout-actions button {
+    flex: 1;
+  }
+}

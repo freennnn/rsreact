@@ -2,30 +2,66 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
+  --app-bg: #0f172a;
+  --app-text: #e2e8f0;
+  --panel-bg: #1e293b;
+  --panel-alt-bg: #111827;
+  --panel-border: #334155;
+  --muted-border: #475569;
+  --button-bg: #1f2937;
+  --link: #93c5fd;
+  --link-hover: #bfdbfe;
+  --active-bg: #0b4ea2;
+  --active-text: #eff6ff;
+  --danger: #fecaca;
+  --danger-bg: #7f1d1d;
+  --danger-border: #991b1b;
+  --text-muted: #cbd5e1;
+  --input-bg: #0f172a;
+  --input-border: #475569;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --app-bg: #ffffff;
+  --app-text: #213547;
+  --panel-bg: #eef4f8;
+  --panel-alt-bg: #f5f0e6;
+  --panel-border: #8fa3b0;
+  --muted-border: #e6d0b6;
+  --button-bg: #f9f9f9;
+  --link: #646cff;
+  --link-hover: #747bff;
+  --active-bg: #d9e7f0;
+  --active-text: #1e293b;
+  --danger: #7a1f1f;
+  --danger-bg: #fde8e8;
+  --danger-border: #e0a0a0;
+  --text-muted: #4a5568;
+  --input-bg: #ffffff;
+  --input-border: #8fa3b0;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--link);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--link-hover);
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--app-bg);
+  color: var(--app-text);
 }
 
 #root {
@@ -39,12 +75,13 @@ h1 {
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 1px solid var(--panel-border);
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--button-bg);
+  color: inherit;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -56,19 +93,6 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
 .error-boundary-fallback {
   padding: 1.5rem;
   max-width: 40rem;
@@ -77,12 +101,36 @@ button:focus-visible {
 
 .app-header {
   margin-bottom: 1rem;
+  padding: 1rem 1rem 0;
+}
+
+.app-shell {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.app-theme-switcher {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-left: auto;
+}
+
+.app-theme-switcher select {
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--panel-border);
+  background-color: var(--button-bg);
+  color: inherit;
 }
 
 .app-nav {
   display: flex;
   justify-content: center;
   gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .app-nav-link {
@@ -94,25 +142,24 @@ button:focus-visible {
 }
 
 .app-nav-link:hover {
-  border-color: #8fa3b0;
+  border-color: var(--panel-border);
 }
 
 .app-nav-link.active,
 .app-nav-link[data-status='active'] {
   text-decoration: none;
-  border-color: #8fa3b0;
-  background-color: #d9e7f0;
-  color: #1e293b;
+  border-color: var(--panel-border);
+  background-color: var(--active-bg);
+  color: var(--active-text);
 }
 
 .app-main {
   width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
 }
 
 .app-page {
   width: 100%;
+  box-sizing: border-box;
   padding: 1rem;
 }
 
@@ -120,9 +167,9 @@ button:focus-visible {
   width: min(100%, 576px);
   box-sizing: border-box;
   margin: 0 auto;
-  border: 1px solid #8fa3b0;
+  border: 1px solid var(--panel-border);
   border-radius: 8px;
-  background-color: #eef4f8;
+  background-color: var(--panel-bg);
   min-height: 360px;
 }
 
@@ -137,13 +184,13 @@ button:focus-visible {
 }
 
 .list-layout-detail {
-  padding-top: 1rem;
+  padding: 0 1rem 1rem;
 }
 
 .details-panel {
-  border: 1px solid #8fa3b0;
+  border: 1px solid var(--panel-border);
   border-radius: 8px;
-  background-color: #eef4f8;
+  background-color: var(--panel-bg);
 }
 
 .details-panel-close {
@@ -164,5 +211,9 @@ button:focus-visible {
   .list-layout {
     grid-template-columns: 1.5fr 1fr;
     align-items: start;
+  }
+
+  .list-layout-detail {
+    padding: 1rem 1rem 1rem 0;
   }
 }

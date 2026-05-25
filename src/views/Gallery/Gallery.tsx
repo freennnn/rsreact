@@ -5,6 +5,10 @@ import { Loader } from '../../components/Loader/Loader';
 import { Search } from '../../components/Search/Search';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { getRepositores } from '../../services/api';
+import {
+  selectionSelectors,
+  useSelectionStore,
+} from '../../store/selectionStore';
 import './Gallery.css';
 
 export interface Repository {
@@ -12,6 +16,8 @@ export interface Repository {
   name: string;
   description: string;
   language: string;
+  htmlUrl: string;
+  detailsUrl: string;
 }
 
 interface GalleryState {
@@ -28,8 +34,7 @@ interface GalleryProps {
   currentPage?: number;
   onPageChange?(nextPage: number): void;
   onSearchInputChange?(): void;
-  selectedRepositoryId?: number | null;
-  onRepositorySelect?(repositoryId: number): void;
+  onRepositoryOpen?(repositoryId: number): void;
 }
 
 const ITEMS_PER_PAGE = 3;
@@ -38,9 +43,14 @@ export function Gallery({
   currentPage = 1,
   onPageChange,
   onSearchInputChange,
-  selectedRepositoryId = null,
-  onRepositorySelect,
+  onRepositoryOpen,
 }: GalleryProps) {
+  const selectedRepositoryIds = useSelectionStore(
+    selectionSelectors.selectedRepositoryIds
+  );
+  const toggleRepositorySelection = useSelectionStore(
+    (state) => state.toggleRepositorySelection
+  );
   const [savedSearchTerm, setSavedSearchTerm] = useLocalStorage<string>(
     'SavedSearchTerm',
     ''
@@ -87,6 +97,8 @@ export function Gallery({
             name: item.name,
             description: item.description ?? '',
             language: item.language ?? '',
+            htmlUrl: item.html_url ?? '',
+            detailsUrl: item.html_url ?? '',
           }));
           lastRequestedKeyRef.current = requestKey;
           lastFetchSucceededRef.current = true;
@@ -176,8 +188,11 @@ export function Gallery({
                     name={item.name}
                     description={item.description}
                     language={item.language}
-                    isSelected={selectedRepositoryId === item.id}
-                    onSelect={() => onRepositorySelect?.(item.id)}
+                    htmlUrl={item.htmlUrl}
+                    detailsUrl={item.detailsUrl}
+                    isSelected={selectedRepositoryIds.includes(item.id)}
+                    onOpenDetails={() => onRepositoryOpen?.(item.id)}
+                    onToggleSelection={() => toggleRepositorySelection(item)}
                   />
                 </li>
               ))}

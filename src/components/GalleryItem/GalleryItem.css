@@ -1,12 +1,51 @@
 .GalleryItem {
-  background-color: bisque;
-  padding: 0 20px 0 20px;
+  background-color: var(--panel-bg);
+  padding: 0;
   width: 100%;
   text-align: left;
-  border: 1px solid #e6d0b6;
+  border: 1px solid var(--muted-border);
   border-radius: 8px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: stretch;
+  overflow: hidden;
 }
 
 .GalleryItem--selected {
-  border-color: #8fa3b0;
+  border-color: var(--panel-border);
+}
+
+.GalleryItem-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  min-height: 52px;
+  padding: 8px;
+  cursor: pointer;
+  border-right: 1px solid var(--muted-border);
+}
+
+.GalleryItem-checkbox {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+}
+
+.GalleryItem-content {
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 12px 16px;
+  cursor: pointer;
+  width: 100%;
+  min-height: 52px;
+}
+
+.GalleryItem-content p {
+  margin: 0;
+}
+
+.GalleryItem-content p + p {
+  margin-top: 8px;
 }
