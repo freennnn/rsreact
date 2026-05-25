@@ -5,6 +5,10 @@ import { Loader } from '../../components/Loader/Loader';
 import { Search } from '../../components/Search/Search';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { getRepositores } from '../../services/api';
+import {
+  selectionSelectors,
+  useSelectionStore,
+} from '../../store/selectionStore';
 import './Gallery.css';
 
 export interface Repository {
@@ -28,8 +32,7 @@ interface GalleryProps {
   currentPage?: number;
   onPageChange?(nextPage: number): void;
   onSearchInputChange?(): void;
-  selectedRepositoryId?: number | null;
-  onRepositorySelect?(repositoryId: number): void;
+  onRepositoryOpen?(repositoryId: number): void;
 }
 
 const ITEMS_PER_PAGE = 3;
@@ -38,9 +41,14 @@ export function Gallery({
   currentPage = 1,
   onPageChange,
   onSearchInputChange,
-  selectedRepositoryId = null,
-  onRepositorySelect,
+  onRepositoryOpen,
 }: GalleryProps) {
+  const selectedRepositoryIds = useSelectionStore(
+    selectionSelectors.selectedRepositoryIds
+  );
+  const toggleRepositorySelection = useSelectionStore(
+    (state) => state.toggleRepositorySelection
+  );
   const [savedSearchTerm, setSavedSearchTerm] = useLocalStorage<string>(
     'SavedSearchTerm',
     ''
@@ -176,8 +184,9 @@ export function Gallery({
                     name={item.name}
                     description={item.description}
                     language={item.language}
-                    isSelected={selectedRepositoryId === item.id}
-                    onSelect={() => onRepositorySelect?.(item.id)}
+                    isSelected={selectedRepositoryIds.includes(item.id)}
+                    onOpenDetails={() => onRepositoryOpen?.(item.id)}
+                    onToggleSelection={() => toggleRepositorySelection(item.id)}
                   />
                 </li>
               ))}

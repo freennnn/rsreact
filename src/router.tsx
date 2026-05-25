@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 
 import { Loader } from './components/Loader/Loader';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
+import { SelectedItemsFlyout } from './components/SelectedItemsFlyout/SelectedItemsFlyout';
 import {
   getRepositoryById,
   type GitHubRepositoryDetails,
@@ -23,7 +24,11 @@ function RootLayout() {
       <div>
         <header className="app-header">
           <nav className="app-nav" aria-label="Main navigation">
-            <Link to="/" search={{ page: 1 }} className="app-nav-link">
+            <Link
+              to="/"
+              search={{ page: 1, details: undefined }}
+              className="app-nav-link"
+            >
               Home
             </Link>
             <Link to="/about" className="app-nav-link">
@@ -33,6 +38,7 @@ function RootLayout() {
         </header>
         <main className="app-main">
           <Outlet />
+          <SelectedItemsFlyout />
         </main>
       </div>
     </ErrorBoundary>
@@ -76,7 +82,7 @@ function ListLayout() {
     });
   };
 
-  const onRepositorySelect = (repositoryId: number) => {
+  const onRepositoryOpen = (repositoryId: number) => {
     navigate({
       search: (prev) => ({ ...prev, details: repositoryId }),
     });
@@ -103,8 +109,7 @@ function ListLayout() {
           currentPage={page}
           onPageChange={onPageChange}
           onSearchInputChange={onSearchInputChange}
-          selectedRepositoryId={selectedRepositoryId}
-          onRepositorySelect={onRepositorySelect}
+          onRepositoryOpen={onRepositoryOpen}
         />
       </section>
       <section
@@ -234,7 +239,7 @@ function NotFoundPage() {
   return (
     <section className="app-page" aria-label="Not found page">
       <h1>404 - Page not found</h1>
-      <Link to="/" search={{ page: 1 }}>
+      <Link to="/" search={{ page: 1, details: undefined }}>
         Return to main app
       </Link>
     </section>

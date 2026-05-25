@@ -1,6 +1,7 @@
 import { vi } from 'vitest';
 
 import { getRepositores, type GitHubSearchResponse } from '../../services/api';
+import { resetSelectionStore } from '../../store/selectionStore';
 import { act, renderWithUser, screen, waitFor } from '../../test-utils/render';
 import { createDeferred } from '../../test-utils/deferred';
 import { Gallery } from './Gallery';
@@ -20,6 +21,7 @@ function buildResponse(
 describe('Gallery', () => {
   beforeEach(() => {
     mockedGetRepositores.mockReset();
+    resetSelectionStore();
   });
 
   it('loads saved search term from localStorage on mount and renders results', async () => {
@@ -199,5 +201,85 @@ describe('Gallery', () => {
       expect(mockedGetRepositores).toHaveBeenCalledTimes(2);
     });
     expect(await screen.findByText('tanstack/form')).toBeInTheDocument();
+  });
+
+  it('toggles checkbox selection from the gallery list', async () => {
+    mockedGetRepositores.mockResolvedValue(
+      buildResponse([
+        {
+          id: 11,
+          name: 'zustand/store',
+          description: 'State management',
+          language: 'TypeScript',
+        },
+      ])
+    );
+
+    const { user } = renderWithUser(<Gallery />);
+
+    const checkbox = await screen.findByRole('checkbox', {
+      name: 'Select repository 11',
+    });
+    expect(checkbox).not.toBeChecked();
+
+    await user.click(checkbox);
+    expect(checkbox).toBeChecked();
+
+    await user.click(checkbox);
+    expect(checkbox).not.toBeChecked();
+  });
+
+  it('keeps selected items when navigating between pages', async () => {
+    mockedGetRepositores
+      .mockResolvedValueOnce(
+        buildResponse([
+          {
+            id: 21,
+            name: 'page-one/repo',
+            description: 'Page one',
+            language: 'TypeScript',
+          },
+        ])
+      )
+      .mockResolvedValueOnce(
+        buildResponse([
+          {
+            id: 99,
+            name: 'page-two/repo',
+            description: 'Page two',
+            language: 'JavaScript',
+          },
+        ])
+      )
+      .mockResolvedValueOnce(
+        buildResponse([
+          {
+            id: 21,
+            name: 'page-one/repo',
+            description: 'Page one',
+            language: 'TypeScript',
+          },
+        ])
+      );
+
+    const { user, rerender } = renderWithUser(<Gallery currentPage={1} />);
+
+    const pageOneCheckbox = await screen.findByRole('checkbox', {
+      name: 'Select repository 21',
+    });
+    await user.click(pageOneCheckbox);
+    expect(pageOneCheckbox).toBeChecked();
+
+    rerender(<Gallery currentPage={2} />);
+    expect(
+      await screen.findByRole('checkbox', { name: 'Select repository 99' })
+    ).toBeInTheDocument();
+
+    rerender(<Gallery currentPage={1} />);
+    expect(
+      await screen.findByRole('checkbox', {
+        name: 'Select repository 21',
+      })
+    ).toBeChecked();
   });
 });
