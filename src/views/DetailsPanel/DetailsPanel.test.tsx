@@ -79,6 +79,16 @@ describe('DetailsPanel', () => {
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
+  it('renders a fallback error message for non-Error rejections', async () => {
+    mockedGetRepositoryById.mockRejectedValue('network down');
+
+    renderWithUser(<DetailsPanel detailsId={42} onClose={vi.fn()} />);
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Failed to load repository.'
+    );
+  });
+
   it('reuses cached details when the same repository is opened again', async () => {
     mockedGetRepositoryById.mockResolvedValue(sampleDetails);
     const queryClient = createTestQueryClient();

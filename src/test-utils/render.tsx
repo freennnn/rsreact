@@ -10,6 +10,7 @@ import {
   waitFor,
   within,
   type RenderHookOptions,
+  type RenderOptions,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -35,6 +36,25 @@ export function createQueryWrapper(queryClient: QueryClient) {
   };
 }
 
+export interface RenderWithProvidersOptions extends Omit<
+  RenderOptions,
+  'wrapper'
+> {
+  queryClient?: QueryClient;
+}
+
+export function renderWithProviders(
+  ui: ReactElement,
+  options: RenderWithProvidersOptions = {}
+) {
+  const { queryClient = createTestQueryClient(), ...renderOptions } = options;
+
+  return render(ui, {
+    ...renderOptions,
+    wrapper: createQueryWrapper(queryClient),
+  });
+}
+
 export function renderQueryHook<TResult, TProps>(
   callback: (props: TProps) => TResult,
   options?: RenderHookOptions<TProps> & { queryClient?: QueryClient }
@@ -53,6 +73,6 @@ export function renderWithUser(
 ) {
   return {
     user: userEvent.setup(),
-    ...render(ui, { wrapper: createQueryWrapper(queryClient) }),
+    ...renderWithProviders(ui, { queryClient }),
   };
 }

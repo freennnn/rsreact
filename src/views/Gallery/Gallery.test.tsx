@@ -104,6 +104,16 @@ describe('Gallery', () => {
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
+  it('renders a fallback error message for non-Error rejections', async () => {
+    mockedGetRepositores.mockRejectedValue('network down');
+
+    renderWithUser(<Gallery />);
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Something went wrong.'
+    );
+  });
+
   it('trims submitted input, saves it, and fetches new results', async () => {
     mockedGetRepositores
       .mockResolvedValueOnce(
