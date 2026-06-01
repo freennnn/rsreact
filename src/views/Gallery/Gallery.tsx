@@ -1,34 +1,23 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+
+import { useQueryClient } from '@tanstack/react-query';
 
 import { GalleryItem } from '../../components/GalleryItem/GalleryItem';
 import { Loader } from '../../components/Loader/Loader';
 import { Search } from '../../components/Search/Search';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { getRepositores } from '../../services/api';
+import {
+  useRepositoriesQuery,
+  type Repository,
+} from '../../hooks/useRepositoriesQuery';
+import { repositoryKeys } from '../../query/queryKeys';
 import {
   selectionSelectors,
   useSelectionStore,
 } from '../../store/selectionStore';
 import './Gallery.css';
 
-export interface Repository {
-  id: number;
-  name: string;
-  description: string;
-  language: string;
-  htmlUrl: string;
-  detailsUrl: string;
-}
-
-interface GalleryState {
-  results: Array<Repository> | null;
-  searchTerm: string;
-  totalCount: number;
-  isLoading: boolean;
-  error: string | null;
-  lastRequestedKey: string | undefined;
-  lastFetchSucceeded: boolean;
-}
+export type { Repository };
 
 interface GalleryProps {
   currentPage?: number;
@@ -45,6 +34,7 @@ export function Gallery({
   onSearchInputChange,
   onRepositoryOpen,
 }: GalleryProps) {
+  const queryClient = useQueryClient();
   const selectedRepositoryIds = useSelectionStore(
     selectionSelectors.selectedRepositoryIds
   );
@@ -55,99 +45,55 @@ export function Gallery({
     'SavedSearchTerm',
     ''
   );
-
-  const [state, setState] = useState<GalleryState>({
-    results: null,
-    searchTerm: savedSearchTerm.trim(),
-    totalCount: 0,
-    isLoading: true,
-    error: null,
-    lastRequestedKey: undefined,
-    lastFetchSucceeded: false,
-  });
-  const lastRequestedKeyRef = useRef<string | undefined>(
-    state.lastRequestedKey
+  const [submittedSearchTerm, setSubmittedSearchTerm] = useState(() =>
+    savedSearchTerm.trim()
   );
-  const lastFetchSucceededRef = useRef(state.lastFetchSucceeded);
-  const searchTermRef = useRef(state.searchTerm);
 
-  const fetchRepositories = useCallback(
-    (trimmed: string, page: number) => {
-      const requestKey = `${trimmed}|${page}`;
-      if (
-        lastRequestedKeyRef.current === requestKey &&
-        lastFetchSucceededRef.current
-      ) {
-        return;
-      }
+  const {
+    repositories,
+    totalCount,
+    isPending,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useRepositoriesQuery(submittedSearchTerm, currentPage);
 
+  useEffect(() => {
+    const trimmed = savedSearchTerm.trim();
+    if (trimmed !== savedSearchTerm) {
       setSavedSearchTerm(trimmed);
-      setState((prevState) => ({
-        ...prevState,
-        isLoading: true,
-        error: null,
-        searchTerm: trimmed,
-        results: null,
-      }));
-
-      getRepositores(trimmed, page)
-        .then((data) => {
-          const items = (data.items ?? []).map((item) => ({
-            id: item.id,
-            name: item.name,
-            description: item.description ?? '',
-            language: item.language ?? '',
-            htmlUrl: item.html_url ?? '',
-            detailsUrl: item.html_url ?? '',
-          }));
-          lastRequestedKeyRef.current = requestKey;
-          lastFetchSucceededRef.current = true;
-          setState((prevState) => ({
-            ...prevState,
-            results: items,
-            totalCount: data.total_count ?? 0,
-            isLoading: false,
-            error: null,
-            lastRequestedKey: requestKey,
-            lastFetchSucceeded: true,
-          }));
-        })
-        .catch((err: unknown) => {
-          const message =
-            err instanceof Error ? err.message : 'Something went wrong.';
-          lastRequestedKeyRef.current = requestKey;
-          lastFetchSucceededRef.current = false;
-          setState((prevState) => ({
-            ...prevState,
-            isLoading: false,
-            error: message,
-            totalCount: 0,
-            results: null,
-            lastRequestedKey: requestKey,
-            lastFetchSucceeded: false,
-          }));
-        });
-    },
-    [setSavedSearchTerm]
-  );
+    }
+  }, [savedSearchTerm, setSavedSearchTerm]);
 
   const onSearchButtonClick = useCallback(
     (trimmedFromSearch: string) => {
-      searchTermRef.current = trimmedFromSearch;
-      fetchRepositories(trimmedFromSearch, currentPage);
+      if (trimmedFromSearch !== submittedSearchTerm) {
+        setSubmittedSearchTerm(trimmedFromSearch);
+        setSavedSearchTerm(trimmedFromSearch);
+        return;
+      }
+
+      if (isError) {
+        void refetch();
+      }
     },
-    [currentPage, fetchRepositories]
+    [isError, refetch, setSavedSearchTerm, submittedSearchTerm]
   );
 
-  useEffect(() => {
-    searchTermRef.current = state.searchTerm;
-  }, [state.searchTerm]);
+  const onRefresh = useCallback(() => {
+    void queryClient.invalidateQueries({
+      queryKey: repositoryKeys.list(submittedSearchTerm, currentPage),
+    });
+  }, [currentPage, queryClient, submittedSearchTerm]);
 
-  useEffect(() => {
-    fetchRepositories(searchTermRef.current, currentPage);
-  }, [currentPage, fetchRepositories]);
-
-  const totalPages = Math.max(1, Math.ceil(state.totalCount / ITEMS_PER_PAGE));
+  const isLoading = isPending || isFetching;
+  const errorMessage = isError
+    ? error instanceof Error
+      ? error.message
+      : 'Something went wrong.'
+    : null;
+  const totalPages = Math.max(1, Math.ceil(totalCount / ITEMS_PER_PAGE));
   const canGoPrev = currentPage > 1;
   const canGoNext = currentPage < totalPages;
 
@@ -158,13 +104,18 @@ export function Gallery({
         aria-label="Search repositories"
       >
         <Search
-          searchTerm={state.searchTerm}
+          searchTerm={submittedSearchTerm}
           onSearchButtonClick={onSearchButtonClick}
           onSearchInputChange={onSearchInputChange}
         />
       </section>
       <section className="gallery-results-section" aria-label="Search results">
-        {state.isLoading ? (
+        <div className="gallery-results-toolbar">
+          <button type="button" onClick={onRefresh}>
+            Refresh
+          </button>
+        </div>
+        {isLoading ? (
           <div
             className="gallery-results-loader"
             role="status"
@@ -173,15 +124,15 @@ export function Gallery({
             <Loader />
           </div>
         ) : null}
-        {!state.isLoading && state.error ? (
+        {!isLoading && errorMessage ? (
           <div className="gallery-error" role="alert">
-            {state.error}
+            {errorMessage}
           </div>
         ) : null}
-        {!state.isLoading && !state.error ? (
-          state.results && state.results.length > 0 ? (
+        {!isLoading && !errorMessage ? (
+          repositories && repositories.length > 0 ? (
             <ul className="gallery-results-list">
-              {state.results.map((item) => (
+              {repositories.map((item) => (
                 <li key={item.id} className="gallery-results-list-item">
                   <GalleryItem
                     id={item.id}
@@ -201,7 +152,7 @@ export function Gallery({
             <p className="gallery-empty">No repositories loaded.</p>
           )
         ) : null}
-        {!state.isLoading && !state.error && state.results ? (
+        {!isLoading && !errorMessage && repositories ? (
           <nav className="gallery-pagination" aria-label="Results pagination">
             <button
               type="button"

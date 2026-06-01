@@ -250,16 +250,6 @@ describe('Gallery', () => {
             language: 'JavaScript',
           },
         ])
-      )
-      .mockResolvedValueOnce(
-        buildResponse([
-          {
-            id: 21,
-            name: 'page-one/repo',
-            description: 'Page one',
-            language: 'TypeScript',
-          },
-        ])
       );
 
     const { user, rerender } = renderWithUser(<Gallery currentPage={1} />);
@@ -274,6 +264,7 @@ describe('Gallery', () => {
     expect(
       await screen.findByRole('checkbox', { name: 'Select repository 99' })
     ).toBeInTheDocument();
+    expect(mockedGetRepositores).toHaveBeenCalledTimes(2);
 
     rerender(<Gallery currentPage={1} />);
     expect(
@@ -281,5 +272,79 @@ describe('Gallery', () => {
         name: 'Select repository 21',
       })
     ).toBeChecked();
+    expect(mockedGetRepositores).toHaveBeenCalledTimes(2);
+  });
+
+  it('serves cached page data without another request when returning to a page', async () => {
+    mockedGetRepositores
+      .mockResolvedValueOnce(
+        buildResponse([
+          {
+            id: 31,
+            name: 'cached/page-one',
+            description: 'Cached page one',
+            language: 'TypeScript',
+          },
+        ])
+      )
+      .mockResolvedValueOnce(
+        buildResponse([
+          {
+            id: 32,
+            name: 'cached/page-two',
+            description: 'Cached page two',
+            language: 'JavaScript',
+          },
+        ])
+      );
+
+    const { rerender } = renderWithUser(<Gallery currentPage={1} />);
+
+    expect(await screen.findByText('cached/page-one')).toBeInTheDocument();
+    expect(mockedGetRepositores).toHaveBeenCalledTimes(1);
+
+    rerender(<Gallery currentPage={2} />);
+    expect(await screen.findByText('cached/page-two')).toBeInTheDocument();
+    expect(mockedGetRepositores).toHaveBeenCalledTimes(2);
+
+    rerender(<Gallery currentPage={1} />);
+    expect(await screen.findByText('cached/page-one')).toBeInTheDocument();
+    expect(mockedGetRepositores).toHaveBeenCalledTimes(2);
+  });
+
+  it('refetches when refresh is clicked after data was cached', async () => {
+    mockedGetRepositores
+      .mockResolvedValueOnce(
+        buildResponse([
+          {
+            id: 41,
+            name: 'refresh/me',
+            description: 'Before refresh',
+            language: 'TypeScript',
+          },
+        ])
+      )
+      .mockResolvedValueOnce(
+        buildResponse([
+          {
+            id: 41,
+            name: 'refresh/me',
+            description: 'After refresh',
+            language: 'TypeScript',
+          },
+        ])
+      );
+
+    const { user } = renderWithUser(<Gallery />);
+
+    expect(await screen.findByText('Before refresh')).toBeInTheDocument();
+    expect(mockedGetRepositores).toHaveBeenCalledTimes(1);
+
+    await user.click(screen.getByRole('button', { name: 'Refresh' }));
+
+    expect(await screen.findByText('After refresh')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(mockedGetRepositores).toHaveBeenCalledTimes(2);
+    });
   });
 });

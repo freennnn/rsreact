@@ -47,9 +47,12 @@ export function renderQueryHook<TResult, TProps>(
   });
 }
 
-export function renderWithUser(ui: ReactElement) {
+export function renderWithUser(
+  ui: ReactElement,
+  queryClient: QueryClient = createTestQueryClient()
+) {
   return {
     user: userEvent.setup(),
-    ...render(ui),
+    ...render(ui, { wrapper: createQueryWrapper(queryClient) }),
   };
 }
