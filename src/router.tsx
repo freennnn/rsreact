@@ -7,18 +7,14 @@ import {
   createRouter,
   useNavigate,
 } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-import { Loader } from './components/Loader/Loader';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import { SelectedItemsFlyout } from './components/SelectedItemsFlyout/SelectedItemsFlyout';
 import { ThemeSwitcher } from './components/ThemeSwitcher/ThemeSwitcher';
 import { selectionSelectors, useSelectionStore } from './store/selectionStore';
 import { downloadSelectedItemsCsv } from './utils/downloadSelectedItemsCsv';
-import {
-  getRepositoryById,
-  type GitHubRepositoryDetails,
-} from './services/api';
+import { DetailsPanel } from './views/DetailsPanel/DetailsPanel';
 import { Gallery } from './views/Gallery/Gallery';
 
 function RootLayout() {
@@ -158,92 +154,6 @@ function AboutPage() {
         </a>
       </p>
     </section>
-  );
-}
-
-interface DetailsPanelProps {
-  detailsId: number;
-  onClose(): void;
-}
-
-function DetailsPanel({ detailsId, onClose }: DetailsPanelProps) {
-  const [details, setDetails] = useState<GitHubRepositoryDetails | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let isCancelled = false;
-
-    setIsLoading(true);
-    setError(null);
-    setDetails(null);
-
-    getRepositoryById(detailsId)
-      .then((payload) => {
-        if (!isCancelled) {
-          setDetails(payload);
-          setIsLoading(false);
-        }
-      })
-      .catch((err: unknown) => {
-        if (!isCancelled) {
-          setError(
-            err instanceof Error ? err.message : 'Failed to load repository.'
-          );
-          setIsLoading(false);
-        }
-      });
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [detailsId]);
-
-  return (
-    <aside
-      className="app-page details-panel"
-      aria-label="Selected repository details"
-    >
-      <button type="button" className="details-panel-close" onClick={onClose}>
-        Close
-      </button>
-      <h2>Repository details</h2>
-      {isLoading ? (
-        <div role="status" aria-live="polite" className="details-panel-loader">
-          <Loader />
-        </div>
-      ) : null}
-      {!isLoading && error ? (
-        <p role="alert" className="details-panel-error">
-          {error}
-        </p>
-      ) : null}
-      {!isLoading && !error && details ? (
-        <div className="details-panel-content">
-          <p>
-            <strong>ID:</strong> {details.id}
-          </p>
-          <p>
-            <strong>Name:</strong> {details.full_name}
-          </p>
-          <p>
-            <strong>Owner:</strong> {details.owner.login}
-          </p>
-          <p>
-            <strong>Language:</strong> {details.language ?? 'Unknown'}
-          </p>
-          <p>
-            <strong>Stars:</strong> {details.stargazers_count}
-          </p>
-          <p>{details.description ?? 'No description provided.'}</p>
-          <p>
-            <a href={details.html_url} target="_blank" rel="noreferrer">
-              Open on GitHub
-            </a>
-          </p>
-        </div>
-      ) : null}
-    </aside>
   );
 }
 
