@@ -21,6 +21,8 @@
     "noFallthroughCasesInSwitch": true,
     "strictNullChecks": true,
 
+    "types": ["vitest/globals"]
   },
   "include": ["src"]
 }
+
