@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -5,15 +6,18 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { v4 as uuidv4 } from 'uuid'
 
 import { PasswordStrength } from '../../components/PasswordStrength'
-import { countryNames } from '../../data/countries'
+import { selectCountryNames } from '../../data/countriesSlice'
 import { convertImageToBase64 } from '../../data/imageUtils'
-import { useAppDispatch } from '../../data/store'
+import { useAppDispatch, useAppSelector } from '../../data/store'
 import { addUser } from '../../data/usersSlice'
-import { FormFields, schema } from '../../data/zodFormSchema'
+import { FormFields, createFormSchema } from '../../data/zodFormSchema'
 //import { User } from '../../data/types'
 import '../UserRegistrationFormPage.css'
 
 export default function UserRegistrationHookFormPage() {
+  const countryNames = useAppSelector(selectCountryNames)
+  const schema = useMemo(() => createFormSchema(countryNames), [countryNames])
+
   const {
     register,
     handleSubmit,

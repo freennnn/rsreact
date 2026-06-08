@@ -2,17 +2,20 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
+import countriesReducer from './countriesSlice'
 import usersReducer from './usersSlice'
 
 export const store = configureStore({
   reducer: {
     usersReducer: usersReducer,
+    countriesReducer: countriesReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 })
 
 const rootReducer = combineReducers({
   usersReducer: usersReducer,
+  countriesReducer: countriesReducer,
 })
 
 export function setupStore(preloadedState?: Partial<RootState>) {

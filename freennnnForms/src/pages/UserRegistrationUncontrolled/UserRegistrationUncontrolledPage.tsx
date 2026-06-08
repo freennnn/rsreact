@@ -4,11 +4,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
 
 import { PasswordStrength } from '../../components/PasswordStrength'
-import { countryNames } from '../../data/countries'
+import { selectCountryNames } from '../../data/countriesSlice'
 import { convertImageToBase64 } from '../../data/imageUtils'
-import { useAppDispatch } from '../../data/store'
+import { useAppDispatch, useAppSelector } from '../../data/store'
 import { addUser } from '../../data/usersSlice'
-import { schema } from '../../data/zodFormSchema'
+import { createFormSchema } from '../../data/zodFormSchema'
 import '../UserRegistrationFormPage.css'
 
 type FormErrors = Record<string, string>
@@ -16,6 +16,7 @@ type FormErrors = Record<string, string>
 export default function UserRegistrationUncontrolledFormPage() {
   const [errors, setErrors] = useState<FormErrors>({})
   const [password, setPassword] = useState('')
+  const countryNames = useAppSelector(selectCountryNames)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   //tehcnically don't event need ref, since we using state to update strength onChange
@@ -35,7 +36,7 @@ export default function UserRegistrationUncontrolledFormPage() {
     const avatar = form.get('avatar')
     formData.termsAndContions = form.get('termsAndContions')?.toString() === 'on' ? true : false
 
-    const parsed = schema.safeParse(formData)
+    const parsed = createFormSchema(countryNames).safeParse(formData)
     if (parsed.success) {
       if (avatar instanceof File) {
         formData.avatarImage = await convertImageToBase64(avatar)
