@@ -43,7 +43,11 @@ export function HookFormRegistration({ onSuccess }: HookFormRegistrationProps) {
     }
 
     const avatarImage = await convertImageToBase64(data.avatar)
-    dispatch(addUser({ ...data, avatarImage, id: uuidv4() }))
+    const { avatar: omittedAvatar, confirmPassword: omittedConfirmPassword, ...userData } = data
+    void omittedAvatar
+    void omittedConfirmPassword
+
+    dispatch(addUser({ ...userData, avatarImage, id: uuidv4() }))
     reset()
     onSuccess()
   }

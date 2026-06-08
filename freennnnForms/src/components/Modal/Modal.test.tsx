@@ -55,6 +55,20 @@ describe('Modal', () => {
     expect(onClose).toHaveBeenCalledTimes(1)
   })
 
+  it('closes when clicking the close button', async () => {
+    const user = userEvent.setup()
+    const onClose = vi.fn()
+
+    render(
+      <Modal isOpen onClose={onClose} title='Test Modal' titleId='test-modal-title'>
+        <p>Modal content</p>
+      </Modal>,
+    )
+
+    await user.click(screen.getByLabelText('Close modal'))
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
   it('exposes dialog accessibility attributes', () => {
     render(
       <Modal isOpen onClose={vi.fn()} title='Accessible Modal' titleId='accessible-modal-title'>

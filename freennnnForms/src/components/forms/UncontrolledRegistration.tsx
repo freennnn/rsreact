@@ -30,10 +30,13 @@ export function UncontrolledRegistration({ onSuccess }: UncontrolledRegistration
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
-    const form = new FormData(event.currentTarget)
+    const formElement = event.currentTarget
+    const form = new FormData(formElement)
 
     const formData: Record<string, unknown> = Object.fromEntries(form.entries())
-    const avatar = form.get('avatar')
+    const avatarInput = formElement.elements.namedItem('avatar') as HTMLInputElement | null
+    const avatar = avatarInput?.files?.[0] ?? form.get('avatar')
+    formData.avatar = avatar
     formData.termsAndContions = form.get('termsAndContions')?.toString() === 'on'
 
     const parsed = createFormSchema(countryNames).safeParse(formData)
@@ -43,7 +46,21 @@ export function UncontrolledRegistration({ onSuccess }: UncontrolledRegistration
       }
       formData.id = uuidv4()
 
-      dispatch(addUser(formData))
+      const {
+        avatar: omittedAvatar,
+        confirmPassword: omittedConfirmPassword,
+        ...userData
+      } = parsed.data
+      void omittedAvatar
+      void omittedConfirmPassword
+
+      dispatch(
+        addUser({
+          ...userData,
+          id: formData.id as string,
+          avatarImage: formData.avatarImage as string,
+        }),
+      )
       formRef.current?.reset()
       setErrors({})
       setPassword('')
