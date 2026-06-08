@@ -1,9 +1,18 @@
 import { z } from 'zod'
 
+import { MIN_PASSWORD_LENGTH } from '../utils/passwordStrength'
+import { isValidEmail } from '../utils/validation'
 import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE } from './imageUtils'
 
 // if we would pass it to superRefine after the whole object - then we would need to specify 'path' fot ctx.addIssue
 function validatePasswordFieldInPlace(password: string, ctx: z.RefinementCtx) {
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    ctx.addIssue({
+      code: 'custom',
+      message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+    })
+  }
+
   const containsUppercase = (ch: string) => /[A-Z]/.test(ch)
   const containsLowercase = (ch: string) => /[a-z]/.test(ch)
   const containsSpecialChar = (ch: string) => /[`!@#$%^&*()_\-+=[\]{};':"\\|,.<>/?~ ]/.test(ch)
@@ -65,7 +74,7 @@ export const createFormSchema = (countryNames: string[]) =>
       age: z
         .string()
         .refine((age) => Number(age) > 0, { message: 'Age should be positive number' }),
-      email: z.string().email(),
+      email: z.string().refine(isValidEmail, { message: 'Invalid email address' }),
       password: z.string().superRefine(validatePasswordFieldInPlace),
       confirmPassword: z.string().superRefine(validatePasswordFieldInPlace),
       gender: z.string({
@@ -90,7 +99,7 @@ export const createFormSchema = (countryNames: string[]) =>
         )
         .refine(
           (file) => file && ACCEPTED_IMAGE_TYPES.includes(file.type),
-          'Only jpg/jpeg/webp/png files are allowed',
+          'Only jpg/jpeg/png files are allowed',
         ),
       country: z
         .string()

@@ -1,3 +1,4 @@
+import { getPasswordCriteria } from '../utils/passwordStrength'
 import './PasswordStrength.css'
 
 interface PasswordStrengthProps {
@@ -5,28 +6,21 @@ interface PasswordStrengthProps {
 }
 
 export function PasswordStrength({ password }: PasswordStrengthProps) {
-  let strength = 0
-  if (password) {
-    if (password.length > 2) {
-      strength += 25
-    }
-    if (password.length > 4) {
-      strength += 25
-    }
-    if (/[0-9]/.test(password)) {
-      strength += 25
-    }
-    if (/[A-Z]/.test(password)) {
-      strength += 25
-    }
-  }
+  const criteria = getPasswordCriteria(password)
 
   return (
-    <div className='password-strength'>
-      <label>strength:</label>
-      <progress max='100' value={strength}>
-        {strength} % out of {100}
-      </progress>
+    <div className='password-strength' aria-live='polite'>
+      <p className='password-strength__title'>Password strength:</p>
+      <ul className='password-strength__list'>
+        {criteria.map((criterion) => (
+          <li
+            key={criterion.id}
+            className={criterion.met ? 'password-strength__item--met' : 'password-strength__item'}
+          >
+            {criterion.met ? '✓' : '○'} {criterion.label}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

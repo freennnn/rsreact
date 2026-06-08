@@ -1,5 +1,54 @@
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: left;
+}
+
+.field-label {
+  font-weight: 500;
+}
+
 .error-div {
   min-height: 32px;
   text-align: left;
   vertical-align: top;
+}
+
+.gender-fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.gender-fieldset legend {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.gender-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.radio-option,
+.checkbox-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.radio-option label,
+.checkbox-field label {
+  margin: 0;
+  cursor: pointer;
+}
+
+.radio-option input,
+.checkbox-field input {
+  width: auto;
+  margin: 0;
+  flex-shrink: 0;
 }

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { v4 as uuidv4 } from 'uuid'
@@ -9,6 +9,7 @@ import { convertImageToBase64 } from '../../data/imageUtils'
 import { useAppDispatch, useAppSelector } from '../../data/store'
 import { addUser } from '../../data/usersSlice'
 import { FormFields, createFormSchema } from '../../data/zodFormSchema'
+import { CountryAutocomplete } from '../CountryAutocomplete/CountryAutocomplete'
 import { PasswordStrength } from '../PasswordStrength'
 import './RegistrationForm.css'
 
@@ -22,11 +23,16 @@ export function HookFormRegistration({ onSuccess }: HookFormRegistrationProps) {
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isValid, isSubmitting },
     watch,
-  } = useForm<FormFields>({ resolver: zodResolver(schema) })
+  } = useForm<FormFields>({
+    resolver: zodResolver(schema),
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+  })
 
   const dispatch = useAppDispatch()
   const password = watch('password')
@@ -44,78 +50,123 @@ export function HookFormRegistration({ onSuccess }: HookFormRegistrationProps) {
 
   return (
     <form className='form gap-x-3' onSubmit={handleSubmit(onSubmit)} autoComplete='one-time-code'>
-      <label className='form-label' key='name'>
-        {'Name: '}
-        <input {...register('name')} type='text' placeholder='Name' autoComplete='one-time-code' />
-      </label>
-      <div className='error-div text-red-500'>
-        {errors.name?.message ? errors.name?.message : ''}
-      </div>
-
-      <label className='form-label' key='age'>
-        {'Age: '}
-        <input {...register('age')} type='text' placeholder='Age' autoComplete='one-time-code' />
-      </label>
-      <div className='error-div text-red-500'>{errors.age?.message ? errors.age?.message : ''}</div>
-
-      <label className='form-label' key='email'>
-        {'Email: '}
-        <input {...register('email')} type='text' placeholder='Email' />
-      </label>
-      <div className='error-div text-red-500'>{errors.email?.message}</div>
-
-      <label className='form-label' key='password'>
-        {'Password: '}
-        <input {...register('password')} type='password' placeholder='Password' />
-      </label>
-      <PasswordStrength password={password} />
-      <div className='error-div text-red-500'>{errors.password?.message}</div>
-
-      <label className='form-label' key='confirmPassword'>
-        {'Confirm Password: '}
-        <input {...register('confirmPassword')} type='password' placeholder='Confirm Password' />
-      </label>
-      <div className='error-div text-red-500'>{errors.confirmPassword?.message}</div>
-
-      <div className='form-label' key='gender'>
-        {'Gender: '}
-        <input type='radio' id='hook-male' value='male' {...register('gender')} />
-        <label htmlFor='hook-male'>Male</label>
-        <input type='radio' id='hook-female' value='female' {...register('gender')} />
-        <label htmlFor='hook-female'>Female</label>
-      </div>
-      <div className='error-div text-red-500'>{errors.gender?.message}</div>
-
-      <label className='form-label' key='termsAndConditions'>
-        {'Accept terms and conditions: '}
-        <input {...register('termsAndContions')} type='checkbox' />
-      </label>
-      <div className='error-div text-red-500'>{errors.termsAndContions?.message}</div>
-
-      <label className='form-label' key='Avatar'>
-        {'Avatar: '}
-        <input {...register('avatar')} type='file' />
-      </label>
-      <div className='error-div text-red-500'>{errors.avatar?.message}</div>
-
-      <label className='form-label' key='country'>
-        {'Country: '}
+      <div className='form-field'>
+        <label htmlFor='hook-name' className='field-label'>
+          Name:
+        </label>
         <input
-          {...register('country')}
+          id='hook-name'
+          {...register('name')}
           type='text'
-          list='countries-hook'
-          placeholder='Country'
+          placeholder='Name'
           autoComplete='one-time-code'
         />
-        <datalist id='countries-hook'>
-          {countryNames.map((name) => (
-            <option key={name} value={name} />
-          ))}
-        </datalist>
-      </label>
-      <div className='error-div text-red-500'>{errors.country?.message}</div>
+        <div className='error-div text-red-500'>{errors.name?.message ?? ''}</div>
+      </div>
 
-      <button type='submit'>Submit</button>
+      <div className='form-field'>
+        <label htmlFor='hook-age' className='field-label'>
+          Age:
+        </label>
+        <input
+          id='hook-age'
+          {...register('age')}
+          type='text'
+          placeholder='Age'
+          autoComplete='one-time-code'
+        />
+        <div className='error-div text-red-500'>{errors.age?.message ?? ''}</div>
+      </div>
+
+      <div className='form-field'>
+        <label htmlFor='hook-email' className='field-label'>
+          Email:
+        </label>
+        <input id='hook-email' {...register('email')} type='text' placeholder='Email' />
+        <div className='error-div text-red-500'>{errors.email?.message}</div>
+      </div>
+
+      <div className='form-field'>
+        <label htmlFor='hook-password' className='field-label'>
+          Password:
+        </label>
+        <input
+          id='hook-password'
+          {...register('password')}
+          type='password'
+          placeholder='Password'
+        />
+        <div className='error-div text-red-500'>{errors.password?.message}</div>
+        <PasswordStrength password={password} />
+      </div>
+
+      <div className='form-field'>
+        <label htmlFor='hook-confirm-password' className='field-label'>
+          Confirm Password:
+        </label>
+        <input
+          id='hook-confirm-password'
+          {...register('confirmPassword')}
+          type='password'
+          placeholder='Confirm Password'
+        />
+        <div className='error-div text-red-500'>{errors.confirmPassword?.message}</div>
+      </div>
+
+      <fieldset className='gender-fieldset'>
+        <legend>Gender:</legend>
+        <div className='gender-options'>
+          <div className='radio-option'>
+            <input type='radio' id='hook-male' value='male' {...register('gender')} />
+            <label htmlFor='hook-male'>Male</label>
+          </div>
+          <div className='radio-option'>
+            <input type='radio' id='hook-female' value='female' {...register('gender')} />
+            <label htmlFor='hook-female'>Female</label>
+          </div>
+        </div>
+        <div className='error-div text-red-500'>{errors.gender?.message}</div>
+      </fieldset>
+
+      <div className='form-field'>
+        <div className='checkbox-field'>
+          <input id='hook-terms' {...register('termsAndContions')} type='checkbox' />
+          <label htmlFor='hook-terms'>Accept terms and conditions</label>
+        </div>
+        <div className='error-div text-red-500'>{errors.termsAndContions?.message}</div>
+      </div>
+
+      <div className='form-field'>
+        <label htmlFor='hook-avatar' className='field-label'>
+          Avatar:
+        </label>
+        <input id='hook-avatar' {...register('avatar')} type='file' accept='image/png,image/jpeg' />
+        <div className='error-div text-red-500'>{errors.avatar?.message}</div>
+      </div>
+
+      <div className='form-field'>
+        <label htmlFor='hook-country' className='field-label'>
+          Country:
+        </label>
+        <Controller
+          name='country'
+          control={control}
+          render={({ field }) => (
+            <CountryAutocomplete
+              id='hook-country'
+              countries={countryNames}
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+            />
+          )}
+        />
+        <div className='error-div text-red-500'>{errors.country?.message}</div>
+      </div>
+
+      <button type='submit' disabled={!isValid || isSubmitting}>
+        Submit
+      </button>
     </form>
   )
 }

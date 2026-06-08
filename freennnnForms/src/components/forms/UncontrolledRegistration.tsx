@@ -7,6 +7,7 @@ import { convertImageToBase64 } from '../../data/imageUtils'
 import { useAppDispatch, useAppSelector } from '../../data/store'
 import { addUser } from '../../data/usersSlice'
 import { createFormSchema } from '../../data/zodFormSchema'
+import { CountryAutocomplete } from '../CountryAutocomplete/CountryAutocomplete'
 import { PasswordStrength } from '../PasswordStrength'
 import './RegistrationForm.css'
 
@@ -65,79 +66,108 @@ export function UncontrolledRegistration({ onSuccess }: UncontrolledRegistration
       onSubmit={handleSubmit}
       autoComplete='one-time-code'
     >
-      <label className='form-label' key='name'>
-        {'Name: '}
-        <input name='name' type='text' placeholder='Name' autoComplete='one-time-code' />
-      </label>
-      <div className='error-div text-red-500'>{errors.name}</div>
-
-      <label className='form-label' key='age'>
-        {'Age: '}
-        <input name='age' type='text' placeholder='Age' autoComplete='one-time-code' />
-      </label>
-      <div className='error-div text-red-500'>{errors.age}</div>
-
-      <label className='form-label' key='email'>
-        {'Email: '}
-        <input name='email' type='text' placeholder='Email' />
-      </label>
-      <div className='error-div text-red-500'>{errors.email}</div>
-
-      <label className='form-label' key='password'>
-        {'Password: '}
+      <div className='form-field'>
+        <label htmlFor='uncontrolled-name' className='field-label'>
+          Name:
+        </label>
         <input
+          id='uncontrolled-name'
+          name='name'
+          type='text'
+          placeholder='Name'
+          autoComplete='one-time-code'
+        />
+        <div className='error-div text-red-500'>{errors.name}</div>
+      </div>
+
+      <div className='form-field'>
+        <label htmlFor='uncontrolled-age' className='field-label'>
+          Age:
+        </label>
+        <input
+          id='uncontrolled-age'
+          name='age'
+          type='text'
+          placeholder='Age'
+          autoComplete='one-time-code'
+        />
+        <div className='error-div text-red-500'>{errors.age}</div>
+      </div>
+
+      <div className='form-field'>
+        <label htmlFor='uncontrolled-email' className='field-label'>
+          Email:
+        </label>
+        <input id='uncontrolled-email' name='email' type='text' placeholder='Email' />
+        <div className='error-div text-red-500'>{errors.email}</div>
+      </div>
+
+      <div className='form-field'>
+        <label htmlFor='uncontrolled-password' className='field-label'>
+          Password:
+        </label>
+        <input
+          id='uncontrolled-password'
           name='password'
           type='password'
           placeholder='Password'
           onChange={handlePasswordChange}
         />
-      </label>
-      <PasswordStrength password={password} />
-      <div className='error-div text-red-500'>{errors.password}</div>
-
-      <label className='form-label' key='confirmPassword'>
-        {'Confirm Password: '}
-        <input name='confirmPassword' type='password' placeholder='Confirm Password' />
-      </label>
-      <div className='error-div text-red-500'>{errors.confirmPassword}</div>
-
-      <div className='form-label' key='gender'>
-        {'Gender: '}
-        <input name='gender' type='radio' id='uncontrolled-male' value='male' />
-        <label htmlFor='uncontrolled-male'>Male</label>
-        <input name='gender' type='radio' id='uncontrolled-female' value='female' />
-        <label htmlFor='uncontrolled-female'>Female</label>
+        <div className='error-div text-red-500'>{errors.password}</div>
+        <PasswordStrength password={password} />
       </div>
-      <div className='error-div text-red-500'>{errors.gender}</div>
 
-      <label className='form-label' key='termsAndConditions'>
-        {'Accept terms and conditions: '}
-        <input name='termsAndContions' type='checkbox' />
-      </label>
-      <div className='error-div text-red-500'>{errors.termsAndContions}</div>
-
-      <label className='form-label' key='Avatar'>
-        {'Avatar: '}
-        <input name='avatar' type='file' />
-      </label>
-      <div className='error-div text-red-500'>{errors.avatar}</div>
-
-      <label className='form-label' key='country'>
-        {'Country: '}
+      <div className='form-field'>
+        <label htmlFor='uncontrolled-confirm-password' className='field-label'>
+          Confirm Password:
+        </label>
         <input
-          name='country'
-          type='text'
-          list='countries-uncontrolled'
-          placeholder='Country'
-          autoComplete='one-time-code'
+          id='uncontrolled-confirm-password'
+          name='confirmPassword'
+          type='password'
+          placeholder='Confirm Password'
         />
-        <datalist id='countries-uncontrolled'>
-          {countryNames.map((name) => (
-            <option key={name} value={name} />
-          ))}
-        </datalist>
-      </label>
-      <div className='error-div text-red-500'>{errors.country}</div>
+        <div className='error-div text-red-500'>{errors.confirmPassword}</div>
+      </div>
+
+      <fieldset className='gender-fieldset'>
+        <legend>Gender:</legend>
+        <div className='gender-options'>
+          <div className='radio-option'>
+            <input name='gender' type='radio' id='uncontrolled-male' value='male' />
+            <label htmlFor='uncontrolled-male'>Male</label>
+          </div>
+          <div className='radio-option'>
+            <input name='gender' type='radio' id='uncontrolled-female' value='female' />
+            <label htmlFor='uncontrolled-female'>Female</label>
+          </div>
+        </div>
+        <div className='error-div text-red-500'>{errors.gender}</div>
+      </fieldset>
+
+      <div className='form-field'>
+        <div className='checkbox-field'>
+          <input id='uncontrolled-terms' name='termsAndContions' type='checkbox' />
+          <label htmlFor='uncontrolled-terms'>Accept terms and conditions</label>
+        </div>
+        <div className='error-div text-red-500'>{errors.termsAndContions}</div>
+      </div>
+
+      <div className='form-field'>
+        <label htmlFor='uncontrolled-avatar' className='field-label'>
+          Avatar:
+        </label>
+        <input id='uncontrolled-avatar' name='avatar' type='file' accept='image/png,image/jpeg' />
+        <div className='error-div text-red-500'>{errors.avatar}</div>
+      </div>
+
+      <div className='form-field'>
+        <label htmlFor='uncontrolled-country' className='field-label'>
+          Country:
+        </label>
+        <CountryAutocomplete id='uncontrolled-country' name='country' countries={countryNames} />
+        <div className='error-div text-red-500'>{errors.country}</div>
+      </div>
 
       <button type='submit'>Submit</button>
     </form>
