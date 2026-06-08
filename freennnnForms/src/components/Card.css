@@ -1,0 +1,37 @@
+.card {
+  background-color:gray;
+  max-width: 300px;
+  padding: 16px;
+  border-radius: 16px;
+  p {
+    margin-top: 8px;
+    margin-bottom: 5px;
+    word-wrap: break-word;
+  }
+  span {
+    font-weight: 500;
+    margin-right: 4px;
+  }
+  img {
+    height: 260px;
+    width: auto;
+  }
+  &.last {
+    border: 4px solid green;
+    animation: fadeIn 1s ease-in-out;
+  }
+}
+
+.avatar {
+  display: flex;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
