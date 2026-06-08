@@ -19,6 +19,14 @@ export function Card({ user, wasAddedLast }: { user: User; wasAddedLast: boolean
         <span>Email: </span>
         {user.email}
       </p>
+      <p>
+        <span>Gender: </span>
+        {user.gender}
+      </p>
+      <p>
+        <span>Country: </span>
+        {user.country}
+      </p>
     </div>
   )
 }

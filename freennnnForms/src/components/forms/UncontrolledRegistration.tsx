@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { selectCountryNames } from '../../data/countriesSlice'
 import { convertImageToBase64 } from '../../data/imageUtils'
 import { useAppDispatch, useAppSelector } from '../../data/store'
+import { createUserFromForm } from '../../data/types'
 import { addUser } from '../../data/usersSlice'
 import { createFormSchema } from '../../data/zodFormSchema'
 import { CountryAutocomplete } from '../CountryAutocomplete/CountryAutocomplete'
@@ -46,20 +47,10 @@ export function UncontrolledRegistration({ onSuccess }: UncontrolledRegistration
       }
       formData.id = uuidv4()
 
-      const {
-        avatar: omittedAvatar,
-        confirmPassword: omittedConfirmPassword,
-        ...userData
-      } = parsed.data
-      void omittedAvatar
-      void omittedConfirmPassword
-
       dispatch(
-        addUser({
-          ...userData,
-          id: formData.id as string,
-          avatarImage: formData.avatarImage as string,
-        }),
+        addUser(
+          createUserFromForm(parsed.data, formData.id as string, formData.avatarImage as string),
+        ),
       )
       formRef.current?.reset()
       setErrors({})

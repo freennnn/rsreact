@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { selectCountryNames } from '../../data/countriesSlice'
 import { convertImageToBase64 } from '../../data/imageUtils'
 import { useAppDispatch, useAppSelector } from '../../data/store'
+import { createUserFromForm } from '../../data/types'
 import { addUser } from '../../data/usersSlice'
 import { FormFields, createFormSchema } from '../../data/zodFormSchema'
 import { CountryAutocomplete } from '../CountryAutocomplete/CountryAutocomplete'
@@ -43,11 +44,8 @@ export function HookFormRegistration({ onSuccess }: HookFormRegistrationProps) {
     }
 
     const avatarImage = await convertImageToBase64(data.avatar)
-    const { avatar: omittedAvatar, confirmPassword: omittedConfirmPassword, ...userData } = data
-    void omittedAvatar
-    void omittedConfirmPassword
 
-    dispatch(addUser({ ...userData, avatarImage, id: uuidv4() }))
+    dispatch(addUser(createUserFromForm(data, uuidv4(), avatarImage)))
     reset()
     onSuccess()
   }

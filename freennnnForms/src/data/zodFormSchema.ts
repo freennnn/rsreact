@@ -4,7 +4,6 @@ import { MIN_PASSWORD_LENGTH } from '../utils/passwordStrength'
 import { isValidEmail } from '../utils/validation'
 import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE } from './imageUtils'
 
-// if we would pass it to superRefine after the whole object - then we would need to specify 'path' fot ctx.addIssue
 function validatePasswordFieldInPlace(password: string, ctx: z.RefinementCtx) {
   if (password.length < MIN_PASSWORD_LENGTH) {
     ctx.addIssue({
@@ -95,7 +94,7 @@ export const createFormSchema = (countryNames: string[]) =>
         })
         .refine(
           (file) => file && file.size < MAX_IMAGE_SIZE,
-          `Pofile picture should be under ${MAX_IMAGE_SIZE / 1024 / 1024} mb`,
+          `Profile picture should be under ${MAX_IMAGE_SIZE / 1024 / 1024} mb`,
         )
         .refine(
           (file) => file && ACCEPTED_IMAGE_TYPES.includes(file.type),
@@ -106,7 +105,6 @@ export const createFormSchema = (countryNames: string[]) =>
         .refine((value) => countryNames.includes(value), 'We do not operate in that country'),
     })
 
-    // the rule will be applied only after the whole object (with other field) passes the validation
     .superRefine(({ confirmPassword, password }, ctx) => {
       if (confirmPassword !== password) {
         ctx.addIssue({

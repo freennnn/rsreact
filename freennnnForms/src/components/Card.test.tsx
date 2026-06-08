@@ -22,6 +22,8 @@ describe('Card', () => {
     expect(screen.getByText('Alex')).toBeInTheDocument()
     expect(screen.getByText('30')).toBeInTheDocument()
     expect(screen.getByText('alex@example.com')).toBeInTheDocument()
+    expect(screen.getByText('male')).toBeInTheDocument()
+    expect(screen.getByText('Poland')).toBeInTheDocument()
     expect(screen.getByRole('img', { name: 'Alex' })).toHaveAttribute(
       'src',
       'data:image/png;base64,abc',
