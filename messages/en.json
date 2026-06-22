@@ -3,10 +3,6 @@
     "home": "Home",
     "about": "About"
   },
-  "HomePage": {
-    "title": "Next.js migration bootstrap",
-    "description": "Phase 2 localization foundation is ready."
-  },
   "SearchPage": {
     "searchFormAria": "Search repositories",
     "searchResultsAria": "Search results",
@@ -28,7 +24,6 @@
     "listPanelAria": "Repository list panel",
     "detailsPanelAria": "Repository detail panel",
     "paginationAria": "Results pagination",
-    "selectionDisabledAria": "Selection is disabled for repository {id} in server-rendered mode",
     "nameLabel": "Name",
     "ownerLabel": "Owner",
     "languageLabel": "Language",
