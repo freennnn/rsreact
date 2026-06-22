@@ -1,0 +1,19 @@
+{
+  "Nav": {
+    "home": "Home",
+    "about": "About"
+  },
+  "HomePage": {
+    "title": "Next.js migration bootstrap",
+    "description": "Phase 2 localization foundation is ready."
+  },
+  "AboutPage": {
+    "title": "About",
+    "description": "This page is a localized placeholder for the Next.js migration."
+  },
+  "LanguageSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "ru": "Russian"
+  }
+}
