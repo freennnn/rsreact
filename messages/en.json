@@ -11,6 +11,10 @@
     "title": "About",
     "description": "This page is a localized placeholder for the Next.js migration."
   },
+  "NotFoundPage": {
+    "title": "404 - Page not found",
+    "back": "Return to main app"
+  },
   "LanguageSwitcher": {
     "label": "Language",
     "en": "English",
