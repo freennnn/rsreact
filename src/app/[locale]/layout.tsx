@@ -4,7 +4,9 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
+import { Providers } from '../providers';
 import { LanguageSwitcher } from '../../components/LanguageSwitcher/LanguageSwitcher';
+import { ThemeSwitcher } from '../../components/ThemeSwitcher/ThemeSwitcher';
 import { Link } from '../../i18n/navigation';
 import { routing } from '../../i18n/routing';
 
@@ -31,20 +33,23 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider>
-      <div className="app-shell">
-        <header className="app-header">
-          <nav className="app-nav" aria-label="Main navigation">
-            <Link href="/" className="app-nav-link">
-              {t('home')}
-            </Link>
-            <Link href="/about" className="app-nav-link">
-              {t('about')}
-            </Link>
-            <LanguageSwitcher />
-          </nav>
-        </header>
-        <main className="app-main">{children}</main>
-      </div>
+      <Providers>
+        <div className="app-shell">
+          <header className="app-header">
+            <nav className="app-nav" aria-label="Main navigation">
+              <Link href="/" className="app-nav-link">
+                {t('home')}
+              </Link>
+              <Link href="/about" className="app-nav-link">
+                {t('about')}
+              </Link>
+              <ThemeSwitcher />
+              <LanguageSwitcher />
+            </nav>
+          </header>
+          <main className="app-main">{children}</main>
+        </div>
+      </Providers>
     </NextIntlClientProvider>
   );
 }

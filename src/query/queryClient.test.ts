@@ -17,7 +17,7 @@ describe('createQueryClient', () => {
   });
 
   it('uses a custom cache TTL from the environment variable', () => {
-    vi.stubEnv('VITE_QUERY_CACHE_TTL_MS', '120000');
+    vi.stubEnv('NEXT_PUBLIC_QUERY_CACHE_TTL_MS', '120000');
 
     const client = createQueryClient();
     const defaults = client.getDefaultOptions().queries;
@@ -27,7 +27,7 @@ describe('createQueryClient', () => {
   });
 
   it('falls back to the default TTL when the env value is invalid', () => {
-    vi.stubEnv('VITE_QUERY_CACHE_TTL_MS', 'not-a-number');
+    vi.stubEnv('NEXT_PUBLIC_QUERY_CACHE_TTL_MS', 'not-a-number');
 
     const client = createQueryClient();
     const defaults = client.getDefaultOptions().queries;
@@ -37,7 +37,7 @@ describe('createQueryClient', () => {
   });
 
   it('falls back to the default TTL when the env value is negative', () => {
-    vi.stubEnv('VITE_QUERY_CACHE_TTL_MS', '-1');
+    vi.stubEnv('NEXT_PUBLIC_QUERY_CACHE_TTL_MS', '-1');
 
     const client = createQueryClient();
     const defaults = client.getDefaultOptions().queries;
