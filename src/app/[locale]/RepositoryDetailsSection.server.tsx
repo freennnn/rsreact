@@ -1,15 +1,8 @@
-import { unstable_cache } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { buildQuery } from './search-params';
 import { Link } from '../../i18n/navigation';
 import { getRepositoryById } from '../../services/api';
-
-const getCachedRepositoryDetails = unstable_cache(
-  async (detailsId: number) => getRepositoryById(detailsId),
-  ['repository-details'],
-  { revalidate: 60, tags: ['repository-details'] }
-);
 
 interface RepositoryDetailsSectionProps {
   locale: string;
@@ -39,7 +32,12 @@ export async function RepositoryDetailsSection({
   let details: Awaited<ReturnType<typeof getRepositoryById>> | null = null;
 
   try {
-    details = await getCachedRepositoryDetails(selectedDetailsId);
+    details = await getRepositoryById(selectedDetailsId, {
+      next: {
+        revalidate: 60,
+        tags: ['repository-details', `repository-details:${selectedDetailsId}`],
+      },
+    });
   } catch (error) {
     detailsError = error instanceof Error ? error.message : t('detailsRequestFailed');
   }

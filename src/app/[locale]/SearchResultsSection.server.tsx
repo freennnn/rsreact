@@ -1,4 +1,3 @@
-import { unstable_cache } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { RepositoryListItem } from './RepositoryListItem.client';
@@ -8,12 +7,6 @@ import { getRepositores } from '../../services/api';
 import type { SelectedRepository } from '../../store/selectionStore';
 
 const ITEMS_PER_PAGE = 3;
-
-const getCachedRepositories = unstable_cache(
-  async (searchTerm: string, page: number) => getRepositores(searchTerm, page),
-  ['repositories-list'],
-  { revalidate: 60, tags: ['repositories-list'] }
-);
 
 interface SearchResultsSectionProps {
   locale: string;
@@ -33,7 +26,13 @@ export async function SearchResultsSection({
   let listError: string | null = null;
 
   try {
-    const listResponse = await getCachedRepositories(searchTerm, currentPage);
+    const normalizedQuery = searchTerm === '' ? 'allitems' : searchTerm;
+    const listResponse = await getRepositores(searchTerm, currentPage, {
+      next: {
+        revalidate: 60,
+        tags: ['repositories-list', `repositories-list:${normalizedQuery}:${currentPage}`],
+      },
+    });
     repositories = listResponse.items.map((item) => ({
       id: item.id,
       name: item.name,
