@@ -33,6 +33,7 @@ export interface GitHubRepositoryDetails {
   html_url: string;
   owner: {
     login: string;
+    avatar_url?: string;
   };
 }
 

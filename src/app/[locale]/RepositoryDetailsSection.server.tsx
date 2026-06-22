@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 
 import { buildQuery } from './search-params';
@@ -63,6 +64,17 @@ export async function RepositoryDetailsSection({
           <p>
             <strong>{t('ownerLabel')}:</strong> {details.owner.login}
           </p>
+          {details.owner.avatar_url ? (
+            <p>
+              <Image
+                src={details.owner.avatar_url}
+                alt={`${details.owner.login} avatar`}
+                width={64}
+                height={64}
+                style={{ borderRadius: '9999px' }}
+              />
+            </p>
+          ) : null}
           <p>
             <strong>{t('languageLabel')}:</strong> {details.language ?? t('unknownLanguage')}
           </p>
