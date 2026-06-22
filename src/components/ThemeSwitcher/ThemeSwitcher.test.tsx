@@ -20,8 +20,8 @@ describe('ThemeSwitcher', () => {
     expect(selector).toHaveValue(nextTheme);
   });
 
-  it('updates document theme and localStorage when switched', async () => {
-    const { user } = renderWithUser(
+  it('updates theme wrapper class and localStorage when switched', async () => {
+    const { user, container } = renderWithUser(
       <ThemeProvider>
         <ThemeSwitcher />
       </ThemeProvider>
@@ -31,7 +31,8 @@ describe('ThemeSwitcher', () => {
     await user.selectOptions(selector, 'dark');
 
     await waitFor(() => {
-      expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+      const themeRoot = container.querySelector('.theme-root');
+      expect(themeRoot).toHaveClass('theme-dark');
     });
     expect(localStorage.getItem('AppTheme')).toBe('dark');
   });

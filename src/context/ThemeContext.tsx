@@ -1,3 +1,5 @@
+'use client';
+
 /* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
@@ -21,6 +23,10 @@ const THEME_STORAGE_KEY = 'AppTheme';
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 function getInitialTheme(): Theme {
+  if (typeof window === 'undefined') {
+    return 'dark';
+  }
+
   const persistedTheme = localStorage.getItem(THEME_STORAGE_KEY);
   if (persistedTheme === 'light' || persistedTheme === 'dark') {
     return persistedTheme;
@@ -37,7 +43,13 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
+    const persistedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+    if (persistedTheme === 'light' || persistedTheme === 'dark') {
+      setTheme(persistedTheme);
+    }
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 
@@ -52,7 +64,9 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   );
 
   return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>
+      <div className={`theme-root theme-${theme}`}>{children}</div>
+    </ThemeContext.Provider>
   );
 }
 

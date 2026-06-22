@@ -4,6 +4,15 @@ const PATH_SEARCH = '/search/repositories';
 const PARAM_SEARCH = 'q=';
 const PER_PAGE = 3;
 
+interface NextRequestConfig {
+  revalidate?: number;
+  tags?: string[];
+}
+
+interface ApiRequestOptions extends RequestInit {
+  next?: NextRequestConfig;
+}
+
 export interface GitHubSearchResponse {
   total_count?: number;
   items: Array<{
@@ -24,19 +33,22 @@ export interface GitHubRepositoryDetails {
   html_url: string;
   owner: {
     login: string;
+    avatar_url?: string;
   };
 }
 
 // GitHub search API does not allow an empty query; use a default token instead.
 export async function getRepositores(
   searchTerm: string,
-  page = 1
+  page = 1,
+  requestOptions?: ApiRequestOptions
 ): Promise<GitHubSearchResponse> {
   const query = searchTerm ? searchTerm : DEFAULT_SEARCH_QUERY;
   const safePage = Number.isInteger(page) && page > 0 ? page : 1;
-  const response = await fetch(
-    `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${encodeURIComponent(query)}&page=${safePage}&per_page=${PER_PAGE}`
-  );
+  const requestUrl = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${encodeURIComponent(query)}&page=${safePage}&per_page=${PER_PAGE}`;
+  const response = requestOptions
+    ? await fetch(requestUrl, requestOptions)
+    : await fetch(requestUrl);
 
   let body: unknown = null;
   try {
@@ -58,9 +70,13 @@ export async function getRepositores(
 }
 
 export async function getRepositoryById(
-  detailsId: number
+  detailsId: number,
+  requestOptions?: ApiRequestOptions
 ): Promise<GitHubRepositoryDetails> {
-  const response = await fetch(`${PATH_BASE}/repositories/${detailsId}`);
+  const requestUrl = `${PATH_BASE}/repositories/${detailsId}`;
+  const response = requestOptions
+    ? await fetch(requestUrl, requestOptions)
+    : await fetch(requestUrl);
 
   let body: unknown = null;
   try {

@@ -18,19 +18,21 @@ function ThemeTestView() {
 }
 
 describe('ThemeContext', () => {
-  it('updates document theme attribute when theme changes', async () => {
-    const { user } = renderWithUser(
+  it('updates theme wrapper class when theme changes', async () => {
+    const { user, container } = renderWithUser(
       <ThemeProvider>
         <ThemeTestView />
       </ThemeProvider>
     );
 
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+    const themeRoot = container.querySelector('.theme-root');
+    expect(themeRoot).toBeInTheDocument();
+    expect(themeRoot).toHaveClass('theme-dark');
     expect(screen.getByText('dark')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Set light' }));
 
-    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+    expect(themeRoot).toHaveClass('theme-light');
     expect(screen.getByText('light')).toBeInTheDocument();
   });
 });

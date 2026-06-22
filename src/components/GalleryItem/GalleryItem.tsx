@@ -1,4 +1,4 @@
-import { Repository } from '../../views/Gallery/Gallery';
+import { Repository } from '../../hooks/useRepositoriesQuery';
 import './GalleryItem.css';
 
 interface GalleryItemProps extends Repository {
