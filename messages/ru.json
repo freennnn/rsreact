@@ -7,6 +7,33 @@
     "title": "Базовая миграция на Next.js",
     "description": "Основа локализации для фазы 2 готова."
   },
+  "SearchPage": {
+    "searchFormAria": "Поиск репозиториев",
+    "searchResultsAria": "Результаты поиска",
+    "searchPlaceholder": "Поиск репозиториев...",
+    "searchButton": "Найти",
+    "emptyList": "Репозитории не найдены.",
+    "listRequestFailed": "Не удалось загрузить репозитории.",
+    "detailsRequestFailed": "Не удалось загрузить детали репозитория.",
+    "missingDescription": "Описание отсутствует.",
+    "unknownLanguage": "Неизвестно",
+    "openDetails": "Открыть детали",
+    "closeDetails": "Закрыть",
+    "openOnGithub": "Открыть на GitHub",
+    "prevPage": "Назад",
+    "nextPage": "Вперед",
+    "currentPage": "Страница {currentPage} из {totalPages}",
+    "detailsTitle": "Детали репозитория",
+    "detailsEmpty": "Выберите репозиторий, чтобы увидеть детали.",
+    "listPanelAria": "Панель списка репозиториев",
+    "detailsPanelAria": "Панель деталей репозитория",
+    "paginationAria": "Пагинация результатов",
+    "selectionDisabledAria": "Выбор отключен для репозитория {id} в серверном режиме",
+    "nameLabel": "Название",
+    "ownerLabel": "Владелец",
+    "languageLabel": "Язык",
+    "starsLabel": "Звезды"
+  },
   "AboutPage": {
     "title": "О нас",
     "description": "Это локализованная временная страница для миграции на Next.js."

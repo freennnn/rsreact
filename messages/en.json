@@ -7,6 +7,33 @@
     "title": "Next.js migration bootstrap",
     "description": "Phase 2 localization foundation is ready."
   },
+  "SearchPage": {
+    "searchFormAria": "Search repositories",
+    "searchResultsAria": "Search results",
+    "searchPlaceholder": "Search repositories...",
+    "searchButton": "Search",
+    "emptyList": "No repositories loaded.",
+    "listRequestFailed": "Failed to load repositories.",
+    "detailsRequestFailed": "Failed to load repository details.",
+    "missingDescription": "No description provided.",
+    "unknownLanguage": "Unknown",
+    "openDetails": "Open details",
+    "closeDetails": "Close",
+    "openOnGithub": "Open on GitHub",
+    "prevPage": "Previous",
+    "nextPage": "Next",
+    "currentPage": "Page {currentPage} of {totalPages}",
+    "detailsTitle": "Repository details",
+    "detailsEmpty": "Select a repository to see details.",
+    "listPanelAria": "Repository list panel",
+    "detailsPanelAria": "Repository detail panel",
+    "paginationAria": "Results pagination",
+    "selectionDisabledAria": "Selection is disabled for repository {id} in server-rendered mode",
+    "nameLabel": "Name",
+    "ownerLabel": "Owner",
+    "languageLabel": "Language",
+    "starsLabel": "Stars"
+  },
   "AboutPage": {
     "title": "About",
     "description": "This page is a localized placeholder for the Next.js migration."
