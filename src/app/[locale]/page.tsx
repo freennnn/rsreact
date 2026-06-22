@@ -1,8 +1,10 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { RepositoryListItem } from './RepositoryListItem.client';
 import { submitSearchAction } from './actions';
 import { Link } from '../../i18n/navigation';
 import { getRepositores, getRepositoryById } from '../../services/api';
+import type { SelectedRepository } from '../../store/selectionStore';
 import '../../views/Gallery/Gallery.css';
 import '../../components/Search/Search.css';
 import '../../components/GalleryItem/GalleryItem.css';
@@ -66,13 +68,15 @@ export default async function HomePage({ params, searchParams }: HomePageProps) 
         : t('listRequestFailed')
       : null;
 
-  const repositories =
+  const repositories: SelectedRepository[] =
     listResult.status === 'fulfilled'
       ? listResult.value.items.map((item) => ({
           id: item.id,
           name: item.name,
           description: item.description ?? '',
-          language: item.language ?? '',
+          language: item.language ?? t('unknownLanguage'),
+          htmlUrl: item.html_url ?? '',
+          detailsUrl: item.html_url ?? '',
         }))
       : [];
 
@@ -122,29 +126,14 @@ export default async function HomePage({ params, searchParams }: HomePageProps) 
               <ul className="gallery-results-list">
                 {repositories.map((repository) => (
                   <li key={repository.id} className="gallery-results-list-item">
-                    <article className="GalleryItem">
-                      <label className="GalleryItem-checkbox-label">
-                        <input
-                          type="checkbox"
-                          className="GalleryItem-checkbox"
-                          disabled
-                          aria-label={t('selectionDisabledAria', {
-                            id: repository.id,
-                          })}
-                        />
-                      </label>
-                      <Link
-                        href={{
-                          pathname: '/',
-                          query: buildQuery(searchTerm, currentPage, repository.id),
-                        }}
-                        className="GalleryItem-content"
-                      >
-                        <p>{repository.name}</p>
-                        <p>{repository.description || t('missingDescription')}</p>
-                        <p>{repository.language || t('unknownLanguage')}</p>
-                      </Link>
-                    </article>
+                    <RepositoryListItem
+                      repository={repository}
+                      fallbackDescription={t('missingDescription')}
+                      href={{
+                        pathname: '/',
+                        query: buildQuery(searchTerm, currentPage, repository.id),
+                      }}
+                    />
                   </li>
                 ))}
               </ul>

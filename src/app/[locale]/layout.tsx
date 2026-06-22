@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 
 import { Providers } from '../providers';
 import { LanguageSwitcher } from '../../components/LanguageSwitcher/LanguageSwitcher';
+import { SelectedItemsFlyoutBridge } from '../../components/SelectedItemsFlyout/SelectedItemsFlyoutBridge';
 import { ThemeSwitcher } from '../../components/ThemeSwitcher/ThemeSwitcher';
 import { Link } from '../../i18n/navigation';
 import { routing } from '../../i18n/routing';
@@ -47,7 +48,10 @@ export default async function LocaleLayout({
               <LanguageSwitcher />
             </nav>
           </header>
-          <main className="app-main">{children}</main>
+          <main className="app-main">
+            {children}
+            <SelectedItemsFlyoutBridge />
+          </main>
         </div>
       </Providers>
     </NextIntlClientProvider>
