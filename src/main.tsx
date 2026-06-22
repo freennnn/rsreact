@@ -7,7 +7,7 @@ import { RouterProvider } from '@tanstack/react-router';
 import './index.css';
 import { ThemeProvider } from './context/ThemeContext';
 import { createQueryClient } from './query/queryClient';
-import { router } from './router.tsx';
+import { router } from './router';
 
 const queryClient = createQueryClient();
 
