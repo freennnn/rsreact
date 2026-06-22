@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { submitSearchAction } from './actions';
 import { Link } from '../../i18n/navigation';
 import { getRepositores, getRepositoryById } from '../../services/api';
 import '../../views/Gallery/Gallery.css';
@@ -41,6 +42,7 @@ function buildQuery(searchTerm: string, page: number, details?: number) {
 export default async function HomePage({ params, searchParams }: HomePageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const boundSearchAction = submitSearchAction.bind(null, locale);
   const requestedSearchParams = await searchParams;
   const t = await getTranslations({ locale, namespace: 'SearchPage' });
 
@@ -95,7 +97,7 @@ export default async function HomePage({ params, searchParams }: HomePageProps) 
       <section className="list-layout-master" aria-label={t('listPanelAria')}>
         <div className="GalleryView">
           <section className="gallery-search-section" aria-label={t('searchFormAria')}>
-            <form action={`/${locale}`} method="get" className="search-form">
+            <form action={boundSearchAction} className="search-form">
               <input
                 type="text"
                 name="q"
