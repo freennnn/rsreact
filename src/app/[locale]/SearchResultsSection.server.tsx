@@ -30,7 +30,10 @@ export async function SearchResultsSection({
     const listResponse = await getRepositores(searchTerm, currentPage, {
       next: {
         revalidate: 60,
-        tags: ['repositories-list', `repositories-list:${normalizedQuery}:${currentPage}`],
+        tags: [
+          'repositories-list',
+          `repositories-list:${normalizedQuery}:${currentPage}`,
+        ],
       },
     });
     repositories = listResponse.items.map((item) => ({
@@ -51,7 +54,10 @@ export async function SearchResultsSection({
   const canGoNext = currentPage < totalPages;
 
   return (
-    <section className="gallery-results-section" aria-label={t('searchResultsAria')}>
+    <section
+      className="gallery-results-section"
+      aria-label={t('searchResultsAria')}
+    >
       {listError ? <p className="gallery-error">{listError}</p> : null}
 
       {!listError && repositories.length === 0 ? (

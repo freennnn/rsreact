@@ -5,7 +5,10 @@ interface SearchPageErrorProps {
   reset: () => void;
 }
 
-export default function SearchPageError({ error, reset }: SearchPageErrorProps) {
+export default function SearchPageError({
+  error,
+  reset,
+}: SearchPageErrorProps) {
   return (
     <section className="app-page" aria-label="Search page error">
       <h1>Something went wrong</h1>

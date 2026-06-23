@@ -35,7 +35,9 @@ export function RepositoryListItem({
   const isSelected = selectedRepositoryIds.includes(repository.id);
 
   return (
-    <article className={`GalleryItem ${isSelected ? 'GalleryItem--selected' : ''}`}>
+    <article
+      className={`GalleryItem ${isSelected ? 'GalleryItem--selected' : ''}`}
+    >
       <label
         className="GalleryItem-checkbox-label"
         onClick={(event) => {

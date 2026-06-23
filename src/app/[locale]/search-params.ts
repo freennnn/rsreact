@@ -1,5 +1,5 @@
 export function readSingleValue(value?: string | string[]): string {
-  return Array.isArray(value) ? value[0] ?? '' : value ?? '';
+  return Array.isArray(value) ? (value[0] ?? '') : (value ?? '');
 }
 
 export function parsePositiveInt(value: string): number | null {

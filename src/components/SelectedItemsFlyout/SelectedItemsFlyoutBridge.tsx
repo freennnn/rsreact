@@ -1,12 +1,17 @@
 'use client';
 
-import { selectionSelectors, useSelectionStore } from '../../store/selectionStore';
+import { useShallow } from 'zustand/react/shallow';
+
+import {
+  selectionSelectors,
+  useSelectionStore,
+} from '../../store/selectionStore';
 import { downloadSelectedItemsCsv } from '../../utils/downloadSelectedItemsCsv';
 import { SelectedItemsFlyout } from './SelectedItemsFlyout';
 
 export function SelectedItemsFlyoutBridge() {
   const selectedRepositories = useSelectionStore(
-    selectionSelectors.selectedRepositories
+    useShallow(selectionSelectors.selectedRepositories)
   );
 
   return (

@@ -11,7 +11,9 @@ function parseFilenameFromContentDisposition(
     return fallbackFilename;
   }
 
-  const filenameMatch = contentDisposition.match(/filename\*?=(?:UTF-8''|")?([^";]+)/i);
+  const filenameMatch = contentDisposition.match(
+    /filename\*?=(?:UTF-8''|")?([^";]+)/i
+  );
   if (!filenameMatch) {
     return fallbackFilename;
   }

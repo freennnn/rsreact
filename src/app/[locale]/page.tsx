@@ -17,7 +17,10 @@ interface SearchPageProps {
   }>;
 }
 
-export default async function SearchPage({ params, searchParams }: SearchPageProps) {
+export default async function SearchPage({
+  params,
+  searchParams,
+}: SearchPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
   const boundSearchAction = submitSearchAction.bind(null, locale);
@@ -25,7 +28,8 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   const t = await getTranslations({ locale, namespace: 'SearchPage' });
 
   const searchTerm = readSingleValue(requestedSearchParams.q).trim();
-  const currentPage = parsePositiveInt(readSingleValue(requestedSearchParams.page)) ?? 1;
+  const currentPage =
+    parsePositiveInt(readSingleValue(requestedSearchParams.page)) ?? 1;
   const selectedDetailsId = parsePositiveInt(
     readSingleValue(requestedSearchParams.details)
   );
@@ -34,7 +38,10 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
     <div className="list-layout">
       <section className="list-layout-master" aria-label={t('listPanelAria')}>
         <div className="GalleryView">
-          <section className="gallery-search-section" aria-label={t('searchFormAria')}>
+          <section
+            className="gallery-search-section"
+            aria-label={t('searchFormAria')}
+          >
             <form action={boundSearchAction} className="search-form">
               <input
                 type="text"
@@ -56,7 +63,10 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
         </div>
       </section>
 
-      <section className="list-layout-detail" aria-label={t('detailsPanelAria')}>
+      <section
+        className="list-layout-detail"
+        aria-label={t('detailsPanelAria')}
+      >
         <RepositoryDetailsSection
           locale={locale}
           searchTerm={searchTerm}

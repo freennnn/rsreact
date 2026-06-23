@@ -40,11 +40,15 @@ export async function RepositoryDetailsSection({
       },
     });
   } catch (error) {
-    detailsError = error instanceof Error ? error.message : t('detailsRequestFailed');
+    detailsError =
+      error instanceof Error ? error.message : t('detailsRequestFailed');
   }
 
   return (
-    <aside className="app-page details-panel" aria-label={t('detailsPanelAria')}>
+    <aside
+      className="app-page details-panel"
+      aria-label={t('detailsPanelAria')}
+    >
       <Link
         href={{ pathname: '/', query: buildQuery(searchTerm, currentPage) }}
         className="details-panel-close"
@@ -52,7 +56,9 @@ export async function RepositoryDetailsSection({
         {t('closeDetails')}
       </Link>
       <h2>{t('detailsTitle')}</h2>
-      {detailsError ? <p className="details-panel-error">{detailsError}</p> : null}
+      {detailsError ? (
+        <p className="details-panel-error">{detailsError}</p>
+      ) : null}
       {!detailsError && details ? (
         <div className="details-panel-content">
           <p>
@@ -76,7 +82,8 @@ export async function RepositoryDetailsSection({
             </p>
           ) : null}
           <p>
-            <strong>{t('languageLabel')}:</strong> {details.language ?? t('unknownLanguage')}
+            <strong>{t('languageLabel')}:</strong>{' '}
+            {details.language ?? t('unknownLanguage')}
           </p>
           <p>
             <strong>{t('starsLabel')}:</strong> {details.stargazers_count}

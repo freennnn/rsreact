@@ -23,8 +23,12 @@ function isSelectedRepository(value: unknown): value is SelectedRepository {
   );
 }
 
-function isSelectedRepositoryList(value: unknown): value is SelectedRepository[] {
-  return Array.isArray(value) && value.every((item) => isSelectedRepository(item));
+function isSelectedRepositoryList(
+  value: unknown
+): value is SelectedRepository[] {
+  return (
+    Array.isArray(value) && value.every((item) => isSelectedRepository(item))
+  );
 }
 
 export async function POST(request: Request) {
@@ -32,7 +36,10 @@ export async function POST(request: Request) {
   try {
     payload = (await request.json()) as CsvPayload;
   } catch {
-    return NextResponse.json({ error: 'Invalid JSON payload' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Invalid JSON payload' },
+      { status: 400 }
+    );
   }
 
   if (!isSelectedRepositoryList(payload.selectedRepositories)) {

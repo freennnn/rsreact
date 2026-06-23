@@ -5,7 +5,8 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'RS React Repositories',
-  description: 'Migrating the repository browser from Vite to Next.js App Router.',
+  description:
+    'Migrating the repository browser from Vite to Next.js App Router.',
 };
 
 interface RootLayoutProps {
