@@ -3,7 +3,7 @@ import { QueryClient } from '@tanstack/react-query';
 const DEFAULT_CACHE_TTL_MS = 300_000;
 
 function parseCacheTtlMs(): number {
-  const raw = import.meta.env.VITE_QUERY_CACHE_TTL_MS;
+  const raw = process.env.NEXT_PUBLIC_QUERY_CACHE_TTL_MS;
   if (raw === undefined || raw === '') {
     return DEFAULT_CACHE_TTL_MS;
   }

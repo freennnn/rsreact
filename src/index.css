@@ -26,7 +26,7 @@
   --input-border: #475569;
 }
 
-:root[data-theme='light'] {
+.theme-root.theme-light {
   color-scheme: light;
   --app-bg: #ffffff;
   --app-text: #213547;
@@ -59,13 +59,18 @@ a:hover {
 body {
   margin: 0;
   min-width: 320px;
-  min-height: 100vh;
-  background-color: var(--app-bg);
-  color: var(--app-text);
+  background-color: transparent;
+  color: inherit;
 }
 
 #root {
   width: 100%;
+}
+
+.theme-root {
+  min-height: 100vh;
+  background-color: var(--app-bg);
+  color: var(--app-text);
 }
 
 h1 {
@@ -118,6 +123,20 @@ button:focus-visible {
 }
 
 .app-theme-switcher select {
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--panel-border);
+  background-color: var(--button-bg);
+  color: inherit;
+}
+
+.app-nav-locale {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.app-nav-locale select {
   padding: 0.35rem 0.5rem;
   border-radius: 6px;
   border: 1px solid var(--panel-border);

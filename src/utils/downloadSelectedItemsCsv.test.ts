@@ -20,15 +20,26 @@ const sampleRepositories: SelectedRepository[] = [
 describe('downloadSelectedItemsCsv', () => {
   const originalCreateObjectURL = URL.createObjectURL;
   const originalRevokeObjectURL = URL.revokeObjectURL;
+  const originalFetch = globalThis.fetch;
 
   beforeEach(() => {
     URL.createObjectURL = vi.fn(() => 'blob:csv-data');
     URL.revokeObjectURL = vi.fn();
+    globalThis.fetch = vi.fn(async () => {
+      const blob = new Blob(['csv']);
+      return new Response(blob, {
+        status: 200,
+        headers: {
+          'Content-Disposition': 'attachment; filename="1_items.csv"',
+        },
+      });
+    }) as typeof fetch;
   });
 
   afterEach(() => {
     URL.createObjectURL = originalCreateObjectURL;
     URL.revokeObjectURL = originalRevokeObjectURL;
+    globalThis.fetch = originalFetch;
   });
 
   it('builds CSV content with headers and escaped values', () => {
@@ -41,16 +52,16 @@ describe('downloadSelectedItemsCsv', () => {
     expect(csv).toContain('"Powerful ""async"" state, management"');
   });
 
-  it('does not trigger download when there are no selected items', () => {
+  it('does not trigger download when there are no selected items', async () => {
     const createObjectUrlSpy = vi.spyOn(URL, 'createObjectURL');
 
-    downloadSelectedItemsCsv([]);
+    await downloadSelectedItemsCsv([]);
 
     expect(createObjectUrlSpy).not.toHaveBeenCalled();
     createObjectUrlSpy.mockRestore();
   });
 
-  it('downloads a CSV file using native browser APIs', () => {
+  it('downloads a CSV file using native browser APIs', async () => {
     const anchorMock = document.createElement('a');
     const anchorClickSpy = vi
       .spyOn(anchorMock, 'click')
@@ -62,9 +73,11 @@ describe('downloadSelectedItemsCsv', () => {
     const removeChildSpy = vi.spyOn(document.body, 'removeChild');
     const createObjectUrlSpy = vi.spyOn(URL, 'createObjectURL');
     const revokeObjectUrlSpy = vi.spyOn(URL, 'revokeObjectURL');
+    const fetchSpy = vi.spyOn(globalThis, 'fetch');
 
-    downloadSelectedItemsCsv(sampleRepositories);
+    await downloadSelectedItemsCsv(sampleRepositories);
 
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
     expect(createObjectUrlSpy).toHaveBeenCalledTimes(1);
     expect(anchorClickSpy).toHaveBeenCalledTimes(1);
     expect(appendChildSpy).toHaveBeenCalledTimes(1);
@@ -74,6 +87,7 @@ describe('downloadSelectedItemsCsv', () => {
     const appendedNode = appendChildSpy.mock.calls[0][0] as HTMLAnchorElement;
     expect(appendedNode.download).toBe('1_items.csv');
 
+    fetchSpy.mockRestore();
     createElementSpy.mockRestore();
     anchorClickSpy.mockRestore();
     appendChildSpy.mockRestore();
